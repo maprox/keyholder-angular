@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { SerializerService } from '../serializer';
 import { Folder, Secret } from './model';
 import * as ItemType from './model';
@@ -21,14 +22,14 @@ export class StorageService {
 
         const f1 = new Folder('f3');
         root.add(f1);
-        f1.add(new Secret('s1', 'this is some content', new Date('2016-10-10')));
+        f1.add(new Secret('s1', 'this is some content'));
 
         this.save();
     }
 
     getRoot(): Folder {
         if (!this.root) {
-            this.root = new Folder('/');
+            this.root = new Folder('root');
         }
         return this.root;
     }

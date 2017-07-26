@@ -10,15 +10,19 @@ export interface Serializable {
 
 export class SerializableClass implements Serializable {
 
+    getClassName(): string {
+        return this.constructor.name;
+    }
+
     fromJSON(value: object): any {
         return Object.assign(this, value);
     }
 
     toJSON(): any {
         return Object.assign({}, this, {
-            _type: this.constructor.name,
+            _type: this.getClassName(),
         });
-    };
+    }
 }
 
 export function Serializable<T extends Constructor<object>>(superclass: T) {

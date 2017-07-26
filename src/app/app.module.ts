@@ -1,21 +1,19 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 import { AppComponent } from './app.component';
 
 import { AppRoutingModule } from './app-routing.module';
-import { StorageModule } from './storage/storage.module';
+import { StorageModule } from './storage';
 
 @NgModule({
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    StorageModule,
-    NgbModule.forRoot(),
-  ],
-  providers: [],
-  declarations: [AppComponent],
-  bootstrap: [AppComponent]
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        StorageModule
+    ],
+    providers: [],
+    declarations: [AppComponent],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -20,6 +20,7 @@
       "prefix": "app",
       "styles": [
         "styles.css",
+        "../node_modules/font-awesome/css/font-awesome.css",
         "../node_modules/tether/dist/css/tether.css",
         "../node_modules/bootstrap/dist/css/bootstrap.min.css"
       ],

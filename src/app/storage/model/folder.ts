@@ -13,4 +13,8 @@ export class Folder extends Item {
         this.items.push(item);
     }
 
+    getItems(): Item[] {
+        return this.items;
+    }
+
 }
