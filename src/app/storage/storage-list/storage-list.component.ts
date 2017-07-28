@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 
 import { StorageService } from '../storage.service';
 import { Folder, Secret, Item } from '../model';
@@ -12,28 +13,25 @@ export class StorageListComponent implements OnInit {
 
     folders: Folder[];
 
+    root: Folder;
+
     currentFolder: Folder;
 
+    itemName: string;
+
     constructor(
+        private router: Router,
         private storageService: StorageService
     ) { }
 
     ngOnInit() {
-        const root = this.storageService.getRoot();
-        this.folders = [root];
-        this.currentFolder = root;
-    }
-
-    isFolder(item: Item): boolean {
-        return item instanceof Folder;
-    }
-
-    isSecret(item: Item): boolean {
-        return item instanceof Secret;
+        this.root = this.storageService.getRoot();
+        this.folders = [this.root];
+        this.currentFolder = this.root;
     }
 
     asSecret(item: Item): Secret {
-        return this.isSecret(item) ? item as Secret : null;
+        return item instanceof Secret ? item as Secret : null;
     }
 
     getPath() {
@@ -45,7 +43,7 @@ export class StorageListComponent implements OnInit {
     }
 
     clickItem(item: Item) {
-        if (!this.isFolder(item)) {
+        if (!(item instanceof Folder)) {
             return;
         }
         const folder = item as Folder,
@@ -57,5 +55,26 @@ export class StorageListComponent implements OnInit {
             this.currentFolder = folder;
             this.folders.push(folder);
         }
+        this.router.navigate(['/storage', this.getPath() || '']);
+        console.log(this.getPath());
+    }
+
+    openPath(path: string) {
+        const parts = path.split('/');
+        //parts.
+    }
+
+    private addItem(currentFolder: Folder, item: Item) {
+        currentFolder.add(item);
+        this.storageService.save();
+        console.log(this.getPath());
+    }
+
+    addFolder(currentFolder: Folder, itemName: string) {
+        this.addItem(currentFolder, new Folder(itemName));
+    }
+
+    addSecret(currentFolder: Folder, itemName: string) {
+        this.addItem(currentFolder, new Secret(itemName));
     }
 }

@@ -8,8 +8,6 @@ import { StorageService } from './storage';
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    title = 'My First Angular App';
-
     constructor(service: StorageService) {
         service.load();
     }
