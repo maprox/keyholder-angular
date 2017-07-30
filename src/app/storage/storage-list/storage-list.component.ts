@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 
 import { StorageService } from '../storage.service';
 import { Folder, Secret, Item } from '../model';
@@ -11,70 +11,73 @@ import { Folder, Secret, Item } from '../model';
 })
 export class StorageListComponent implements OnInit {
 
-    folders: Folder[];
-
-    root: Folder;
-
-    currentFolder: Folder;
-
+    showEditForm: string;
     itemName: string;
 
     constructor(
         private router: Router,
-        private storageService: StorageService
-    ) { }
+        private storage: StorageService
+    ) {
+        router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                this.storage.openPath(decodeURIComponent(event.url));
+            }
+        });
+    }
 
     ngOnInit() {
-        this.root = this.storageService.getRoot();
-        this.folders = [this.root];
-        this.currentFolder = this.root;
+        //
     }
 
     asSecret(item: Item): Secret {
         return item instanceof Secret ? item as Secret : null;
     }
 
-    getPath() {
-        let result = '';
-        this.folders.map((item) => {
-            result += item.getName() + '/'
-        });
-        return result;
-    }
-
     clickItem(item: Item) {
         if (!(item instanceof Folder)) {
             return;
         }
-        const folder = item as Folder,
-            position = this.folders.indexOf(folder);
-        if (position >= 0) {
-            this.folders.splice(position + 1);
-            this.currentFolder = this.folders[this.folders.length - 1];
-        } else {
-            this.currentFolder = folder;
-            this.folders.push(folder);
+        this.storage.openFolder(item as Folder);
+        this.router.navigate(['/storage', this.storage.getPathAsString()]);
+    }
+
+    private addItem(item: Item) {
+        this.storage.getCurrent().add(item);
+        this.storage.save();
+        this.showEditForm = '';
+        this.itemName = '';
+    }
+
+    showAddFolder() {
+        this.showEditForm = 'folder';
+    }
+
+    showAddSecret() {
+        this.showEditForm = 'secret';
+    }
+
+    removeCurrentFolder() {
+        const current = this.storage.getCurrent(),
+              parent = this.storage.getParent();
+
+        if (parent) {
+            this.storage.openFolder(parent).removeItem(current);
+            this.storage.save();
         }
-        this.router.navigate(['/storage', this.getPath() || '']);
-        console.log(this.getPath());
     }
 
-    openPath(path: string) {
-        const parts = path.split('/');
-        //parts.
+    removeItem(folder: Folder, item: Item) {
+        folder.removeItem(item);
+        this.storage.save();
     }
 
-    private addItem(currentFolder: Folder, item: Item) {
-        currentFolder.add(item);
-        this.storageService.save();
-        console.log(this.getPath());
+    addFolder(itemName: string) {
+        const folder = new Folder(itemName);
+        this.addItem(folder);
+        this.storage.openFolder(folder);
     }
 
-    addFolder(currentFolder: Folder, itemName: string) {
-        this.addItem(currentFolder, new Folder(itemName));
-    }
-
-    addSecret(currentFolder: Folder, itemName: string) {
-        this.addItem(currentFolder, new Secret(itemName));
+    addSecret(itemName: string) {
+        this.addItem(new Secret(itemName));
     }
 }

@@ -13,9 +13,7 @@ export class Folder extends Item {
     add(item: Item) {
         const list = item instanceof Folder ? this.folders : this.items;
         list.push(item);
-        list.sort((a, b) => {
-            return a.getName().localeCompare(b.getName());
-        });
+        list.sort((a, b) => a.getName().localeCompare(b.getName()));
     }
 
     getFolders(): Folder[] {
@@ -27,8 +25,19 @@ export class Folder extends Item {
     }
 
     getFolderByName(name: string): Folder {
-        return this.folders.find((item) => {
-            return item.getName() === name;
-        })
+        return this.folders.find((item) => item.getName() === name);
+    }
+
+    hasFolder(folder: Folder): boolean {
+        return this.folders.indexOf(folder) >= 0;
+    }
+
+    isEmpty(): boolean {
+        return !this.items.length && !this.folders.length;
+    }
+
+    removeItem(item: Item) {
+        const list = item instanceof Folder ? this.folders : this.items;
+        list.splice(list.indexOf(item), 1);
     }
 }

@@ -5,7 +5,12 @@
 }
 
 .p-lg {
-    padding: 20pt !important;
+    padding: 14pt !important;
+}
+
+.breadcrumb > li + li:before {
+    padding: 0 !important;
+    margin-left: 6pt;
 }
 
 .large-font-size {

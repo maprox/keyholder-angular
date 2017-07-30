@@ -1,6 +1,6 @@
-<ol class="breadcrumb large-font-size m-0">
-    <li *ngFor="let item of folders; last as isLast">
-        <a *ngIf="!isLast" (click)="clickItem(item)" href="javascript:void(0)">
+<ol class="breadcrumb  m-0">
+    <li *ngFor="let item of storage.getPath(); last as isLast">
+        <a *ngIf="!isLast" (click)="clickItem(item)" href="javascript:void(0)" class="m-lg-right">
             {{ item.getName() }}
         </a>
         <span *ngIf="isLast" class="active">
@@ -9,33 +9,36 @@
     </li>
 </ol>
 
-<div class="list-group list-group-lg">
+<div class="list-group list-group-lg m-0">
     <a href="javascript:void(0)"
        class="list-group-item"
-       *ngIf="folders.length > 1"
-       (click)="clickItem(folders[folders.length - 2])">
+       *ngIf="!storage.isRoot()"
+       (click)="clickItem(storage.getParent())">
 
-        ..
+        <h3 class="list-group-item-heading">
+            <i class="fa fa-folder-open"></i>
+            ..
+        </h3>
 
     </a>
     <a href="javascript:void(0)"
        class="list-group-item"
-       *ngFor="let item of currentFolder.getFolders()"
+       *ngFor="let item of storage.getCurrent().getFolders()"
        (click)="clickItem(item)">
 
         <h3 class="list-group-item-heading">
-            <i class="fa fa-book" aria-hidden="true"></i>&nbsp;
+            <i class="fa fa-folder"></i>&nbsp;
             {{ item.getName() }}
         </h3>
 
     </a>
     <a href="javascript:void(0)"
        class="list-group-item"
-       *ngFor="let item of currentFolder.getItems()"
+       *ngFor="let item of storage.getCurrent().getItems()"
        (click)="clickItem(item)">
 
         <h3 class="list-group-item-heading">
-            <i class="fa fa-key" aria-hidden="true"></i>&nbsp;
+            <i class="fa fa-key"></i>&nbsp;
             {{ item.getName() }}
         </h3>
         <p class="list-group-item-text">
@@ -47,29 +50,63 @@
     </a>
 </div>
 
-<h3>Add Secret</h3>
+<div *ngIf="storage.getCurrent().isEmpty()" class="well well-lg m-0">
+    <h2>This folder is empty</h2>
+</div>
 
-<form (ngSubmit)="addSecret(currentFolder, itemName)">
-    <div class="input-group input-group-lg">
-        <input class="form-control" placeholder="Enter secret name" [(ngModel)]="itemName" name="itemName">
-        <span class="input-group-btn">
-            <button class="btn btn-primary" type="submit" [disabled]="!itemName">
-                Add
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="btn-group">
+            <button type="button" class="btn btn-default btn-lg" (click)="showAddSecret()">
+                <i class="fa fa-key"></i>&nbsp;
+                Add Secret
             </button>
-          </span>
-    </div>
-</form>
-
-<h3>Add Folder</h3>
-
-<form (ngSubmit)="addFolder(currentFolder, itemName)">
-    <div class="input-group input-group-lg">
-        <input class="form-control" placeholder="Enter folder name" [(ngModel)]="itemName" name="itemName">
-        <span class="input-group-btn">
-            <button class="btn btn-primary" type="submit" [disabled]="!itemName">
-                Add
+            <button type="button" class="btn btn-default btn-lg" (click)="showAddFolder()">
+                <i class="fa fa-folder-o"></i>&nbsp;
+                Add Folder
             </button>
-          </span>
-    </div>
-</form>
+        </div>
+        <div class="btn-group pull-right"
+             *ngIf="!storage.isRoot()"
+             (click)="removeCurrentFolder()">
+            <button type="button" class="btn btn-danger btn-lg"
+                    data-toggle="hover"
+                    data-placement="top"
+                    title="Delete current folder">
+                <i class="fa fa-trash"></i>
+            </button>
+        </div>
 
+        <form (ngSubmit)="addSecret(itemName)" *ngIf="showEditForm === 'secret'">
+            <h3>Add Secret</h3>
+            <div class="input-group input-group-lg">
+                <input [(ngModel)]="itemName"
+                       class="form-control"
+                       placeholder="Enter secret name"
+                       name="itemName">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" [disabled]="!itemName">
+                        Add
+                    </button>
+                </span>
+            </div>
+        </form>
+
+        <form (ngSubmit)="addFolder(itemName)" *ngIf="showEditForm === 'folder'">
+            <h3>Add Folder</h3>
+            <div class="input-group input-group-lg">
+                <input [(ngModel)]="itemName"
+                       class="form-control"
+                       placeholder="Enter folder name"
+                       name="itemName">
+                <span class="input-group-btn">
+                    <button class="btn btn-primary" [disabled]="!itemName">
+                        Add
+                    </button>
+                </span>
+            </div>
+        </form>
+
+
+    </div>
+</div>
