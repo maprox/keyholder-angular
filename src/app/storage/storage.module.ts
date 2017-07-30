@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 import { StorageService } from './storage.service';
-import { StorageListComponent } from './storage-list/storage-list.component';
+import { StoragePathComponent } from './storage-path';
+import { StorageListComponent } from './storage-list';
+import { StorageActionsComponent } from './storage-actions';
+import { StorageComponent } from './storage.component';
 import { StorageRoutingModule } from './storage-routing.module';
 
 @NgModule({
@@ -15,7 +18,12 @@ import { StorageRoutingModule } from './storage-routing.module';
     providers: [
         StorageService
     ],
-    declarations: [StorageListComponent],
-    exports: [StorageListComponent]
+    declarations: [
+        StoragePathComponent,
+        StorageListComponent,
+        StorageActionsComponent,
+        StorageComponent
+    ],
+    exports: [StorageComponent]
 })
 export class StorageModule { }

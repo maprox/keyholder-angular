@@ -1,0 +1,57 @@
+<div class="panel panel-default">
+  <div class="panel-body">
+    <div class="btn-group">
+      <button type="button" class="btn btn-default btn-lg" (click)="showAddSecret(secretName)">
+        <i class="fa fa-key"></i>&nbsp;
+        Add Secret
+      </button>
+      <button type="button" class="btn btn-default btn-lg" (click)="showAddFolder(folderName)">
+        <i class="fa fa-folder-o"></i>&nbsp;
+        Add Folder
+      </button>
+    </div>
+    <div class="btn-group pull-right"
+         *ngIf="!storage.isRoot()"
+         (click)="removeCurrentFolder()">
+      <button type="button" class="btn btn-danger btn-lg"
+              data-toggle="hover"
+              data-placement="top"
+              title="Delete current folder">
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
+
+    <form (ngSubmit)="addSecret(itemName)" *ngIf="showEditForm === 'secret'">
+      <h3>Add Secret</h3>
+      <div class="input-group input-group-lg">
+        <input [(ngModel)]="itemName"
+               class="form-control"
+               placeholder="Enter secret name"
+               name="secretName"
+               #secretName>
+        <span class="input-group-btn">
+                    <button class="btn btn-primary" [disabled]="!itemName">
+                        Add
+                    </button>
+                </span>
+      </div>
+    </form>
+
+    <form (ngSubmit)="addFolder(itemName)" *ngIf="showEditForm === 'folder'">
+      <h3>Add Folder</h3>
+      <div class="input-group input-group-lg">
+        <input [(ngModel)]="itemName"
+               class="form-control"
+               placeholder="Enter folder name"
+               name="folderName"
+               #folderName>
+        <span class="input-group-btn">
+                    <button class="btn btn-primary" [disabled]="!itemName">
+                        Add
+                    </button>
+                </span>
+      </div>
+    </form>
+
+  </div>
+</div>

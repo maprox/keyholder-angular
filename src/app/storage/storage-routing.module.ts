@@ -1,16 +1,28 @@
 import { NgModule } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { NavigationEnd, Router, RouterModule } from '@angular/router';
 
-import { StorageListComponent } from './storage-list';
+import { StorageService } from './storage.service';
+import { StorageComponent } from './storage.component';
 
 @NgModule({
     imports: [RouterModule.forChild([{
         path: 'storage',
         children: [{
             path: '**',
-            component: StorageListComponent
+            component: StorageComponent
         }]
     }])],
     exports: [RouterModule]
 })
-export class StorageRoutingModule {}
+export class StorageRoutingModule {
+    constructor(
+        private router: Router,
+        private storage: StorageService
+    ) {
+        router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+                this.storage.openPath(decodeURIComponent(event.url));
+            }
+        });
+    }
+}

@@ -1,0 +1,10 @@
+<ol class="breadcrumb  m-0">
+    <li *ngFor="let item of storage.getPath(); last as isLast">
+        <a *ngIf="!isLast" (click)="openFolder(item)" href="javascript:void(0)">
+            {{ item.getName() }}
+        </a>
+        <span *ngIf="isLast" class="active">
+            {{ item.getName() }}
+        </span>
+    </li>
+</ol>
