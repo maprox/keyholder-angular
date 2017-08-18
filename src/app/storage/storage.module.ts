@@ -9,10 +9,13 @@ import { StorageActionsComponent } from './storage-actions';
 import { StorageComponent } from './storage.component';
 import { StorageRoutingModule } from './storage-routing.module';
 
+import { PasswordGeneratorModule } from '../password-generator';
+
 @NgModule({
     imports: [
         CommonModule,
         FormsModule,
+        PasswordGeneratorModule,
         StorageRoutingModule,
     ],
     providers: [

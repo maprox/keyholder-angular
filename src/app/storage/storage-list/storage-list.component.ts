@@ -13,7 +13,7 @@ export class StorageListComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private storage: StorageService
+        public storage: StorageService
     ) {}
 
     ngOnInit() {
@@ -25,9 +25,20 @@ export class StorageListComponent implements OnInit {
     }
 
     clickItem(item: Item) {
+        const secret = this.asSecret(item);
+        if (!secret) {
+            return;
+        }
+
+        // copy to clipboard
+        console.log(secret.getSecret());
+    }
+
+    clickFolder(item: Item) {
         if (!(item instanceof Folder)) {
             return;
         }
+
         this.storage.openFolder(item as Folder);
         this.router.navigate(['/storage', this.storage.getPathAsString()]);
     }

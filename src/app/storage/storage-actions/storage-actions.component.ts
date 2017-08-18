@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { StorageService } from '../storage.service';
 import { Item, Folder, Secret } from '../model';
 
+import { PasswordGeneratorService } from '../../password-generator';
+
 @Component({
     selector: 'app-storage-actions',
     templateUrl: './storage-actions.component.html',
@@ -14,7 +16,8 @@ export class StorageActionsComponent implements OnInit {
     itemName: string;
 
     constructor(
-        private storage: StorageService
+        private storage: StorageService,
+        private passwordGenerator: PasswordGeneratorService
     ) { }
 
     ngOnInit() {
@@ -59,7 +62,7 @@ export class StorageActionsComponent implements OnInit {
     }
 
     addSecret(itemName: string) {
-        this.addItem(new Secret(itemName));
+        this.addItem(new Secret(itemName, this.passwordGenerator.generate()));
     }
 
 }

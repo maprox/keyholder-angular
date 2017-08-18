@@ -13,7 +13,7 @@ export class StoragePathComponent implements OnInit {
 
     constructor(
         private router: Router,
-        private storage: StorageService
+        public storage: StorageService
     ) { }
 
     ngOnInit() {
