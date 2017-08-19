@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
+import { ClipboardModule } from 'ngx-clipboard';
+
 import { StorageService } from './storage.service';
 import { StoragePathComponent } from './storage-path';
 import { StorageListComponent } from './storage-list';
@@ -17,6 +19,7 @@ import { PasswordGeneratorModule } from '../password-generator';
         FormsModule,
         PasswordGeneratorModule,
         StorageRoutingModule,
+        ClipboardModule
     ],
     providers: [
         StorageService
