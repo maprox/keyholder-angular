@@ -3,10 +3,9 @@ import { Routes, RouterModule, UrlSerializer } from '@angular/router';
 
 import { PageNotFoundComponent } from './page-not-found';
 import { CustomUrlSerializer } from './custom-url-serializer';
-import { AuthGuard } from './auth';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/storage', pathMatch: 'full', canActivate: [AuthGuard] },
+    { path: '', redirectTo: '/storage', pathMatch: 'full' },
     { path: '**', component: PageNotFoundComponent }
 ];
 

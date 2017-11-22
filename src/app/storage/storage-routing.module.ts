@@ -3,6 +3,7 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 
 import { StorageService } from './storage.service';
 import { StorageComponent } from './storage.component';
+import { AuthGuard } from '../auth';
 
 @NgModule({
     imports: [RouterModule.forChild([{
@@ -10,7 +11,8 @@ import { StorageComponent } from './storage.component';
         children: [{
             path: '**',
             component: StorageComponent
-        }]
+        }],
+        canActivate: [AuthGuard]
     }])],
     exports: [RouterModule]
 })
