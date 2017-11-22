@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
+import { AlertService } from '../../alert';
 import { StorageService } from '../storage.service';
 import { Folder, Secret, Item } from '../model';
 
@@ -12,6 +13,7 @@ import { Folder, Secret, Item } from '../model';
 export class StorageListComponent implements OnInit {
 
     constructor(
+        private alert: AlertService,
         private router: Router,
         public storage: StorageService
     ) {}
@@ -32,6 +34,7 @@ export class StorageListComponent implements OnInit {
 
         // copy to clipboard
         console.log(secret.getSecret());
+        this.alert.success('Successfully copied to clipboard', 2000);
     }
 
     clickFolder(item: Item) {

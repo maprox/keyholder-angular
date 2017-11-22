@@ -31,12 +31,12 @@ export class StorageActionsComponent implements OnInit {
     }
 
     showAddFolder(element: HTMLElement) {
-        this.showEditForm = 'folder';
+        this.showEditForm = (this.showEditForm === 'folder') ? '' : 'folder';
         // element.focus();
     }
 
     showAddSecret(element: HTMLElement) {
-        this.showEditForm = 'secret';
+        this.showEditForm = (this.showEditForm === 'secret') ? '' : 'secret';
         // element.focus();
     }
 
