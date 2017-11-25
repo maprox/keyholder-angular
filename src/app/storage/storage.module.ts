@@ -30,6 +30,8 @@ import { PasswordGeneratorModule } from '../password-generator';
         StorageActionsComponent,
         StorageComponent
     ],
-    exports: [StorageComponent]
+    exports: [
+        StorageComponent
+    ]
 })
 export class StorageModule { }

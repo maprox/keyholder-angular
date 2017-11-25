@@ -9,7 +9,11 @@ import { SettingsRoutingModule } from './settings-routing.module';
         CommonModule,
         SettingsRoutingModule
     ],
-    declarations: [SettingsComponent],
-    exports: [SettingsComponent]
+    declarations: [
+        SettingsComponent
+    ],
+    exports: [
+        SettingsComponent
+    ]
 })
 export class SettingsModule { }

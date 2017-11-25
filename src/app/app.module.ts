@@ -26,6 +26,8 @@ import { AlertService, AlertComponent } from './alert';
         AppComponent,
         PageNotFoundComponent
     ],
-    bootstrap: [AppComponent]
+    bootstrap: [
+        AppComponent
+    ]
 })
 export class AppModule { }
