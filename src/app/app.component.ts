@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { StorageService } from './storage';
 import { AuthService } from './auth';
@@ -16,6 +16,12 @@ export class AppComponent {
         private auth: AuthService
     ) {
         storage.load();
-        this.displayMenu = auth.isLoggedIn();
+        auth.isLoggedInEvent().subscribe((isLoggedIn) => {
+            // we have to use timeout here because of
+            // ExpressionChangedAfterItHasBeenCheckedError
+            setTimeout(() => {
+                this.displayMenu = isLoggedIn;
+            });
+        });
     }
 }

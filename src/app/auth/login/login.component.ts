@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpErrorResponse } from '@angular/common/http';
 
 import { AuthService } from '../auth.service';
 
@@ -11,10 +10,10 @@ import { AuthService } from '../auth.service';
 })
 export class LoginComponent implements OnInit {
 
-    email: string;
+    username: string;
     password: string;
     returnUrl: string;
-    loading = false;
+    loading: boolean;
 
     constructor(
         private auth: AuthService,
@@ -23,19 +22,21 @@ export class LoginComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        // get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+        this.auth.isLoggedInEvent().subscribe((isLoggedIn) => {
+            this.loading = false;
+            if (isLoggedIn) {
+                this.router.navigate([this.returnUrl]);
+            }
+        });
     }
 
     onSubmit() {
+        // get return url from route parameters or default to '/'
+        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
         this.loading = true;
-        this.auth.logIn(this.email, this.password).subscribe(
-            data => {
-                this.router.navigate([this.returnUrl]);
-            },
-            (err: HttpErrorResponse) => {
-                this.loading = false;
-            }
+        this.auth.logIn(
+            this.username,
+            this.password
         );
     }
 }

@@ -1,12 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpHeaders, HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
+import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
 import { Observable } from 'rxjs/Observable';
 
 @Injectable()
 export class AuthService {
+    private subject = new Subject<Object>();
+    private session = null;
 
     constructor(
         private http: HttpClient,
@@ -14,10 +16,14 @@ export class AuthService {
     ) { }
 
     isLoggedIn() {
-        return false;
+        return !!this.session;
     }
 
-    logIn(username: string, password: string): Observable<Object> {
+    isLoggedInEvent(): Observable<any> {
+        return this.subject.asObservable();
+    }
+
+    logIn(username: string, password: string) {
         const url = 'http://localhost:3000/api/sign_in';
         const body = new URLSearchParams();
         body.set('login', username);
@@ -27,14 +33,14 @@ export class AuthService {
             headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'})
         };
 
-        const request = this.http.post(url, body.toString(), options);
-
-        request.subscribe(
+        this.http.post(url, body.toString(), options).subscribe(
             data => {
-                // Read the result field from the JSON response.
-                console.log(data);
+                this.session = data;
+                this.subject.next(this.session);
             },
             (err: HttpErrorResponse) => {
+                this.session = null;
+                this.subject.next();
                 if (err.error instanceof Error) {
                     // A client-side or network error occurred. Handle it accordingly.
                     this.alert.error('Unknown error occurred, please try again later.');
@@ -45,8 +51,10 @@ export class AuthService {
                 }
             }
         );
-
-        return request;
     }
 
+    logOut() {
+        this.session = null;
+        this.subject.next();
+    }
 }
