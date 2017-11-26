@@ -29,11 +29,11 @@ export class RegisterComponent implements OnInit {
 
     onSubmit() {
         this.loading = true;
-        this.auth.logIn(this.email, this.password).subscribe(
+        /*this.auth.logIn(this.email, this.password).subscribe(
             () => this.router.navigate([this.returnUrl]),
             (err: HttpErrorResponse) => {
                 this.loading = false;
             }
-        );
+        );*/
     }
 }

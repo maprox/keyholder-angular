@@ -16,7 +16,7 @@ export class AppComponent {
         private auth: AuthService
     ) {
         storage.load();
-        auth.isLoggedInEvent().subscribe((isLoggedIn) => {
+        auth.isLoggedIn().subscribe((isLoggedIn) => {
             // we have to use timeout here because of
             // ExpressionChangedAfterItHasBeenCheckedError
             setTimeout(() => {

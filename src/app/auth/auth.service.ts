@@ -4,30 +4,31 @@ import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
 import { Observable } from 'rxjs/Observable';
+import { User, Session } from './model';
 
 @Injectable()
 export class AuthService {
     private subject = new Subject<Object>();
-    private session = null;
+    private session: Session;
 
     constructor(
         private http: HttpClient,
         private alert: AlertService
     ) { }
 
-    isLoggedIn() {
-        return !!this.session;
+    getSession(): Session {
+        return this.session;
     }
 
-    isLoggedInEvent(): Observable<any> {
+    isLoggedIn(): Observable<any> {
         return this.subject.asObservable();
     }
 
-    logIn(username: string, password: string) {
+    logIn(user: User) {
         const url = 'http://localhost:3000/api/sign_in';
         const body = new URLSearchParams();
-        body.set('login', username);
-        body.set('secret', password);
+        body.set('login', user.getUsername());
+        body.set('secret', user.getPassword());
 
         const options = {
             headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'})
@@ -35,7 +36,7 @@ export class AuthService {
 
         this.http.post(url, body.toString(), options).subscribe(
             data => {
-                this.session = data;
+                this.session = <Session>data;
                 this.subject.next(this.session);
             },
             (err: HttpErrorResponse) => {
@@ -56,5 +57,10 @@ export class AuthService {
     logOut() {
         this.session = null;
         this.subject.next();
+    }
+
+    getAuthorizationHeader(): string {
+        const session = this.getSession();
+        return session ? 'Bearer ' + session.getToken() : '';
     }
 }
