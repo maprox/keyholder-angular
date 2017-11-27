@@ -75,6 +75,10 @@ export class StorageService {
     }
 
     load() {
-        this.root = this.storageApiService.load() || this.getRoot();
+        this.storageApiService.load().subscribe(
+            data => {
+                this.root = data || this.getRoot()
+            }
+        );
     }
 }

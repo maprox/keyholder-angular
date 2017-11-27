@@ -1,9 +1,10 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
+import { HttpService } from '../http.service';
 import { Session, User } from './model';
 
 @Injectable()
@@ -12,7 +13,7 @@ export class AuthService {
     private session: Session;
 
     constructor(
-        private http: HttpClient,
+        private http: HttpService,
         private alert: AlertService
     ) { }
 
@@ -25,18 +26,14 @@ export class AuthService {
     }
 
     logIn(user: User) {
-        const url = 'http://localhost:3000/api/sign_in';
-        const body = new URLSearchParams();
-        body.set('login', user.getUsername());
-        body.set('secret', user.getPassword());
-
-        const options = {
-            headers: new HttpHeaders({'Content-Type': 'application/x-www-form-urlencoded'})
+        const body = {
+            login: user.getUsername(),
+            secret: user.getPassword()
         };
 
-        this.http.post(url, body.toString(), options).subscribe(
+        this.http.post('/sign_in', body).subscribe(
             data => {
-                this.session = <Session>data;
+                this.session = new Session(data.token, data.data);
                 this.subject.next(this.session);
             },
             (err: HttpErrorResponse) => {

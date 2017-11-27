@@ -5,6 +5,7 @@ import { AlertComponent, AlertService } from './alert';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
+import { HttpService } from './http.service';
 import { PageNotFoundComponent } from './page-not-found';
 import { SettingsModule } from './settings';
 import { StorageModule } from './storage';
@@ -18,7 +19,8 @@ import { StorageModule } from './storage';
         AppRoutingModule,
     ],
     providers: [
-        AlertService
+        AlertService,
+        HttpService
     ],
     declarations: [
         AlertComponent,
