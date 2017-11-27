@@ -1,17 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { SerializerService } from '../serializer';
 import { Folder } from './model';
-import * as ItemType from './model';
+import { StorageApiService } from './storage-api.service';
 
 @Injectable()
 export class StorageService {
-
-    private storageKey = 'storage';
-
     private path: Folder[] = [];
-
     private root: Folder;
+
+    constructor(public storageApiService: StorageApiService) { }
 
     getPath(): Folder[] {
         if (this.path.length === 0) {
@@ -73,17 +70,11 @@ export class StorageService {
         return folder === this.getRoot();
     }
 
-    // TODO remove save and load from here
-
     save() {
-        const data = JSON.stringify(this.root);
-        localStorage.setItem(this.storageKey, data);
+        this.storageApiService.save(this.root);
     }
 
     load() {
-        const data = localStorage.getItem(this.storageKey);
-        this.root = data ?
-            JSON.parse(data, SerializerService.getReviver(ItemType)) :
-            this.getRoot();
+        this.root = this.storageApiService.load() || this.getRoot();
     }
 }

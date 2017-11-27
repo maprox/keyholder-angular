@@ -1,5 +1,4 @@
 export class User {
-
     constructor(
         private username: string,
         private password: string
@@ -12,5 +11,4 @@ export class User {
     getPassword(): string {
         return this.password;
     }
-
 }

@@ -1,7 +1,6 @@
 import { SerializableClass } from '../../serializer';
 
 export class Item extends SerializableClass {
-
     constructor(
         private name: string = null
     ) {
@@ -15,5 +14,4 @@ export class Item extends SerializableClass {
     getName(): string {
         return this.name;
     }
-
 }

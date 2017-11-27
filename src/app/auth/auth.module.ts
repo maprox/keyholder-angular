@@ -1,15 +1,14 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
-import { AuthService } from './auth.service';
+import { AuthRoutingModule } from './auth-routing.module';
 import { AuthGuard } from './auth.guard';
 import { AuthInterceptor } from './auth.interceptor';
-
+import { AuthService } from './auth.service';
 import { LoginComponent } from './login';
 import { LogoutComponent } from './logout';
-import { AuthRoutingModule } from './auth-routing.module';
 
 @NgModule({
     imports: [

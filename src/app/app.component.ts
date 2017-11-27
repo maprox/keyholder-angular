@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { AuthService } from './auth';
 
 import { StorageService } from './storage';
-import { AuthService } from './auth';
 
 @Component({
     selector: 'app-root',

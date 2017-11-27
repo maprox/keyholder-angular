@@ -1,10 +1,10 @@
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { HttpHeaders, HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
-import { Observable } from 'rxjs/Observable';
-import { User, Session } from './model';
+import { Session, User } from './model';
 
 @Injectable()
 export class AuthService {

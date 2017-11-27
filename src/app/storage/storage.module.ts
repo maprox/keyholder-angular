@@ -1,17 +1,16 @@
-import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
 import { ClipboardModule } from 'ngx-clipboard';
 
-import { StorageService } from './storage.service';
-import { StoragePathComponent } from './storage-path';
-import { StorageListComponent } from './storage-list';
-import { StorageActionsComponent } from './storage-actions';
-import { StorageComponent } from './storage.component';
-import { StorageRoutingModule } from './storage-routing.module';
-
 import { PasswordGeneratorModule } from '../password-generator';
+import { StorageActionsComponent } from './storage-actions';
+import { StorageApiService } from './storage-api.service';
+import { StorageListComponent } from './storage-list';
+import { StoragePathComponent } from './storage-path';
+import { StorageRoutingModule } from './storage-routing.module';
+import { StorageComponent } from './storage.component';
+import { StorageService } from './storage.service';
 
 @NgModule({
     imports: [
@@ -22,7 +21,8 @@ import { PasswordGeneratorModule } from '../password-generator';
         ClipboardModule
     ],
     providers: [
-        StorageService
+        StorageService,
+        StorageApiService
     ],
     declarations: [
         StoragePathComponent,

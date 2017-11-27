@@ -1,7 +1,6 @@
 import { SerializableClass } from '../../serializer';
 
 export class Options extends SerializableClass {
-
     constructor(
         public length: number = 20,
         public useNumbers: boolean = true,
@@ -11,5 +10,4 @@ export class Options extends SerializableClass {
     ) {
         super();
     }
-
 }

@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { AlertService } from '../../alert';
+import { Folder, Item, Secret } from '../model';
 import { StorageService } from '../storage.service';
-import { Folder, Secret, Item } from '../model';
 
 @Component({
     selector: 'app-storage-list',
@@ -11,7 +11,6 @@ import { Folder, Secret, Item } from '../model';
     styleUrls: ['./storage-list.component.css']
 })
 export class StorageListComponent implements OnInit {
-
     constructor(
         private alert: AlertService,
         private router: Router,

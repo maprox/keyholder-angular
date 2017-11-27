@@ -1,7 +1,6 @@
 import { Item } from './item';
 
 export class Secret extends Item {
-
     constructor(
         name: string = null,
         private secret: string = null,
@@ -25,5 +24,4 @@ export class Secret extends Item {
     setContent(content: string) {
         this.content = content;
     }
-
 }

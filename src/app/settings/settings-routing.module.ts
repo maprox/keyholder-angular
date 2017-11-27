@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
-import { SettingsComponent } from './settings/settings.component';
 import { AuthGuard } from '../auth';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
     imports: [RouterModule.forChild([{

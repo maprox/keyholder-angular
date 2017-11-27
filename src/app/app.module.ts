@@ -1,14 +1,13 @@
-import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 
-import { AppComponent } from './app.component';
-
+import { AlertComponent, AlertService } from './alert';
 import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
-import { StorageModule } from './storage';
-import { SettingsModule } from './settings';
 import { PageNotFoundComponent } from './page-not-found';
-import { AlertService, AlertComponent } from './alert';
+import { SettingsModule } from './settings';
+import { StorageModule } from './storage';
 
 @NgModule({
     imports: [

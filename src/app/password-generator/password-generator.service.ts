@@ -4,7 +4,6 @@ import { Options } from './model';
 
 @Injectable()
 export class PasswordGeneratorService {
-
     private lowercase = 'abcdefghijklmnopqrstuvwxyz';
     private uppercase = this.lowercase.toUpperCase();
     private numbers = '0123456789';
@@ -48,5 +47,4 @@ export class PasswordGeneratorService {
 
         return password;
     }
-
 }

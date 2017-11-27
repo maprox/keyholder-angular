@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { StorageService } from '../storage.service';
 import { Folder } from '../model';
+import { StorageService } from '../storage.service';
 
 @Component({
     selector: 'app-storage-path',
@@ -10,7 +10,6 @@ import { Folder } from '../model';
     styleUrls: ['./storage-path.component.css']
 })
 export class StoragePathComponent implements OnInit {
-
     constructor(
         private router: Router,
         public storage: StorageService
@@ -23,5 +22,4 @@ export class StoragePathComponent implements OnInit {
         this.storage.openFolder(folder);
         this.router.navigate(['/storage', this.storage.getPathAsString()]);
     }
-
 }
