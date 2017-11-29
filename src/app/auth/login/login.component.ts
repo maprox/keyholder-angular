@@ -14,6 +14,7 @@ export class LoginComponent implements OnInit {
     password: string;
     returnUrl: string;
     loading: boolean;
+    signUp: boolean;
 
     constructor(
         private auth: AuthService,
@@ -26,6 +27,7 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/storage']);
             return;
         }
+        this.route.data.subscribe((data) => this.signUp = data.signUp);
         this.auth.getAuthEvent().subscribe((isLoggedIn) => {
             this.loading = false;
             if (isLoggedIn) {
@@ -35,9 +37,14 @@ export class LoginComponent implements OnInit {
     }
 
     onSubmit() {
+        const user = new User(this.username, this.password);
         // get return url from route parameters or default to '/'
         this.returnUrl = this.route.snapshot.queryParams['returnUrl'];
         this.loading = true;
-        this.auth.logIn(new User(this.username, this.password));
+        if (this.signUp) {
+            this.auth.signUp(user);
+        } else {
+            this.auth.signIn(user);
+        }
     }
 }

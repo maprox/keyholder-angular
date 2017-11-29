@@ -11,6 +11,12 @@ import { LogoutComponent } from './logout';
     }, {
         path: 'logout',
         component: LogoutComponent
+    }, {
+        path: 'register',
+        component: LoginComponent,
+        data: {
+            signUp: true
+        }
     }])],
     exports: [RouterModule]
 })

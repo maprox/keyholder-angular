@@ -31,6 +31,7 @@
                         <input type="password"
                                name="password"
                                id="password"
+                               minlength="4"
                                [(ngModel)]="password"
                                class="form-control"
                                placeholder="**************"
@@ -43,15 +44,25 @@
                                 [disabled]="loading"
                                 role="button">
                             <span *ngIf="loading">
-                                <i class='fa fa-spinner fa-spin'></i> Logging In
+                                <i class='fa fa-spinner fa-spin'></i>
+                                {{ signUp ? 'Signing up' : 'Logging in...'}}
                             </span>
                             <span *ngIf="!loading">
-                                Log In
+                                {{ signUp ? 'Sign up' : 'Log in'}}
                             </span>
                         </button>
                     </div>
                 </div>
             </form>
         </div>
+    </div>
+    <div class="row">
+        <a routerLink="{{ !signUp ? '/register' : '/login' }}"
+           class="btn btn-link btn-lg btn-block">
+            {{ !signUp ? 'Sign up' : 'Log in'}}
+        </a>
+        <p class="text-center">
+            Some short description of the service. TBD
+        </p>
     </div>
 </div>

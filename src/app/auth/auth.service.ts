@@ -29,13 +29,13 @@ export class AuthService {
         return this.subject.asObservable();
     }
 
-    logIn(user: User) {
+    request(user: User, url: string) {
         const body = {
             login: user.getUsername(),
             secret: user.getPassword()
         };
 
-        this.http.post('/sign_in', body).subscribe(
+        this.http.post(url, body).subscribe(
             data => {
                 this.session = new Session(data.token, data.data);
                 this.subject.next(this.session);
@@ -53,6 +53,14 @@ export class AuthService {
                 }
             }
         );
+    }
+
+    signIn(user: User) {
+        return this.request(user, '/sign_in');
+    }
+
+    signUp(user: User) {
+        return this.request(user, '/sign_up');
     }
 
     logOut() {
