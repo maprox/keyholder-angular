@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 
 import { PasswordGeneratorService } from '../../password-generator';
 import { Folder, Item, Secret } from '../model';
-
 import { StorageService } from '../storage.service';
 
 @Component({
@@ -11,6 +10,9 @@ import { StorageService } from '../storage.service';
     styleUrls: ['./storage-actions.component.css']
 })
 export class StorageActionsComponent {
+    @ViewChild('secretName') secretName: ElementRef;
+    @ViewChild('folderName') folderName: ElementRef;
+
     showEditForm: string;
     itemName: string;
 
@@ -26,14 +28,22 @@ export class StorageActionsComponent {
         this.itemName = '';
     }
 
-    showAddFolder(element: HTMLElement) {
-        this.showEditForm = (this.showEditForm === 'folder') ? '' : 'folder';
-        // element.focus();
+    private focus(element: string) {
+        setTimeout(() => {
+            if (this[element] && this[element].nativeElement) {
+                this[element].nativeElement.focus();
+            }
+        });
     }
 
-    showAddSecret(element: HTMLElement) {
+    showAddFolder() {
+        this.showEditForm = (this.showEditForm === 'folder') ? '' : 'folder';
+        this.focus('folderName');
+    }
+
+    showAddSecret() {
         this.showEditForm = (this.showEditForm === 'secret') ? '' : 'secret';
-        // element.focus();
+        this.focus('secretName');
     }
 
     removeCurrentFolder() {
