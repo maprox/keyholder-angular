@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AuthService } from '../auth';
 
 import { Folder } from './model';
 import { StorageApiService } from './storage-api.service';
@@ -7,8 +8,20 @@ import { StorageApiService } from './storage-api.service';
 export class StorageService {
     private path: Folder[] = [];
     private root: Folder;
+    private isLoaded = false;
 
-    constructor(public storageApiService: StorageApiService) { }
+    constructor(
+        public storageApi: StorageApiService,
+        private auth: AuthService
+    ) {
+        auth.getAuthEvent().subscribe((isLoggedIn) => {
+            // we have to use timeout here because of
+            // ExpressionChangedAfterItHasBeenCheckedError
+            if (!isLoggedIn) {
+                this.isLoaded = false;
+            }
+        });
+    }
 
     getPath(): Folder[] {
         if (this.path.length === 0) {
@@ -71,13 +84,23 @@ export class StorageService {
     }
 
     save() {
-        this.storageApiService.save(this.root);
+        this.storageApi.save(this.root);
     }
 
-    load() {
-        this.storageApiService.load().subscribe(
-            data => {
-                this.root = data || this.getRoot()
+    /**
+     * @param {string} [path='/']
+     */
+    load(path?: string) {
+        if (this.isLoaded) {
+            this.openPath(path || '/');
+            return;
+        }
+
+        this.storageApi.load().subscribe(
+            root => {
+                this.isLoaded = true;
+                this.root = root || this.getRoot();
+                this.openPath(path || '/');
             }
         );
     }

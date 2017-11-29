@@ -10,7 +10,7 @@ export class AppComponent {
     displayMenu: boolean;
 
     constructor(private auth: AuthService) {
-        auth.isLoggedIn().subscribe((isLoggedIn) => {
+        auth.getAuthEvent().subscribe((isLoggedIn) => {
             // we have to use timeout here because of
             // ExpressionChangedAfterItHasBeenCheckedError
             setTimeout(() => {

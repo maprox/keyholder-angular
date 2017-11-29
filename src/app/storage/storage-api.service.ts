@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { AlertService } from '../alert/alert.service';
+import { AlertService } from '../alert';
 import { HttpService } from '../http.service';
 import { SerializerService } from '../serializer';
 import * as ItemType from './model';

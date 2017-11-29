@@ -10,16 +10,14 @@ import { StorageService } from '../storage.service';
     templateUrl: './storage-actions.component.html',
     styleUrls: ['./storage-actions.component.css']
 })
-export class StorageActionsComponent implements OnInit {
+export class StorageActionsComponent {
     showEditForm: string;
     itemName: string;
 
-    constructor(private storage: StorageService,
-                private passwordGenerator: PasswordGeneratorService) {
-    }
-
-    ngOnInit() {
-    }
+    constructor(
+        private storage: StorageService,
+        private passwordGenerator: PasswordGeneratorService
+    ) {}
 
     private addItem(item: Item) {
         this.storage.getCurrent().add(item);

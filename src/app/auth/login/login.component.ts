@@ -22,11 +22,11 @@ export class LoginComponent implements OnInit {
     ) { }
 
     ngOnInit() {
-        if (this.auth.getSession()) {
+        if (this.auth.isLoggedIn()) {
             this.router.navigate(['/storage']);
             return;
         }
-        this.auth.isLoggedIn().subscribe((isLoggedIn) => {
+        this.auth.getAuthEvent().subscribe((isLoggedIn) => {
             this.loading = false;
             if (isLoggedIn) {
                 this.router.navigate([this.returnUrl || '/']);

@@ -3,7 +3,7 @@ import { NavigationEnd, Router, RouterModule } from '@angular/router';
 
 import { StorageService } from './storage.service';
 import { StorageComponent } from './storage.component';
-import { AuthGuard } from '../auth';
+import { AuthGuard, AuthService } from '../auth';
 
 @NgModule({
     imports: [RouterModule.forChild([{
@@ -19,11 +19,12 @@ import { AuthGuard } from '../auth';
 export class StorageRoutingModule {
     constructor(
         private router: Router,
-        private storage: StorageService
+        private storage: StorageService,
+        private auth: AuthService
     ) {
         router.events.subscribe(event => {
-            if (event instanceof NavigationEnd) {
-                this.storage.openPath(decodeURIComponent(event.url));
+            if (event instanceof NavigationEnd && auth.isLoggedIn()) {
+                this.storage.load(decodeURIComponent(event.url));
             }
         });
     }

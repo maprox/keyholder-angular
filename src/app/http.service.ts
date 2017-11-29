@@ -6,23 +6,12 @@ import { Observable } from 'rxjs/Observable';
 export class HttpService {
     apiBase = 'http://localhost:3000/api';
 
-    constructor(public http: HttpClient) { }
-
-    /**
-     *
-     * @param {string} url
-     * @returns {string}
-     */
-    private getApiUrl(url: string) {
-        return this.apiBase + url;
-    }
-
     /**
      *
      * @param contents
      * @returns {string}
      */
-    private getContents(contents: any): string {
+    private static getContents(contents: any): string {
         if (typeof contents === 'string') {
             return contents;
         }
@@ -42,7 +31,7 @@ export class HttpService {
      * @param options
      * @returns {any}
      */
-    private getOptions(options: any): any {
+    private static getOptions(options: any): any {
         options = options ? options.clone() : {};
 
         if (!options.headers || !(options.headers instanceof HttpHeaders)) {
@@ -60,6 +49,17 @@ export class HttpService {
         return options;
     }
 
+    constructor(public http: HttpClient) { }
+
+    /**
+     *
+     * @param {string} url
+     * @returns {string}
+     */
+    private getApiUrl(url: string) {
+        return this.apiBase + url;
+    }
+
     /**
      *
      * @param {string} url
@@ -70,8 +70,8 @@ export class HttpService {
     post(url: string, contents: any, options?: any): Observable<any> {
         return this.http.post(
             this.getApiUrl(url),
-            this.getContents(contents),
-            this.getOptions(options)
+            HttpService.getContents(contents),
+            HttpService.getOptions(options)
         );
     }
 
@@ -85,8 +85,8 @@ export class HttpService {
     put(url: string, contents: any, options?: any): Observable<any> {
         return this.http.put(
             this.getApiUrl(url),
-            this.getContents(contents),
-            this.getOptions(options)
+            HttpService.getContents(contents),
+            HttpService.getOptions(options)
         );
     }
 
@@ -99,7 +99,7 @@ export class HttpService {
     get(url: string, options?: any): Observable<any> {
         return this.http.get(
             this.getApiUrl(url),
-            this.getOptions(options)
+            HttpService.getOptions(options)
         );
     }
 }

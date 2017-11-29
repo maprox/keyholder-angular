@@ -21,7 +21,11 @@ export class AuthService {
         return this.session;
     }
 
-    isLoggedIn(): Observable<any> {
+    isLoggedIn(): boolean {
+        return !!this.getSession();
+    }
+
+    getAuthEvent(): Observable<any> {
         return this.subject.asObservable();
     }
 
