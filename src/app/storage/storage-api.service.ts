@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
+import { EncryptingService } from '../encrypting';
 import { HttpService } from '../http.service';
 import { SerializerService } from '../serializer';
 import * as ItemType from './model';
@@ -16,12 +17,13 @@ export class StorageApiService {
 
     constructor(
         private http: HttpService,
-        private alert: AlertService
+        private alert: AlertService,
+        private encrypting: EncryptingService
     ) { }
 
     save(root: Folder) {
         const input = {
-            data: JSON.stringify(root)
+            data: this.encrypting.encrypt(JSON.stringify(root))
         };
 
         // localStorage.setItem(this.storageKey, data);
@@ -42,11 +44,13 @@ export class StorageApiService {
     }
 
     load(): Observable<any> {
-        this.http.get('/storage').subscribe(
+        this.http.get('/storage', {responseType: 'text'}).subscribe(
             data => {
                 // const input = localStorage.getItem(this.storageKey);
-                const input = JSON.stringify(data);
-                this.subject.next(JSON.parse(input, SerializerService.getReviver(ItemType)));
+                const input = this.encrypting.decrypt(data);
+                if (input) {
+                    this.subject.next(JSON.parse(input, SerializerService.getReviver(ItemType)));
+                }
             },
             (err: HttpErrorResponse) => {
                 if (err.error instanceof Error) {

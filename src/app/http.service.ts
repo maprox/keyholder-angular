@@ -32,7 +32,7 @@ export class HttpService {
      * @returns {any}
      */
     private static getOptions(options: any): any {
-        options = options ? options.clone() : {};
+        options = Object.assign({}, options);
 
         if (!options.headers || !(options.headers instanceof HttpHeaders)) {
             options.headers = new HttpHeaders();

@@ -1,9 +1,10 @@
-import { HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
+import { EncryptingService } from '../encrypting';
 import { HttpService } from '../http.service';
 import { Session, User } from './model';
 
@@ -14,7 +15,8 @@ export class AuthService {
 
     constructor(
         private http: HttpService,
-        private alert: AlertService
+        private alert: AlertService,
+        private encrypting: EncryptingService
     ) { }
 
     getSession(): Session {
@@ -30,9 +32,10 @@ export class AuthService {
     }
 
     request(user: User, url: string) {
+        this.encrypting.setUser(user);
         const body = {
             login: user.getUsername(),
-            secret: user.getPassword()
+            secret: this.encrypting.getSecret()
         };
 
         this.http.post(url, body).subscribe(
@@ -64,6 +67,7 @@ export class AuthService {
     }
 
     logOut() {
+        this.encrypting.setUser(null);
         this.session = null;
         this.subject.next();
     }
