@@ -2,11 +2,16 @@
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
             <form class="form-horizontal auth-form"
+                  autocomplete="off"
                   (ngSubmit)="onSubmit()"
                   #loginForm="ngForm">
                 <h3 class="text-center">Welcome to Key Holder!</h3>
                 <hr/>
-                <div class="form-group">
+                <div class="form-group"
+                     [ngClass]="{
+                         'has-error': signUp && fieldUsername.invalid && fieldUsername.dirty,
+                         'has-success': signUp && fieldUsername.valid && fieldUsername.dirty
+                     }">
                     <label class="col-sm-2 control-label"
                            for="username">
                         E-mail
@@ -19,29 +24,81 @@
                                class="form-control"
                                placeholder="someone@example.com"
                                email
-                               required>
+                               required
+                               #fieldUsername="ngModel">
+                        <div *ngIf="signUp && fieldUsername.invalid && fieldUsername.dirty"
+                             class="alert alert-danger"
+                             role="alert">
+                            <div *ngIf="fieldUsername.errors.email">
+                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+                                <span class="sr-only">Error:</span>
+                                Enter a valid email address
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group"
+                     [ngClass]="{
+                         'has-error': signUp && fieldPassword.invalid && fieldPassword.dirty,
+                         'has-success': signUp && fieldPassword.valid && fieldPassword.dirty
+                     }">
                     <label class="col-sm-2 control-label"
                            for="password">
                         Password
                     </label>
                     <div class="col-sm-10">
-                        <input type="password"
-                               name="password"
-                               id="password"
-                               minlength="4"
-                               [(ngModel)]="password"
-                               class="form-control"
-                               placeholder="**************"
-                               required>
+                        <div class="password-group">
+                            <input type="{{ passwordType }}"
+                                   name="password"
+                                   id="password"
+                                   pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*)"
+                                   minlength="8"
+                                   maxlength="50"
+                                   [(ngModel)]="password"
+                                   class="form-control"
+                                   placeholder="**************"
+                                   required
+                                   #fieldPassword="ngModel">
+                            <button *ngIf="signUp"
+                                    class="btn btn-link show"
+                                    type="button"
+                                    title="Show/hide password"
+                                    (click)="togglePasswordVisibility()">
+                                <span class="fa fa-eye" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="alert" *ngIf="signUp && fieldPassword.dirty" [ngClass]="{
+                            'alert-success': fieldPassword.valid,
+                            'alert-danger': fieldPassword.invalid
+                        }">
+                            <app-regexp-error pattern=".{8,}" [value]="password">
+                                has more than 7 symbols
+                            </app-regexp-error>
+                            <app-regexp-error pattern="\d+" [value]="password">
+                                contains at least one digit
+                            </app-regexp-error>
+                            <app-regexp-error pattern="\W+" [value]="password">
+                                contains at least one special symbol
+                            </app-regexp-error>
+                            <app-regexp-error pattern="[a-z]+" [value]="password">
+                                contains at least one lowercase symbol
+                            </app-regexp-error>
+                            <app-regexp-error pattern="[A-Z]+" [value]="password">
+                                contains at least one uppercase symbol
+                            </app-regexp-error>
+                        </div>
+                        <div class="alert alert-warning" *ngIf="signUp && fieldPassword.dirty">
+                            Please make sure you remember the password (write it down somewhere
+                            if you want), because <b>there is no possibility to reset the password</b> -
+                            all the data is encrypted with this password and nobody can
+                            decrypt the data without it.
+                        </div>
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-4">
                         <button class="btn btn-primary btn-lg btn-block"
-                                [disabled]="loading"
+                                [disabled]="loading || loginForm.invalid"
                                 role="button">
                             <span *ngIf="loading">
                                 <i class='fa fa-spinner fa-spin'></i>

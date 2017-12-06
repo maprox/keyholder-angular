@@ -7,7 +7,7 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { AuthGuard } from './auth.guard';
 import { AuthInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
-import { LoginComponent } from './login';
+import { LoginComponent, RegexpErrorComponent } from './login';
 import { LogoutComponent } from './logout';
 
 @NgModule({
@@ -28,7 +28,8 @@ import { LogoutComponent } from './logout';
     ],
     declarations: [
         LoginComponent,
-        LogoutComponent
+        LogoutComponent,
+        RegexpErrorComponent
     ],
     exports: [
         LoginComponent,

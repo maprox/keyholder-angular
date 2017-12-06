@@ -27,7 +27,7 @@ export class EncryptingService {
 
     encrypt(data: string): string {
         const user = this.getUser();
-        if (!user) {
+        if (!user || !data) {
             return null;
         }
         return AES.encrypt(data, user.getPassword()).toString();
@@ -35,7 +35,7 @@ export class EncryptingService {
 
     decrypt(data: string): string {
         const user = this.getUser();
-        if (!user) {
+        if (!user || !data) {
             return null;
         }
         return AES.decrypt(data, user.getPassword()).toString(enc.Utf8);

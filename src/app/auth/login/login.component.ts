@@ -12,6 +12,7 @@ import { User } from '../model';
 export class LoginComponent implements OnInit {
     username: string;
     password: string;
+    passwordType = 'password';
     returnUrl: string;
     loading: boolean;
     signUp: boolean;
@@ -46,5 +47,9 @@ export class LoginComponent implements OnInit {
         } else {
             this.auth.signIn(user);
         }
+    }
+
+    togglePasswordVisibility() {
+        this.passwordType = (this.passwordType === 'password') ? 'text' : 'password';
     }
 }

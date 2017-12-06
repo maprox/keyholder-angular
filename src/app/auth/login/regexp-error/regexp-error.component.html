@@ -1,0 +1,9 @@
+<div [ngClass]="{
+    'text-success': isValid,
+    'text-danger': !isValid
+}">
+    <span class="fa" aria-hidden="true" [ngClass]="{
+        'fa-check-circle': isValid,
+        'fa-exclamation-circle': !isValid
+    }"></span><ng-content></ng-content>
+</div>
