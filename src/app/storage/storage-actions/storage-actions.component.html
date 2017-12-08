@@ -25,23 +25,62 @@
       </button>
     </div>
 
-    <form (ngSubmit)="addSecret(itemName)" *ngIf="showEditForm === 'secret'">
+    <form name="add-secret" (ngSubmit)="addSecret()" *ngIf="formType === 'secret'">
       <h3>Add Secret</h3>
-      <div class="input-group input-group-lg">
-        <input [(ngModel)]="itemName"
-               class="form-control"
-               placeholder="Enter secret name"
-               name="secretName"
-               #secretName>
-        <span class="input-group-btn">
-                    <button class="btn btn-primary" [disabled]="!itemName">
-                        Add
-                    </button>
-                </span>
+      <div class="form-group">
+        <div class="input-group input-group-lg">
+          <input [(ngModel)]="itemName"
+                 class="form-control"
+                 placeholder="Enter secret name"
+                 name="secretName"
+                 #secretName>
+          <span class="input-group-btn">
+            <button class="btn btn-primary" [disabled]="!itemName">
+              Add
+            </button>
+          </span>
+        </div>
+      </div>
+      <div class="text-center" *ngIf="!detailsShown">
+        <button class="btn btn-default" type="button" (click)="detailsShown = true">
+          <span class="fa fa-angle-double-down"></span>
+          More details...
+        </button>
+      </div>
+      <div *ngIf="detailsShown">
+        <div class="form-group">
+          <label for="secretValue">Password</label>
+          <div class="input-group input-group-lg">
+            <input [(ngModel)]="itemSecret"
+                   class="form-control"
+                   placeholder="Enter password"
+                   name="secretValue"
+                   id="secretValue"
+                   #secretValue>
+            <span class="input-group-btn">
+              <button class="btn btn-primary"
+                      type="button"
+                      (click)="generate()">
+                Generate
+              </button>
+            </span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="secretContent">Notes</label>
+          <textarea [(ngModel)]="itemContent"
+                    class="form-control"
+                    placeholder="Enter notes"
+                    name="secretContent"
+                    id="secretContent"
+                    rows="4"
+                    #secretContent>
+          </textarea>
+        </div>
       </div>
     </form>
 
-    <form (ngSubmit)="addFolder(itemName)" *ngIf="showEditForm === 'folder'">
+    <form name="add-folder" (ngSubmit)="addFolder(itemName)" *ngIf="formType === 'folder'">
       <h3>Add Folder</h3>
       <div class="input-group input-group-lg">
         <input [(ngModel)]="itemName"
@@ -50,9 +89,9 @@
                name="folderName"
                #folderName>
         <span class="input-group-btn">
-            <button class="btn btn-primary" [disabled]="!itemName">
-                Add
-            </button>
+          <button class="btn btn-primary" [disabled]="!itemName">
+            Add
+          </button>
         </span>
       </div>
     </form>

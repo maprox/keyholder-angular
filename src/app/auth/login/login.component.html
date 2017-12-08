@@ -64,7 +64,10 @@
                                     type="button"
                                     title="Show/hide password"
                                     (click)="togglePasswordVisibility()">
-                                <span class="fa fa-eye" aria-hidden="true"></span>
+                                <span class="fa" aria-hidden="true" [ngClass]="{
+                                    'fa-eye': passwordType === 'password',
+                                    'fa-eye-slash': passwordType !== 'password'
+                                }"></span>
                             </button>
                         </div>
                         <div class="alert" *ngIf="signUp && fieldPassword.dirty" [ngClass]="{
@@ -88,18 +91,22 @@
                             </app-regexp-error>
                         </div>
                         <div class="alert alert-warning" *ngIf="signUp && fieldPassword.dirty">
-                            Please make sure you remember the password (write it down somewhere
-                            if you want), because <b>there is no possibility to reset the password</b> -
-                            all the data is encrypted with this password and nobody can
-                            decrypt the data without it.
+                            Please make sure you remember the password (hopefully it is the last
+                            password you need to remember), because <b class="text-uppercase">
+                            there is no possibility to reset the password</b> - all the data
+                            is encrypted and nobody can decrypt the data without this password.
                         </div>
                     </div>
                 </div>
                 <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-4">
+                    <div class="col-sm-offset-2 col-sm-8">
                         <button class="btn btn-primary btn-lg btn-block"
                                 [disabled]="loading || loginForm.invalid"
                                 role="button">
+                            <span class="fa" aria-hidden="true" [ngClass]="{
+                                'fa-user-plus': signUp,
+                                'fa-sign-in': !signUp
+                            }"></span>
                             <span *ngIf="loading">
                                 <i class='fa fa-spinner fa-spin'></i>
                                 {{ signUp ? 'Signing up' : 'Logging in...'}}
@@ -113,13 +120,14 @@
             </form>
         </div>
     </div>
-    <div class="row">
+    <div class="row text-center ">
         <a routerLink="{{ !signUp ? '/register' : '/login' }}"
-           class="btn btn-link btn-lg btn-block">
+           class="btn btn-info btn-lg">
+            <span class="fa" aria-hidden="true" [ngClass]="{
+                'fa-user-plus': !signUp,
+                'fa-sign-in': signUp
+            }"></span>
             {{ !signUp ? 'Sign up' : 'Log in'}}
         </a>
-        <p class="text-center">
-            Some short description of the service. TBD
-        </p>
     </div>
 </div>

@@ -12,7 +12,6 @@ import { Folder } from './model';
 
 @Injectable()
 export class StorageApiService {
-    private storageKey = 'storage';
     private subject = new Subject<Object>();
 
     constructor(

@@ -13,8 +13,12 @@ export class StorageActionsComponent {
     @ViewChild('secretName') secretName: ElementRef;
     @ViewChild('folderName') folderName: ElementRef;
 
-    showEditForm: string;
+    detailsShown = false;
+    formType: string;
+
     itemName: string;
+    itemSecret: string;
+    itemContent: string;
 
     constructor(
         private storage: StorageService,
@@ -24,8 +28,10 @@ export class StorageActionsComponent {
     private addItem(item: Item) {
         this.storage.getCurrent().add(item);
         this.storage.save();
-        this.showEditForm = '';
+        this.formType = '';
         this.itemName = '';
+        this.itemSecret = '';
+        this.itemContent = '';
     }
 
     private focus(element: string) {
@@ -37,13 +43,19 @@ export class StorageActionsComponent {
     }
 
     showAddFolder() {
-        this.showEditForm = (this.showEditForm === 'folder') ? '' : 'folder';
-        this.focus('folderName');
+        this.formType = (this.formType === 'folder') ? '' : 'folder';
+        if (this.formType === 'folder') {
+            this.focus('folderName');
+        }
     }
 
     showAddSecret() {
-        this.showEditForm = (this.showEditForm === 'secret') ? '' : 'secret';
-        this.focus('secretName');
+        this.formType = (this.formType === 'secret') ? '' : 'secret';
+        if (this.formType === 'secret') {
+            this.detailsShown = false;
+            this.generate();
+            this.focus('secretName');
+        }
     }
 
     removeCurrentFolder() {
@@ -67,7 +79,15 @@ export class StorageActionsComponent {
         this.storage.openFolder(folder);
     }
 
-    addSecret(itemName: string) {
-        this.addItem(new Secret(itemName, this.passwordGenerator.generate()));
+    addSecret() {
+        this.addItem(new Secret(
+            this.itemName,
+            this.itemSecret,
+            this.itemContent
+        ));
+    }
+
+    generate() {
+        this.itemSecret = this.passwordGenerator.generate();
     }
 }
