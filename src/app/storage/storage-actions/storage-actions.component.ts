@@ -7,7 +7,7 @@ import { StorageService } from '../storage.service';
 @Component({
     selector: 'app-storage-actions',
     templateUrl: './storage-actions.component.html',
-    styleUrls: ['./storage-actions.component.css']
+    styleUrls: ['./storage-actions.component.scss']
 })
 export class StorageActionsComponent {
     @ViewChild('secretName') secretName: ElementRef;

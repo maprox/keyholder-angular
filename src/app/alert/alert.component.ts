@@ -3,11 +3,17 @@ import { Component, OnInit } from '@angular/core';
 import { AlertService } from './alert.service';
 import { Alert, AlertType } from './model';
 
+const alertStyles = {};
+alertStyles[AlertType.Success] = 'alert-success';
+alertStyles[AlertType.Error] = 'alert-danger';
+alertStyles[AlertType.Info] = 'alert-info';
+alertStyles[AlertType.Warning] = 'alert-warning';
+
 @Component({
     selector: 'app-alert',
-    templateUrl: 'alert.component.html'
+    templateUrl: 'alert.component.html',
+    styleUrls: ['./alert.component.scss']
 })
-
 export class AlertComponent implements OnInit {
     alerts: Alert[] = [];
 
@@ -41,15 +47,6 @@ export class AlertComponent implements OnInit {
         }
 
         // return css class based on alert type
-        switch (alert.type) {
-            case AlertType.Success:
-                return 'alert alert-success';
-            case AlertType.Error:
-                return 'alert alert-danger';
-            case AlertType.Info:
-                return 'alert alert-info';
-            case AlertType.Warning:
-                return 'alert alert-warning';
-        }
+        return alertStyles[alert.type];
     }
 }

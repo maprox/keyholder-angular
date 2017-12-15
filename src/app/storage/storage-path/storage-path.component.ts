@@ -7,7 +7,7 @@ import { StorageService } from '../storage.service';
 @Component({
     selector: 'app-storage-path',
     templateUrl: './storage-path.component.html',
-    styleUrls: ['./storage-path.component.css']
+    styleUrls: ['./storage-path.component.scss']
 })
 export class StoragePathComponent implements OnInit {
     constructor(

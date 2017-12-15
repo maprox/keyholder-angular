@@ -5,7 +5,7 @@ import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
 import { EncryptingService } from '../encrypting';
-import { HttpService } from '../http.service';
+import { HttpService } from '../http';
 import { SerializerService } from '../serializer';
 import { Session, User } from './model';
 
