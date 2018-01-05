@@ -4,7 +4,8 @@ import { FormsModule } from '@angular/forms';
 import { ClipboardModule } from 'ngx-clipboard';
 
 import { PasswordGeneratorModule } from '../password-generator';
-import { StorageActionsComponent } from './storage-actions';
+import { StorageActionsComponent, EditFormFolderComponent,
+    EditFormSecretComponent } from './storage-actions';
 import { StorageApiService } from './storage-api.service';
 import { StorageListComponent } from './storage-list';
 import { StoragePathComponent } from './storage-path';
@@ -25,6 +26,8 @@ import { StorageService } from './storage.service';
         StorageApiService
     ],
     declarations: [
+        EditFormFolderComponent,
+        EditFormSecretComponent,
         StoragePathComponent,
         StorageListComponent,
         StorageActionsComponent,

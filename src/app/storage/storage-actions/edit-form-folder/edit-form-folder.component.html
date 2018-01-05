@@ -1,0 +1,15 @@
+<form name="add-folder" (ngSubmit)="submit()">
+  <h3>Add Folder</h3>
+  <div class="input-group input-group-lg">
+    <input [(ngModel)]="itemName"
+           class="form-control"
+           placeholder="Enter folder name"
+           name="fieldName"
+           #fieldName>
+    <div class="input-group-btn">
+      <button class="btn btn-primary" [disabled]="!itemName">
+        Add
+      </button>
+    </div>
+  </div>
+</form>
