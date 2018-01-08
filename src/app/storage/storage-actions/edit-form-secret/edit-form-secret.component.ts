@@ -3,6 +3,7 @@ import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { PasswordGeneratorService } from '../../../password-generator';
 import { Folder, Item, Secret } from '../../model';
 import { StorageService } from '../../storage.service';
+import { EditFormSecretService } from './edit-form-secret.service';
 
 @Component({
     selector: 'app-edit-form-secret',
@@ -12,29 +13,45 @@ import { StorageService } from '../../storage.service';
 export class EditFormSecretComponent implements OnInit {
     @ViewChild('fieldName') fieldName: ElementRef;
 
+    isActive = false;
     detailsShown = false;
 
+    itemSource: Item;
     itemName: string;
     itemSecret: string;
     itemContent: string;
 
     constructor(
         private storage: StorageService,
-        private passwordGenerator: PasswordGeneratorService
+        private passwordGenerator: PasswordGeneratorService,
+        private editFormSecretService: EditFormSecretService
     ) {}
 
     ngOnInit() {
+        this.editFormSecretService.getEditEvent().subscribe(this.open.bind(this));
+    }
+
+    open(item: Secret) {
         this.detailsShown = false;
-        this.generate();
+        this.itemSource = item;
+        this.itemName = item && item.getName() || '';
+        this.itemSecret = item && item.getSecret() || '';
+        this.itemContent = item && item.getContent() || '';
+        if (!item) {
+            this.generate();
+        }
         this.focusName();
+        this.isActive = true;
+    }
+
+    close() {
+        this.isActive = false;
     }
 
     private addItem(item: Item) {
         this.storage.getCurrent().add(item);
         this.storage.save();
-        this.itemName = '';
-        this.itemSecret = '';
-        this.itemContent = '';
+        this.close();
     }
 
     private focusName() {

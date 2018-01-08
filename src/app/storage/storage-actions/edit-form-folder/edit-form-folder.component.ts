@@ -1,7 +1,8 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 
-import { Folder, Item } from '../../model';
+import { Folder, Item, Secret } from '../../model';
 import { StorageService } from '../../storage.service';
+import { EditFormFolderService } from './edit-form-folder.service';
 
 @Component({
     selector: 'app-edit-form-folder',
@@ -11,20 +12,35 @@ import { StorageService } from '../../storage.service';
 export class EditFormFolderComponent implements OnInit {
     @ViewChild('fieldName') fieldName: ElementRef;
 
+    isActive = false;
+
+    itemSource: Item;
     itemName: string;
 
     constructor(
-        private storage: StorageService
+        private storage: StorageService,
+        private editFormFolderService: EditFormFolderService
     ) {}
 
     ngOnInit() {
+        this.editFormFolderService.getEditEvent().subscribe(this.open.bind(this));
+    }
+
+    open(item: Secret) {
+        this.itemSource = item;
+        this.itemName = item && item.getName() || '';
         this.focusName();
+        this.isActive = true;
+    }
+
+    close() {
+        this.isActive = false;
     }
 
     private addItem(item: Item) {
         this.storage.getCurrent().add(item);
         this.storage.save();
-        this.itemName = '';
+        this.close();
     }
 
     private focusName() {
