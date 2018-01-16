@@ -1,6 +1,5 @@
 <div class="list-group list-group-lg m-0">
-    <a href="javascript:void(0)"
-       class="list-group-item"
+    <button class="list-group-item"
        *ngIf="!storage.isRoot()"
        (click)="clickFolder(storage.getParent())">
 
@@ -9,26 +8,28 @@
             ..
         </h3>
 
-    </a>
-    <a href="javascript:void(0)"
-       class="list-group-item"
+    </button>
+    <button class="list-group-item"
        *ngFor="let item of storage.getCurrent().getFolders()"
-       (click)="clickFolder(item)">
+       (click)="clickFolder(item)"
+       appLongPress
+       (onRelease)="editFolder(item)">
 
         <h3 class="list-group-item-heading">
             <i class="fa fa-folder"></i>&nbsp;
             {{ item.getName() }}
         </h3>
 
-    </a>
-    <a href="javascript:void(0)"
-       class="list-group-item"
+    </button>
+    <button class="list-group-item"
        *ngFor="let item of storage.getCurrent().getItems()"
        (click)="clickItem(item)"
-       ngxClipboard [cbContent]="asSecret(item).getSecret()">
+       ngxClipboard [cbContent]="asSecret(item).getSecret()"
+       appLongPress
+       (onRelease)="editSecret(item)">
 
         <h3 class="list-group-item-heading">
-            <i class="fa fa-key"></i>&nbsp;
+            <i class="fa fa-file-o"></i>&nbsp;
             {{ item.getName() }}
         </h3>
         <p class="list-group-item-text">
@@ -37,7 +38,7 @@
             </small>
         </p>
 
-    </a>
+    </button>
 </div>
 
 <div *ngIf="storage.getCurrent().isEmpty()" class="well well-lg m-0">

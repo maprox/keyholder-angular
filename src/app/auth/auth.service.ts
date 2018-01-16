@@ -5,7 +5,8 @@ import { Subject } from 'rxjs/Subject';
 
 import { AlertService } from '../alert';
 import { EncryptingService } from '../encrypting';
-import { HttpService } from '../http.service';
+import { HttpService } from '../http';
+import { SerializerService } from '../serializer';
 import { Session, User } from './model';
 
 @Injectable()
@@ -20,6 +21,13 @@ export class AuthService {
     ) { }
 
     getSession(): Session {
+        if (this.session === undefined) {
+            this.session = JSON.parse(
+                sessionStorage.getItem('session'),
+                SerializerService.getReviver({'Session': Session})
+            );
+            this.subject.next(this.session);
+        }
         return this.session;
     }
 
@@ -42,6 +50,7 @@ export class AuthService {
             data => {
                 this.session = new Session(data.token, data.data);
                 this.subject.next(this.session);
+                sessionStorage.setItem('session', JSON.stringify(this.session));
             },
             (err: HttpErrorResponse) => {
                 this.session = null;

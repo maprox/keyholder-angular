@@ -1,73 +1,31 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 
-import { PasswordGeneratorService } from '../../password-generator';
-import { Folder, Item, Secret } from '../model';
+import { Folder, Item } from '../model';
 import { StorageService } from '../storage.service';
+import { EditFormFolderService } from './edit-form-folder';
+import { EditFormSecretService } from './edit-form-secret';
 
 @Component({
     selector: 'app-storage-actions',
     templateUrl: './storage-actions.component.html',
-    styleUrls: ['./storage-actions.component.css']
+    styleUrls: ['./storage-actions.component.scss']
 })
 export class StorageActionsComponent {
-    @ViewChild('secretName') secretName: ElementRef;
-    @ViewChild('folderName') folderName: ElementRef;
-
-    showEditForm: string;
-    itemName: string;
+    formType: string;
 
     constructor(
         private storage: StorageService,
-        private passwordGenerator: PasswordGeneratorService
+        private editFormSecretService: EditFormSecretService,
+        private editFormFolderService: EditFormFolderService
     ) {}
 
-    private addItem(item: Item) {
-        this.storage.getCurrent().add(item);
-        this.storage.save();
-        this.showEditForm = '';
-        this.itemName = '';
-    }
-
-    private focus(element: string) {
-        setTimeout(() => {
-            if (this[element] && this[element].nativeElement) {
-                this[element].nativeElement.focus();
-            }
-        });
-    }
-
     showAddFolder() {
-        this.showEditForm = (this.showEditForm === 'folder') ? '' : 'folder';
-        this.focus('folderName');
+        this.editFormFolderService.create();
+        this.editFormSecretService.close();
     }
 
     showAddSecret() {
-        this.showEditForm = (this.showEditForm === 'secret') ? '' : 'secret';
-        this.focus('secretName');
-    }
-
-    removeCurrentFolder() {
-        const current = this.storage.getCurrent(),
-            parent = this.storage.getParent();
-
-        if (parent) {
-            this.storage.openFolder(parent).removeItem(current);
-            this.storage.save();
-        }
-    }
-
-    removeItem(folder: Folder, item: Item) {
-        folder.removeItem(item);
-        this.storage.save();
-    }
-
-    addFolder(itemName: string) {
-        const folder = new Folder(itemName);
-        this.addItem(folder);
-        this.storage.openFolder(folder);
-    }
-
-    addSecret(itemName: string) {
-        this.addItem(new Secret(itemName, this.passwordGenerator.generate()));
+        this.editFormSecretService.create();
+        this.editFormFolderService.close();
     }
 }

@@ -1,61 +1,22 @@
-<div class="panel panel-default">
+<div class="panel panel-default m-0">
   <div class="panel-body">
     <div class="btn-group">
       <button type="button"
               class="btn btn-default btn-lg"
               (click)="showAddSecret()">
         <i class="fa fa-key"></i>&nbsp;
-        Add Secret
+        <span class="hidden-xxs">Add Secret</span>
       </button>
       <button type="button"
               class="btn btn-default btn-lg"
               (click)="showAddFolder()">
         <i class="fa fa-folder-o"></i>&nbsp;
-        Add Folder
-      </button>
-    </div>
-    <div class="btn-group pull-right"
-         *ngIf="!storage.isRoot()"
-         (click)="removeCurrentFolder()">
-      <button type="button" class="btn btn-danger btn-lg"
-              data-toggle="hover"
-              data-placement="top"
-              title="Delete current folder">
-        <i class="fa fa-trash"></i>
+        <span class="hidden-xxs">Add Folder</span>
       </button>
     </div>
 
-    <form (ngSubmit)="addSecret(itemName)" *ngIf="showEditForm === 'secret'">
-      <h3>Add Secret</h3>
-      <div class="input-group input-group-lg">
-        <input [(ngModel)]="itemName"
-               class="form-control"
-               placeholder="Enter secret name"
-               name="secretName"
-               #secretName>
-        <span class="input-group-btn">
-                    <button class="btn btn-primary" [disabled]="!itemName">
-                        Add
-                    </button>
-                </span>
-      </div>
-    </form>
-
-    <form (ngSubmit)="addFolder(itemName)" *ngIf="showEditForm === 'folder'">
-      <h3>Add Folder</h3>
-      <div class="input-group input-group-lg">
-        <input [(ngModel)]="itemName"
-               class="form-control"
-               placeholder="Enter folder name"
-               name="folderName"
-               #folderName>
-        <span class="input-group-btn">
-            <button class="btn btn-primary" [disabled]="!itemName">
-                Add
-            </button>
-        </span>
-      </div>
-    </form>
+    <app-edit-form-secret></app-edit-form-secret>
+    <app-edit-form-folder></app-edit-form-folder>
 
   </div>
 </div>

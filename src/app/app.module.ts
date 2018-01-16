@@ -1,18 +1,19 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AlertComponent, AlertService } from './alert';
+import { AlertModule } from './alert';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
 import { EncryptingService } from './encrypting';
-import { HttpService } from './http.service';
+import { HttpService } from './http';
 import { PageNotFoundComponent } from './page-not-found';
 import { SettingsModule } from './settings';
 import { StorageModule } from './storage';
 
 @NgModule({
     imports: [
+        AlertModule,
         AuthModule,
         BrowserModule,
         StorageModule,
@@ -20,12 +21,10 @@ import { StorageModule } from './storage';
         AppRoutingModule,
     ],
     providers: [
-        AlertService,
         EncryptingService,
         HttpService
     ],
     declarations: [
-        AlertComponent,
         AppComponent,
         PageNotFoundComponent
     ],

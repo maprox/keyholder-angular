@@ -1,0 +1,48 @@
+/* You can add global styles to this file, and also import other style files */
+
+.m-0 {
+    margin: 0 !important;
+}
+
+.p-lg {
+    padding: 14pt !important;
+}
+
+.breadcrumb > li + li:before {
+    padding: 0 !important;
+    margin-left: 6pt;
+}
+
+.large-font-size {
+    font-size: 20pt;
+}
+
+.visible-xxs {
+    display: none;
+}
+
+.hidden-xxs {
+    display: block;
+}
+
+.hidden-xxs-inline {
+    display: inline;
+}
+
+// XXS
+
+@media (max-width: 320px) {
+
+    .visible-xxs {
+        display: block !important;
+    }
+
+    .visible-xxs-inline {
+        display: inline !important;
+    }
+
+    .hidden-xxs {
+        display: none !important;
+    }
+
+}

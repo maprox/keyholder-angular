@@ -1,1 +1,1 @@
-export * from './storage-actions.component';
+export * from './storage-actions.module';

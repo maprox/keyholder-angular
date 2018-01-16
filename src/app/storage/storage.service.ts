@@ -15,8 +15,6 @@ export class StorageService {
         private auth: AuthService
     ) {
         auth.getAuthEvent().subscribe((isLoggedIn) => {
-            // we have to use timeout here because of
-            // ExpressionChangedAfterItHasBeenCheckedError
             if (!isLoggedIn) {
                 this.isLoaded = false;
             }

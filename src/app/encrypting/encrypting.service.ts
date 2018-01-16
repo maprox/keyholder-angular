@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AES, SHA256, enc } from 'crypto-js';
 
-import { User } from '../auth/model';
+import { Session, User } from '../auth/model';
+import { SerializerService } from '../serializer';
 
 @Injectable()
 export class EncryptingService {
@@ -11,9 +12,16 @@ export class EncryptingService {
 
     setUser(user: User) {
         this.user = user;
+        sessionStorage.setItem('user', JSON.stringify(this.user));
     }
 
     getUser(): User {
+        if (this.user === undefined) {
+            this.user = JSON.parse(
+                sessionStorage.getItem('user'),
+                SerializerService.getReviver({'User': User})
+            );
+        }
         return this.user;
     }
 

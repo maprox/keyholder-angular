@@ -1,0 +1,26 @@
+.alert-wrapper {
+  position: fixed;
+  pointer-events: none;
+  display: grid;
+  grid-template-columns: 1fr 560px 1fr;
+  top: 10px;
+  width: 100%;
+  z-index: 10;
+  > .alert {
+    pointer-events: auto;
+    grid-column: 2;
+    cursor: pointer;
+  }
+}
+
+@media (max-width: 728px) {
+  .alert-wrapper {
+    grid-template-columns: 1fr 8fr 1fr;
+  }
+}
+
+@media (max-width: 320px) {
+  .alert-wrapper {
+    grid-template-columns: 10px 1fr 10px;
+  }
+}
