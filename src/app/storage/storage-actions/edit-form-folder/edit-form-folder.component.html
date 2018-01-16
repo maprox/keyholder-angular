@@ -1,18 +1,29 @@
 <form name="add-folder" (ngSubmit)="submit()" *ngIf="isActive">
   <h3>{{ isEditMode() ? 'Edit' : 'Add' }} Folder</h3>
-  <div class="input-group input-group-lg">
+  <div class="form-group form-group-lg">
     <input [(ngModel)]="itemName"
            class="form-control"
            placeholder="Enter folder name"
            name="fieldName"
            #fieldName>
-    <div class="input-group-btn">
-      <button class="btn btn-primary" [disabled]="!itemName">
-        {{ isEditMode() ? 'Save' : 'Add' }}
-      </button>
-      <button class="btn btn-default" (click)="close()">
-        Cancel
-      </button>
-    </div>
+  </div>
+  <div class="form-group">
+    <button class="btn btn-lg btn-success" [disabled]="!itemName">
+      <i class="fa fa-plus-circle"></i>
+      {{ isEditMode() ? 'Save' : 'Add' }}
+    </button>
+    <button class="btn btn-lg btn-default"
+            type="button"
+            (click)="close()">
+      <i class="fa fa-ban"></i>
+      Cancel
+    </button>
+    <button *ngIf="isEditMode()"
+            class="btn btn-lg btn-danger pull-right"
+            type="button"
+            title="Remove"
+            (click)="remove(itemSource)">
+      <i class="fa fa-trash"></i>
+    </button>
   </div>
 </form>

@@ -30,13 +30,13 @@ export class EditFormSecretComponent extends EditFormComponent implements OnInit
     }
 
     open(item: Secret) {
-        this.detailsShown = false;
         this.itemSecret = item && item.getSecret() || '';
         this.itemContent = item && item.getContent() || '';
         if (!item) {
             this.generate();
         }
         super.open(item);
+        this.detailsShown = this.isEditMode();
     }
 
     submit() {

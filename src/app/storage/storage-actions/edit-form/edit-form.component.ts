@@ -63,6 +63,7 @@ export abstract class EditFormComponent implements OnInit {
     remove(item: Item) {
         this.storage.getCurrent().remove(item);
         this.storage.save();
+        this.close();
     }
 
     submit() {
