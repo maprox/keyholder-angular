@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 
 import { AlertService } from '../../alert';
 import { Folder, Item, Secret } from '../model';
+import { EditFormFolderService } from '../storage-actions/edit-form-folder';
+import { EditFormSecretService } from '../storage-actions/edit-form-secret';
 import { StorageService } from '../storage.service';
 
 @Component({
@@ -13,6 +15,8 @@ import { StorageService } from '../storage.service';
 export class StorageListComponent implements OnInit {
     constructor(
         private alert: AlertService,
+        private editFormFolderService: EditFormFolderService,
+        private editFormSecretService: EditFormSecretService,
         private router: Router,
         public storage: StorageService
     ) {}
@@ -32,7 +36,6 @@ export class StorageListComponent implements OnInit {
         }
 
         // copy to clipboard
-        console.log(secret.getSecret());
         this.alert.success('Successfully copied to clipboard', 2000);
     }
 
@@ -43,5 +46,13 @@ export class StorageListComponent implements OnInit {
 
         this.storage.openFolder(item as Folder);
         this.router.navigate(['/storage', this.storage.getPathAsString()]);
+    }
+
+    editSecret(item: Item) {
+        this.editFormSecretService.edit(item);
+    }
+
+    editFolder(item: Item) {
+        this.editFormFolderService.edit(item);
     }
 }

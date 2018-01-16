@@ -1,7 +1,8 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
-import { Folder, Item, Secret } from '../../model';
+import { Folder, Secret } from '../../model';
 import { StorageService } from '../../storage.service';
+import { EditFormComponent } from '../edit-form';
 import { EditFormFolderService } from './edit-form-folder.service';
 
 @Component({
@@ -9,21 +10,12 @@ import { EditFormFolderService } from './edit-form-folder.service';
     templateUrl: './edit-form-folder.component.html',
     styleUrls: ['./edit-form-folder.component.scss']
 })
-export class EditFormFolderComponent implements OnInit {
-    @ViewChild('fieldName') fieldName: ElementRef;
-
-    isActive = false;
-
-    itemSource: Item;
-    itemName: string;
-
+export class EditFormFolderComponent extends EditFormComponent implements OnInit {
     constructor(
-        private storage: StorageService,
-        private editFormFolderService: EditFormFolderService
-    ) {}
-
-    ngOnInit() {
-        this.editFormFolderService.getEditEvent().subscribe(this.open.bind(this));
+        protected storage: StorageService,
+        protected editFormFolderService: EditFormFolderService
+    ) {
+        super(storage, editFormFolderService);
     }
 
     open(item: Secret) {
@@ -31,29 +23,6 @@ export class EditFormFolderComponent implements OnInit {
         this.itemName = item && item.getName() || '';
         this.focusName();
         this.isActive = true;
-    }
-
-    close() {
-        this.isActive = false;
-    }
-
-    private addItem(item: Item) {
-        this.storage.getCurrent().add(item);
-        this.storage.save();
-        this.close();
-    }
-
-    private focusName() {
-        setTimeout(() => {
-            if (this.fieldName && this.fieldName.nativeElement) {
-                this.fieldName.nativeElement.focus();
-            }
-        });
-    }
-
-    removeItem(folder: Folder, item: Item) {
-        folder.removeItem(item);
-        this.storage.save();
     }
 
     submit() {

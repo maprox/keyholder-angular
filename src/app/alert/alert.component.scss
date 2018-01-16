@@ -1,11 +1,13 @@
 .alert-wrapper {
   position: fixed;
+  pointer-events: none;
   display: grid;
   grid-template-columns: 1fr 560px 1fr;
   top: 10px;
   width: 100%;
   z-index: 10;
   > .alert {
+    pointer-events: auto;
     grid-column: 2;
     cursor: pointer;
   }

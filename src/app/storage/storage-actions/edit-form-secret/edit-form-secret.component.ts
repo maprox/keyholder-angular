@@ -1,8 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 import { PasswordGeneratorService } from '../../../password-generator';
-import { Folder, Item, Secret } from '../../model';
+import { Secret } from '../../model';
 import { StorageService } from '../../storage.service';
+import { EditFormComponent } from '../edit-form';
 import { EditFormSecretService } from './edit-form-secret.service';
 
 @Component({
@@ -10,25 +11,18 @@ import { EditFormSecretService } from './edit-form-secret.service';
     templateUrl: './edit-form-secret.component.html',
     styleUrls: ['./edit-form-secret.component.scss']
 })
-export class EditFormSecretComponent implements OnInit {
-    @ViewChild('fieldName') fieldName: ElementRef;
-
-    isActive = false;
+export class EditFormSecretComponent extends EditFormComponent implements OnInit {
     detailsShown = false;
 
-    itemSource: Item;
-    itemName: string;
     itemSecret: string;
     itemContent: string;
 
     constructor(
-        private storage: StorageService,
-        private passwordGenerator: PasswordGeneratorService,
-        private editFormSecretService: EditFormSecretService
-    ) {}
-
-    ngOnInit() {
-        this.editFormSecretService.getEditEvent().subscribe(this.open.bind(this));
+        protected storage: StorageService,
+        protected passwordGenerator: PasswordGeneratorService,
+        protected editFormSecretService: EditFormSecretService
+    ) {
+        super(storage, editFormSecretService);
     }
 
     open(item: Secret) {
@@ -42,29 +36,6 @@ export class EditFormSecretComponent implements OnInit {
         }
         this.focusName();
         this.isActive = true;
-    }
-
-    close() {
-        this.isActive = false;
-    }
-
-    private addItem(item: Item) {
-        this.storage.getCurrent().add(item);
-        this.storage.save();
-        this.close();
-    }
-
-    private focusName() {
-        setTimeout(() => {
-            if (this.fieldName && this.fieldName.nativeElement) {
-                this.fieldName.nativeElement.focus();
-            }
-        });
-    }
-
-    removeItem(folder: Folder, item: Item) {
-        folder.removeItem(item);
-        this.storage.save();
     }
 
     submit() {
