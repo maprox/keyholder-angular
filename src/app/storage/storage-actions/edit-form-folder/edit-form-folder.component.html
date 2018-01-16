@@ -1,5 +1,5 @@
 <form name="add-folder" (ngSubmit)="submit()" *ngIf="isActive">
-  <h3>Add Folder</h3>
+  <h3>{{ isEditMode() ? 'Edit' : 'Add' }} Folder</h3>
   <div class="input-group input-group-lg">
     <input [(ngModel)]="itemName"
            class="form-control"
@@ -8,7 +8,7 @@
            #fieldName>
     <div class="input-group-btn">
       <button class="btn btn-primary" [disabled]="!itemName">
-        Add
+        {{ isEditMode() ? 'Save' : 'Add' }}
       </button>
       <button class="btn btn-default" (click)="close()">
         Cancel

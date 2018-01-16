@@ -3,12 +3,11 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
+import { environment } from '../../environments/environment';
 import { AlertService } from '../alert';
 
 @Injectable()
 export class HttpService {
-    apiBase = 'http://localhost:3000/api';
-
     private subject = new Subject<Object>();
     private isConnected: boolean;
 
@@ -66,7 +65,7 @@ export class HttpService {
      * @returns {string}
      */
     private getApiUrl(url: string) {
-        return this.apiBase + url;
+        return environment.apiBase + url;
     }
 
     /**

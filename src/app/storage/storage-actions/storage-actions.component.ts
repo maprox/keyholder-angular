@@ -21,24 +21,11 @@ export class StorageActionsComponent {
 
     showAddFolder() {
         this.editFormFolderService.create();
+        this.editFormSecretService.close();
     }
 
     showAddSecret() {
         this.editFormSecretService.create();
-    }
-
-    removeCurrentFolder() {
-        const current = this.storage.getCurrent(),
-            parent = this.storage.getParent();
-
-        if (parent) {
-            this.storage.openFolder(parent).removeItem(current);
-            this.storage.save();
-        }
-    }
-
-    removeItem(folder: Folder, item: Item) {
-        folder.removeItem(item);
-        this.storage.save();
+        this.editFormFolderService.close();
     }
 }

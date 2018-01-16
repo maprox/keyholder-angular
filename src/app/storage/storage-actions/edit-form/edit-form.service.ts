@@ -19,4 +19,8 @@ export class EditFormService {
     create() {
         this.subject.next();
     }
+
+    close() {
+        this.subject.next(null);
+    }
 }

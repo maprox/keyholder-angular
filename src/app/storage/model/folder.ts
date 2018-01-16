@@ -35,7 +35,7 @@ export class Folder extends Item {
         return !this.items.length && !this.folders.length;
     }
 
-    removeItem(item: Item) {
+    remove(item: Item) {
         const list = item instanceof Folder ? this.folders : this.items;
         list.splice(list.indexOf(item), 1);
     }

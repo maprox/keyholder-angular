@@ -1,14 +1,9 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ElementRef, OnInit, ViewChild } from '@angular/core';
 
-import { Item } from '../../model';
+import { Item, Secret } from '../../model';
 import { StorageService } from '../../storage.service';
 import { EditFormService } from './edit-form.service';
 
-@Component({
-    selector: 'app-edit-form',
-    templateUrl: './edit-form.component.html',
-    styleUrls: ['./edit-form.component.scss']
-})
 export abstract class EditFormComponent implements OnInit {
     @ViewChild('fieldName') fieldName: ElementRef;
 
@@ -23,7 +18,13 @@ export abstract class EditFormComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        this.editFormService.getEditEvent().subscribe(this.open.bind(this));
+        this.editFormService.getEditEvent().subscribe((item) => {
+            if (item === null) {
+                this.close();
+            } else {
+                this.open(item);
+            }
+        });
     }
 
     focusName() {
@@ -49,17 +50,22 @@ export abstract class EditFormComponent implements OnInit {
         this.isActive = false;
     }
 
-    addItem(item: Item) {
+    add(item: Item) {
         this.storage.getCurrent().add(item);
         this.storage.save();
-        this.close();
     }
 
-    removeItem(item: Item) {
-        this.storage.getCurrent().removeItem(item);
+    save(item: Item) {
+        item.setName(this.itemName);
         this.storage.save();
-        this.close();
     }
 
-    abstract submit()
+    remove(item: Item) {
+        this.storage.getCurrent().remove(item);
+        this.storage.save();
+    }
+
+    submit() {
+        this.close();
+    }
 }

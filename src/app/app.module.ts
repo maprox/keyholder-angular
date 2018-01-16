@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
-import { AlertComponent, AlertService } from './alert';
+import { AlertModule } from './alert';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
@@ -13,6 +13,7 @@ import { StorageModule } from './storage';
 
 @NgModule({
     imports: [
+        AlertModule,
         AuthModule,
         BrowserModule,
         StorageModule,
@@ -20,12 +21,10 @@ import { StorageModule } from './storage';
         AppRoutingModule,
     ],
     providers: [
-        AlertService,
         EncryptingService,
         HttpService
     ],
     declarations: [
-        AlertComponent,
         AppComponent,
         PageNotFoundComponent
     ],

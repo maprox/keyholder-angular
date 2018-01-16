@@ -25,28 +25,36 @@ export class EditFormSecretComponent extends EditFormComponent implements OnInit
         super(storage, editFormSecretService);
     }
 
+    generate() {
+        this.itemSecret = this.passwordGenerator.generate();
+    }
+
     open(item: Secret) {
         this.detailsShown = false;
-        this.itemSource = item;
-        this.itemName = item && item.getName() || '';
         this.itemSecret = item && item.getSecret() || '';
         this.itemContent = item && item.getContent() || '';
         if (!item) {
             this.generate();
         }
-        this.focusName();
-        this.isActive = true;
+        super.open(item);
     }
 
     submit() {
-        this.addItem(new Secret(
-            this.itemName,
-            this.itemSecret,
-            this.itemContent
-        ));
+        if (this.isEditMode()) {
+            this.save(this.itemSource as Secret);
+        } else {
+            this.add(new Secret(
+                this.itemName,
+                this.itemSecret,
+                this.itemContent
+            ));
+        }
+        super.submit();
     }
 
-    generate() {
-        this.itemSecret = this.passwordGenerator.generate();
+    save(item: Secret) {
+        item.setSecret(this.itemSecret);
+        item.setContent(this.itemContent);
+        super.save(item);
     }
 }
