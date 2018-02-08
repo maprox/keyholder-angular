@@ -1,48 +1,5 @@
-<nav class="navbar navbar-inverse m-0" *ngIf="displayMenu">
-    <div class="container-fluid">
-        <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
-            <button type="button" class="navbar-toggle collapsed"
-                    data-toggle="collapse"
-                    data-target="#navbar"
-                    aria-expanded="false"
-            >
-                <span class="sr-only">Toggle navigation</span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-                <span class="icon-bar"></span>
-            </button>
-            <a class="navbar-brand" href="#">
-                <i class="fa fa-user-secret fa-lg"></i>&nbsp;
-                Key Holder
-            </a>
-        </div><!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="navbar">
-            <ul class="nav navbar-nav">
-                <li routerLinkActive="active">
-                    <a routerLink="/storage">
-                        <i class="fa fa-database"></i>&nbsp;
-                        Storage
-                    </a>
-                </li>
-                <li routerLinkActive="active">
-                    <a routerLink="/settings">
-                        <i class="fa fa-cogs"></i>&nbsp;
-                        Settings
-                    </a>
-                </li>
-            </ul>
-            <ul class="nav navbar-nav navbar-right">
-                <li routerLinkActive="active">
-                    <a routerLink="/logout">
-                        <i class="fa fa-sign-out"></i>&nbsp;
-                        Logout
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
+<app-offline-bar></app-offline-bar>
+<app-navigation *ngIf="displayMenu"></app-navigation>
 <div class=”container”>
     <app-alert></app-alert>
     <router-outlet></router-outlet>

@@ -7,9 +7,11 @@ import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
 import { EncryptingService } from './encrypting';
 import { HttpService } from './http';
+import { NavigationComponent } from './navigation';
 import { PageNotFoundComponent } from './page-not-found';
 import { SettingsModule } from './settings';
 import { StorageModule } from './storage';
+import { OfflineBarComponent } from './offline-bar/offline-bar.component';
 
 @NgModule({
     imports: [
@@ -18,7 +20,7 @@ import { StorageModule } from './storage';
         BrowserModule,
         StorageModule,
         SettingsModule,
-        AppRoutingModule,
+        AppRoutingModule
     ],
     providers: [
         EncryptingService,
@@ -26,7 +28,9 @@ import { StorageModule } from './storage';
     ],
     declarations: [
         AppComponent,
-        PageNotFoundComponent
+        NavigationComponent,
+        PageNotFoundComponent,
+        OfflineBarComponent
     ],
     bootstrap: [
         AppComponent

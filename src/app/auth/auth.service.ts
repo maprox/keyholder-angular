@@ -1,5 +1,6 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
@@ -17,8 +18,15 @@ export class AuthService {
     constructor(
         private http: HttpService,
         private alert: AlertService,
-        private encrypting: EncryptingService
-    ) { }
+        private encrypting: EncryptingService,
+        private router: Router
+    ) {
+        http.getConnectionEvent().subscribe((res) => {
+            if (res instanceof HttpErrorResponse && res.status === 403) {
+                router.navigate(['/logout']);
+            }
+        });
+    }
 
     getSession(): Session {
         if (this.session === undefined) {
@@ -53,16 +61,7 @@ export class AuthService {
                 sessionStorage.setItem('session', JSON.stringify(this.session));
             },
             (err: HttpErrorResponse) => {
-                this.session = null;
-                this.subject.next();
-                if (err.error instanceof Error) {
-                    // A client-side or network error occurred. Handle it accordingly.
-                    this.alert.error('Unknown error occurred, please try again later.');
-                } else {
-                    // The backend returned an unsuccessful response code.
-                    // The response body may contain clues as to what went wrong,
-                    this.alert.error(`Backend returned code ${err.status}, body was: ${err.error}`);
-                }
+                this.logOut();
             }
         );
     }

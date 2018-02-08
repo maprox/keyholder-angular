@@ -156,6 +156,7 @@ export class HttpService {
                     this.setConnected(false);
                 } else {
                     this.alert.error(`Backend returned code ${err.status}, body was: ${err.error}`);
+                    this.subject.next(err);
                 }
             }
             response.error(err);
