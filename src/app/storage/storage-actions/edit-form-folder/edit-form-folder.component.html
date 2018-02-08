@@ -10,13 +10,13 @@
   <div class="form-group">
     <button class="btn btn-lg btn-success" [disabled]="!itemName">
       <i class="fa fa-plus-circle"></i>
-      {{ isEditMode() ? 'Save' : 'Add' }}
+      <span class="hidden-xxs">{{ isEditMode() ? 'Save' : 'Add' }}</span>
     </button>
     <button class="btn btn-lg btn-default"
             type="button"
             (click)="close()">
       <i class="fa fa-ban"></i>
-      Cancel
+      <span class="hidden-xxs">Cancel</span>
     </button>
     <button *ngIf="isEditMode()"
             class="btn btn-lg btn-danger pull-right"

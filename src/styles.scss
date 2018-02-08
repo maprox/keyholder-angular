@@ -17,21 +17,14 @@
     font-size: 20pt;
 }
 
-.visible-xxs {
+.visible-xxs,
+.visible-xxs-inline {
     display: none;
-}
-
-.hidden-xxs {
-    display: block;
-}
-
-.hidden-xxs-inline {
-    display: inline;
 }
 
 // XXS
 
-@media (max-width: 320px) {
+@media (max-width: 360px) {
 
     .visible-xxs {
         display: block !important;
