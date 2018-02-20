@@ -6,8 +6,7 @@ import { AlertService } from '../alert';
 import { EncryptingService } from '../encrypting';
 import { HttpService } from '../http';
 import { SerializerService } from '../serializer';
-import * as ItemType from './model';
-import { Folder } from './model';
+import { Secret, Folder } from './model';
 
 @Injectable()
 export class StorageApiService {
@@ -42,7 +41,10 @@ export class StorageApiService {
     loadData(data: string) {
         const input = this.encrypting.decrypt(data);
         if (input) {
-            this.subject.next(JSON.parse(input, SerializerService.getReviver(ItemType)));
+            this.subject.next(JSON.parse(input, SerializerService.getReviver({
+                'Secret': Secret,
+                'Folder': Folder
+            })));
         }
     }
 }

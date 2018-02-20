@@ -9,6 +9,10 @@ export class Secret extends Item {
         super(name);
     }
 
+    getClassName(): string {
+        return 'Secret';
+    }
+
     getSecret(): string {
         return this.secret;
     }

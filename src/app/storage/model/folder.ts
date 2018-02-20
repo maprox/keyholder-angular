@@ -9,6 +9,10 @@ export class Folder extends Item {
         super(name);
     }
 
+    getClassName(): string {
+        return 'Folder';
+    }
+
     add(item: Item) {
         const list = item instanceof Folder ? this.folders : this.items;
         list.push(item);

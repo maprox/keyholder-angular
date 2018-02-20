@@ -8,6 +8,10 @@ export class User extends SerializableClass {
         super();
     }
 
+    getClassName(): string {
+        return 'User';
+    }
+
     getUsername(): string {
         return this.username;
     }

@@ -10,4 +10,8 @@ export class Options extends SerializableClass {
     ) {
         super();
     }
+
+    getClassName(): string {
+        return 'Options';
+    }
 }

@@ -8,6 +8,10 @@ export class Session extends SerializableClass {
         super();
     }
 
+    getClassName(): string {
+        return 'Session';
+    }
+
     getToken(): string {
         return this.token;
     }
