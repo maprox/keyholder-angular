@@ -4,7 +4,6 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
 
-import { AlertService } from '../alert';
 import { EncryptingService } from '../encrypting';
 import { HttpService } from '../http';
 import { SerializerService } from '../serializer';
@@ -17,7 +16,6 @@ export class AuthService {
 
     constructor(
         private http: HttpService,
-        private alert: AlertService,
         private encrypting: EncryptingService,
         private router: Router
     ) {
@@ -60,7 +58,7 @@ export class AuthService {
                 this.subject.next(this.session);
                 sessionStorage.setItem('session', JSON.stringify(this.session));
             },
-            (err: HttpErrorResponse) => {
+            () => {
                 this.logOut();
             }
         );
