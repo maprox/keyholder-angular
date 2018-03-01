@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { StorageService } from '../storage.service';
 import { EditFormFolderService } from './edit-form-folder';
 import { EditFormSecretService } from './edit-form-secret';
 
@@ -10,7 +9,6 @@ import { EditFormSecretService } from './edit-form-secret';
 })
 export class StorageActionsComponent {
     constructor(
-        private storage: StorageService,
         private editFormSecretService: EditFormSecretService,
         private editFormFolderService: EditFormFolderService
     ) {}
