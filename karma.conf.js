@@ -13,6 +13,7 @@ module.exports = function (config) {
         plugins: [
             require('karma-jasmine'),
             require('karma-chrome-launcher'),
+            require('karma-phantomjs-launcher'),
             require('karma-jasmine-html-reporter'),
             require('karma-coverage-istanbul-reporter'),
             require('@angular/cli/plugins/karma')
@@ -52,7 +53,7 @@ module.exports = function (config) {
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
+        browsers: ['PhantomJS'],
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
