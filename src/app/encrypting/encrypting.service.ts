@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AES, SHA256, enc } from 'crypto-js';
+import { AES, enc, SHA256 } from 'crypto-js';
 
-import { Session, User } from '../auth/model';
+import { User } from '../auth/model';
 import { SerializerService } from '../serializer';
 
 @Injectable()

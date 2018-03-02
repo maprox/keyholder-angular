@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 
 import { AlertService } from './alert.service';
 import { Alert, AlertType } from './model';
@@ -17,7 +18,18 @@ alertStyles[AlertType.Warning] = 'alert-warning';
 export class AlertComponent implements OnInit {
     alerts: Alert[] = [];
 
-    constructor(private alertService: AlertService) { }
+    constructor(
+        private alertService: AlertService,
+        private router: Router
+    ) {
+        // clear alert messages on route change
+        router.events.subscribe(event => {
+            if (event instanceof NavigationStart) {
+                // clear alert messages
+                alertService.clear();
+            }
+        });
+    }
 
     ngOnInit() {
         this.alertService.getAlert().subscribe((alert: Alert) => {
@@ -42,10 +54,6 @@ export class AlertComponent implements OnInit {
     }
 
     cssClass(alert: Alert) {
-        if (!alert) {
-            return;
-        }
-
         // return css class based on alert type
         return alertStyles[alert.type];
     }

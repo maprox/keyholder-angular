@@ -1,25 +1,49 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { StorageService } from '../storage.service';
 
 import { StoragePathComponent } from './storage-path.component';
 
 describe('StoragePathComponent', () => {
-  let component: StoragePathComponent;
-  let fixture: ComponentFixture<StoragePathComponent>;
+    let component: StoragePathComponent,
+        fixture: ComponentFixture<StoragePathComponent>,
+        routerMock,
+        storageServiceMock;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ StoragePathComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        routerMock = {
+            navigate: jasmine.createSpy()
+        };
+        storageServiceMock = {
+            openFolder: jasmine.createSpy(),
+            getPathAsString: jasmine.createSpy(),
+            getPath: jasmine.createSpy().and.returnValue([])
+        };
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(StoragePathComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+        TestBed.configureTestingModule({
+            declarations: [
+                StoragePathComponent
+            ],
+            providers: [
+                {
+                    provide: Router,
+                    useValue: routerMock
+                },
+                {
+                    provide: StorageService,
+                    useValue: storageServiceMock
+                }
+            ]
+        }).compileComponents();
+    }));
 
-  it('should be created', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(StoragePathComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('should be created', () => {
+        expect(component).toBeTruthy();
+    });
 });
