@@ -11,6 +11,14 @@ import { LoginComponent } from './login.component';
 import { RegexpErrorComponent } from './regexp-error/regexp-error.component';
 
 describe('LoginComponent', () => {
+    let fixture: ComponentFixture<LoginComponent>,
+        de: DebugElement,
+        el: HTMLElement,
+        isLoggedIn = true,
+        page: Page,
+        authSubject: Subject<Object>,
+        authServiceStub: any;
+
     class Page {
         navSpy: jasmine.Spy;
 
@@ -36,14 +44,6 @@ describe('LoginComponent', () => {
             return this.submit.nativeElement.textContent.trim();
         }
     }
-
-    let fixture: ComponentFixture<LoginComponent>,
-        de: DebugElement,
-        el: HTMLElement,
-        isLoggedIn = true,
-        page: Page,
-        authSubject: Subject<Object>,
-        authServiceStub: any;
 
     @Component({ template: '' }) class DummyComponent {}
 

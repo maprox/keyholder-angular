@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { AuthService } from '../auth';
 
+import { AuthService } from '../auth';
 import { Folder } from './model';
 import { StorageApiService } from './storage-api.service';
 
@@ -54,7 +54,7 @@ export class StorageService {
             }
             result += (result ? '/' : '') + item.getName();
         });
-        return result;
+        return '/' + result;
     }
 
     openFolder(folder: Folder): Folder {
@@ -71,7 +71,7 @@ export class StorageService {
 
     openPath(path: string) {
         this.path = [this.getRoot()];
-        path.split('/').splice(2).filter((item) => item).map((folderName: string) => {
+        path.split('/').filter((item) => item).map((folderName: string) => {
             const folder = this.getCurrent().getFolderByName(folderName);
             this.openFolder(folder);
         });

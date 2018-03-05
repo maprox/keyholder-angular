@@ -24,7 +24,12 @@ export class StorageRoutingModule {
     ) {
         router.events.subscribe(event => {
             if (event instanceof NavigationEnd && auth.isLoggedIn()) {
-                this.storage.load(decodeURIComponent(event.url));
+                this.storage.load(
+                    decodeURIComponent(event.url)
+                        .split('/')
+                        .splice(2)
+                        .join('/')
+                );
             }
         });
     }

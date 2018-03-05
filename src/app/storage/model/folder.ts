@@ -13,10 +13,11 @@ export class Folder extends Item {
         return 'Folder';
     }
 
-    add(item: Item) {
+    add(item: Item): Item {
         const list = item instanceof Folder ? this.folders : this.items;
         list.push(item);
         list.sort((a, b) => a.getName().localeCompare(b.getName()));
+        return item;
     }
 
     getFolders(): Folder[] {
