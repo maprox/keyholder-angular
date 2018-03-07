@@ -29,7 +29,7 @@ module.exports = function (config) {
         },
 
         angularCli: {
-            environment: 'dev'
+            environment: 'test'
         },
 
         // test results reporter to use

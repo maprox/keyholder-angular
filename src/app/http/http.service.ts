@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { Subject } from 'rxjs/Subject';
@@ -11,31 +11,19 @@ export class HttpService {
     private subject = new Subject<Object>();
     private isConnected: boolean;
 
-    /**
-     *
-     * @param contents
-     * @returns {string}
-     */
     private static getContents(contents: any): string {
         if (typeof contents === 'string') {
             return contents;
         }
 
-        const body = new URLSearchParams();
-        for (const key in contents) {
-            if (contents.hasOwnProperty(key)) {
-                body.set(key, contents[key]);
-            }
-        }
+        let params = new HttpParams();
+        Object.keys(contents).forEach((key) => {
+            params = params.set(key, contents[key]);
+        });
 
-        return body.toString();
+        return params.toString();
     }
 
-    /**
-     *
-     * @param options
-     * @returns {any}
-     */
     private static getOptions(options: any): any {
         options = Object.assign({}, options);
 
@@ -43,9 +31,8 @@ export class HttpService {
             options.headers = new HttpHeaders();
         }
 
-        const headers = options.headers;
-        if (!headers.has('Content-Type')) {
-            options.headers = headers.set(
+        if (!options.headers.has('Content-Type')) {
+            options.headers = options.headers.set(
                 'Content-Type',
                 'application/x-www-form-urlencoded'
             );
@@ -59,22 +46,6 @@ export class HttpService {
         private alert: AlertService
     ) { }
 
-    /**
-     *
-     * @param {string} url
-     * @returns {string}
-     */
-    private getApiUrl(url: string) {
-        return environment.apiBase + url;
-    }
-
-    /**
-     *
-     * @param {string} url
-     * @param contents
-     * @param options
-     * @returns {Observable<any>}
-     */
     post(url: string, contents: any, options?: any): Observable<any> {
         const response = new Subject<Object>();
 
@@ -90,13 +61,6 @@ export class HttpService {
         return response.asObservable();
     }
 
-    /**
-     *
-     * @param {string} url
-     * @param contents
-     * @param options
-     * @returns {Observable<any>}
-     */
     put(url: string, contents: any, options?: any): Observable<any> {
         const response = new Subject<Object>();
 
@@ -112,12 +76,6 @@ export class HttpService {
         return response.asObservable();
     }
 
-    /**
-     *
-     * @param {string} url
-     * @param options
-     * @returns {Observable<any>}
-     */
     get(url: string, options?: any): Observable<any> {
         const response = new Subject<Object>();
 
@@ -132,7 +90,15 @@ export class HttpService {
         return response.asObservable();
     }
 
-    getSuccessHandler(response: Subject<Object>) {
+    getConnectionEvent(): Observable<any> {
+        return this.subject.asObservable();
+    }
+
+    private getApiUrl(url: string): string {
+        return environment.apiBase + url;
+    }
+
+    private getSuccessHandler(response: Subject<Object>) {
         return (data: any) => {
             this.setConnected(true);
             response.next(data);
@@ -140,7 +106,7 @@ export class HttpService {
         }
     }
 
-    getFailureHandler(response: Subject<Object>) {
+    private getFailureHandler(response: Subject<Object>) {
         return (err: HttpErrorResponse) => {
             if (this.isConnected === false) {
                 return;
@@ -169,13 +135,5 @@ export class HttpService {
             this.isConnected = isConnected;
             this.subject.next(this.isConnected);
         }
-    }
-
-    isOffline(): boolean {
-        return !this.isConnected;
-    }
-
-    getConnectionEvent(): Observable<any> {
-        return this.subject.asObservable();
     }
 }
