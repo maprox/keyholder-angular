@@ -3,7 +3,7 @@ import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core
 import { By } from '@angular/platform-browser';
 import { NavigationStart, Router } from '@angular/router';
 import { RouterEvent } from '@angular/router/src/events';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { AlertComponent, AlertService } from '.';
 import { Alert, AlertType } from './model';

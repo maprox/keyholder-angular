@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { TestBed, inject } from '@angular/core/testing';
 import { Router } from '@angular/router';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { EncryptingService } from '../encrypting';
 import { HttpService } from '../http';
