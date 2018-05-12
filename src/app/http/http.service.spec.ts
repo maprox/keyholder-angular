@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { AlertService } from '../alert';
 import { HttpService } from './http.service';
@@ -41,7 +41,7 @@ describe('HttpService', () => {
             },
             response: 'test payload',
             expected: {
-                url: '/api/some-url',
+                url: 'http://localhost:3000/api/some-url',
                 contents: {
                     string: 'hello string',
                     object: 'x1=10&x2=20'

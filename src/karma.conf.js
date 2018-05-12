@@ -8,7 +8,7 @@ module.exports = function (config) {
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine', '@angular/cli'],
+        frameworks: ['jasmine', '@angular-devkit/build-angular'],
 
         plugins: [
             require('karma-jasmine'),
@@ -16,7 +16,7 @@ module.exports = function (config) {
             require('karma-phantomjs-launcher'),
             require('karma-jasmine-html-reporter'),
             require('karma-coverage-istanbul-reporter'),
-            require('@angular/cli/plugins/karma')
+            require('@angular-devkit/build-angular/plugins/karma')
         ],
 
         client:{

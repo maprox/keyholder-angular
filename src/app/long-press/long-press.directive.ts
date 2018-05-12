@@ -2,9 +2,8 @@ import {
     Directive, EventEmitter, HostListener, Input, OnDestroy, OnInit,
     Output
 } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable, SubscriptionLike as ISubscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
-import { ISubscription } from 'rxjs/Subscription';
 
 @Directive({
     selector: '[appLongPress]'
