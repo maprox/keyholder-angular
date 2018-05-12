@@ -20,7 +20,7 @@ export class StorageApiService {
 
     save(root: Folder) {
         const input = {
-            data: this.encrypting.encrypt(JSON.stringify(root))
+            data: encodeURIComponent(this.encrypting.encrypt(JSON.stringify(root)))
         };
 
         this.http.put('/storage', input).subscribe(
@@ -31,7 +31,7 @@ export class StorageApiService {
 
     load(): Observable<any> {
         this.http.get('/storage', {responseType: 'text'}).subscribe(
-            (data) => this.loadData(data),
+            (data) => this.loadData(decodeURIComponent(data)),
             () => this.loadData(localStorage.getItem(this.storageKey))
         );
         return this.subject.asObservable();

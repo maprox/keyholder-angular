@@ -12,7 +12,7 @@ WORKDIR /opt/keyholder
 RUN npm install && \
     npm run-script build
 
-RUN cp dist/* /var/www/html && \
+RUN cp dist/keyholder-angular/* /var/www/html && \
     cp nginx-default.conf /etc/nginx/sites-enabled/default
 
 CMD ["nginx", "-g", "daemon off;"]
