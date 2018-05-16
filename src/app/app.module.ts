@@ -8,10 +8,10 @@ import { AuthModule } from './auth';
 import { EncryptingService } from './encrypting';
 import { HttpService } from './http';
 import { NavigationComponent } from './navigation';
+import { OfflineBarComponent } from './offline-bar';
 import { PageNotFoundComponent } from './page-not-found';
 import { SettingsModule } from './settings';
 import { StorageModule } from './storage';
-import { OfflineBarComponent } from './offline-bar/offline-bar.component';
 
 @NgModule({
     imports: [
