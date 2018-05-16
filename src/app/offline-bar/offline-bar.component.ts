@@ -11,7 +11,7 @@ export class OfflineBarComponent {
 
     constructor(private http: HttpService) {
         http.getConnectionEvent().subscribe((isConnected) => {
-            this.isOffline = (isConnected !== true);
+            this.isOffline = (isConnected === false);
         });
     }
 }
