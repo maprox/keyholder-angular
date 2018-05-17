@@ -20,6 +20,6 @@ export class StoragePathComponent implements OnInit {
 
     openFolder(folder: Folder) {
         this.storage.openFolder(folder);
-        this.router.navigate(['/storage', this.storage.getPathAsString()]);
+        this.router.navigate(['/storage' + this.storage.getPathAsString()]);
     }
 }

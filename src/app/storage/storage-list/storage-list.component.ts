@@ -45,7 +45,7 @@ export class StorageListComponent implements OnInit {
         }
 
         this.storage.openFolder(item as Folder);
-        this.router.navigate(['/storage', this.storage.getPathAsString()]);
+        this.router.navigate(['/storage' + this.storage.getPathAsString()]);
     }
 
     editSecret(item: Item) {
