@@ -1,5 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
+import { Folder } from '../model';
 import { StorageService } from '../storage.service';
 
 import { StoragePathComponent } from './storage-path.component';
@@ -45,5 +46,16 @@ describe('StoragePathComponent', () => {
 
     it('should be created', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should open folder', () => {
+        const folder = new Folder();
+
+        storageServiceMock.getPathAsString.and.returnValue('/some/path');
+
+        component.openFolder(folder);
+
+        expect(storageServiceMock.openFolder).toHaveBeenCalledWith(folder);
+        expect(routerMock.navigate).toHaveBeenCalledWith(['/storage/some/path']);
     });
 });
