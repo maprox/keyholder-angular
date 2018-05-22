@@ -35,7 +35,7 @@ export class PasswordGeneratorService {
 
         // Generate character pool
         const availableCharacters = this.getAvailableCharacters(options);
-        if (!availableCharacters) {
+        if (!availableCharacters || (options.length <= 0)) {
             throw new Error('Invalid options for the password generator');
         }
 
