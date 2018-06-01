@@ -47,6 +47,12 @@ describe('LoginComponent', () => {
 
     @Component({ template: '' }) class DummyComponent {}
 
+    @Component({
+        selector: 'app-fork-me',
+        template: '<div>Fake fork me component</div>'
+    })
+    class FakeForkMeComponent {}
+
     beforeEach(async(() => {
         authSubject = new Subject<Object>();
         authServiceStub = {
@@ -70,6 +76,7 @@ describe('LoginComponent', () => {
                 ])
             ],
             declarations: [
+                FakeForkMeComponent,
                 LoginComponent,
                 DummyComponent,
                 RegexpErrorComponent

@@ -7,6 +7,7 @@ import { AuthRoutingModule } from './auth-routing.module';
 import { AuthGuard } from './auth.guard';
 import { AuthInterceptor } from './auth.interceptor';
 import { AuthService } from './auth.service';
+import { ForkMeComponent } from '../fork-me';
 import { LoginComponent, RegexpErrorComponent } from './login';
 import { LogoutComponent } from './logout';
 
@@ -27,6 +28,7 @@ import { LogoutComponent } from './logout';
         }
     ],
     declarations: [
+        ForkMeComponent,
         LoginComponent,
         LogoutComponent,
         RegexpErrorComponent
