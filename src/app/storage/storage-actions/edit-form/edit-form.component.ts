@@ -1,6 +1,6 @@
 import { ElementRef, OnInit, ViewChild } from '@angular/core';
 
-import { Item, Secret } from '../../model';
+import { Item } from '../../model';
 import { StorageService } from '../../storage.service';
 import { EditFormService } from './edit-form.service';
 

@@ -25,10 +25,12 @@ describe('StorageActionsComponent', () => {
 
     beforeEach(async(() => {
         editFormSecretServiceMock = {
-            //
+            create: jasmine.createSpy(),
+            close: jasmine.createSpy()
         };
         editFormFolderServiceMock = {
-            //
+            create: jasmine.createSpy(),
+            close: jasmine.createSpy()
         };
 
         TestBed.configureTestingModule({
@@ -58,5 +60,17 @@ describe('StorageActionsComponent', () => {
 
     it('should be created', () => {
         expect(component).toBeTruthy();
+    });
+
+    it('should show add folder panel', () => {
+        component.showAddFolder();
+        expect(editFormFolderServiceMock.create).toHaveBeenCalled();
+        expect(editFormSecretServiceMock.close).toHaveBeenCalled();
+    });
+
+    it('should show add secret panel', () => {
+        component.showAddSecret();
+        expect(editFormSecretServiceMock.create).toHaveBeenCalled();
+        expect(editFormFolderServiceMock.close).toHaveBeenCalled();
     });
 });

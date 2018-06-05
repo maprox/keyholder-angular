@@ -74,6 +74,7 @@ export class AuthService {
     logOut() {
         this.encrypting.setUser(null);
         this.session = null;
+        sessionStorage.removeItem('session');
         this.subject.next();
     }
 

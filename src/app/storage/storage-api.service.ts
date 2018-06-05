@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable ,  Subject } from 'rxjs';
 
-import { AlertService } from '../alert';
 import { EncryptingService } from '../encrypting';
 import { HttpService } from '../http';
 import { SerializerService } from '../serializer';
@@ -14,7 +13,6 @@ export class StorageApiService {
 
     constructor(
         private http: HttpService,
-        private alert: AlertService,
         private encrypting: EncryptingService
     ) { }
 
@@ -23,9 +21,13 @@ export class StorageApiService {
             data: encodeURIComponent(this.encrypting.encrypt(JSON.stringify(root)))
         };
 
+        const copyToLocalStorage = () => {
+            localStorage.setItem(this.storageKey, input.data);
+        };
+
         this.http.put('/storage', input).subscribe(
-            () => {},
-            () => localStorage.setItem(this.storageKey, input.data)
+            copyToLocalStorage,
+            copyToLocalStorage
         );
     }
 
