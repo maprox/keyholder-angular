@@ -2,7 +2,8 @@ import { TestBed, inject } from '@angular/core/testing';
 import { Subject } from 'rxjs/Subject';
 
 import { AuthService } from '../auth';
-import { Folder } from './model';
+import { Container, Folder } from './model';
+import { Options } from '../password-generator/model';
 import { StorageApiService } from './storage-api.service';
 import { StorageService } from './storage.service';
 
@@ -113,10 +114,11 @@ describe('StorageService', () => {
         service.load();
 
         const root = new Folder('root');
+        const container = new Container(root, new Options());
 
         (root.add(new Folder('l1')) as Folder).add(new Folder('l2'));
 
-        storageApiSubject.next(root);
+        storageApiSubject.next(container);
 
         expect(service.getPathAsString()).toEqual('/');
 

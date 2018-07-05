@@ -8,18 +8,54 @@ export class PasswordGeneratorService {
     private uppercase = this.lowercase.toUpperCase();
     private numbers = '0123456789';
     private symbols = '!@#$%^&*()+_-=}{[]|:;"/?.><,`~';
+    private options = new Options();
 
     /**
      * @param {Options} options
      * @returns {string}
      */
     protected getAvailableCharacters(options: Options): string {
-        let pool = '';
-        pool += options.useLowercase ? this.lowercase : '';
-        pool += options.useUppercase ? this.uppercase : '';
-        pool += options.useNumbers ? this.numbers : '';
-        pool += options.useSymbols ? this.symbols : '';
-        return pool;
+        return this.getOptionsFields().reduce((result, value) => {
+            return result + (options[value.name] ? value.hint : '');
+        }, '');
+    }
+
+    getOptionsFields(): any[] {
+        return [{
+            text: 'Use numbers',
+            hint: this.numbers,
+            name: 'useNumbers'
+        }, {
+            text: 'Use symbols',
+            hint: this.symbols,
+            name: 'useSymbols'
+        }, {
+            text: 'Use lowercase',
+            hint: this.lowercase,
+            name: 'useLowercase'
+        }, {
+            text: 'Use uppercase',
+            hint: this.uppercase,
+            name: 'useUppercase'
+        }];
+    }
+
+    /**
+     * Sets default options instance
+     *
+     * @param {Options} options
+     */
+    setOptions(options: Options) {
+        this.options = options;
+    }
+
+    /**
+     * Returns default options instance
+     *
+     * @return {Options}
+     */
+    getOptions(): Options {
+        return this.options;
     }
 
     /**
@@ -30,7 +66,7 @@ export class PasswordGeneratorService {
      */
     generate(options?: Options): string {
         if (!options) {
-            options = new Options();
+            options = this.options;
         }
 
         // Generate character pool
