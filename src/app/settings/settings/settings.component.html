@@ -1,3 +1,24 @@
-<div class="well">
-  <h1>In development</h1>
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div class="form-group">
+            <label for="length">Password length</label>
+            <input id="length"
+                   type="number"
+                   name="length"
+                   class="form-control"
+                   max="100"
+                   min="0"
+                   [(ngModel)]="options.length"
+                   (change)="save()">
+        </div>
+        <div class="checkbox" *ngFor="let field of fields">
+            <label>
+                <input type="checkbox"
+                       data-toggle="toggle"
+                       [checked]="options[field.name]"
+                       (change)="toggle(field.name)">
+                <span title='{{field.hint}}'>{{field.text}}</span>
+            </label>
+        </div>
+    </div>
 </div>

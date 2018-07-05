@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable ,  Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 import { EncryptingService } from '../encrypting';
 import { HttpService } from '../http';
+import { PasswordGeneratorService } from '../password-generator';
+import { Options } from '../password-generator/model';
 import { SerializerService } from '../serializer';
-import { Secret, Folder } from './model';
+import { Container, Folder, Secret } from './model';
 
 @Injectable()
 export class StorageApiService {
@@ -13,12 +15,15 @@ export class StorageApiService {
 
     constructor(
         private http: HttpService,
-        private encrypting: EncryptingService
+        private encrypting: EncryptingService,
+        private passwordGenerator: PasswordGeneratorService
     ) { }
 
     save(root: Folder) {
+        const options = this.passwordGenerator.getOptions();
+        const container = new Container(root, options);
         const input = {
-            data: encodeURIComponent(this.encrypting.encrypt(JSON.stringify(root)))
+            data: encodeURIComponent(this.encrypting.encrypt(JSON.stringify(container)))
         };
 
         const copyToLocalStorage = () => {
@@ -42,10 +47,20 @@ export class StorageApiService {
     loadData(data: string) {
         const input = this.encrypting.decrypt(data);
         if (input) {
-            this.subject.next(JSON.parse(input, SerializerService.getReviver({
-                'Secret': Secret,
-                'Folder': Folder
-            })));
+            let container = JSON.parse(input, SerializerService.getReviver({
+                'Container': Container,
+                'Folder': Folder,
+                'Options': Options,
+                'Secret': Secret
+            }));
+
+            if (container instanceof Folder) {
+                // legacy version, to be removed after deploy
+                container = new Container(container, this.passwordGenerator.getOptions());
+            }
+
+            this.passwordGenerator.setOptions(container.getOptions());
+            this.subject.next(container);
         }
     }
 }

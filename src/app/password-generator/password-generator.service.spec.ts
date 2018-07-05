@@ -66,4 +66,25 @@ describe('PasswordGeneratorService', () => {
         expect(secret.length).toEqual(options.length);
         expect((/^[A-Z]+$/).test(secret)).toBeTruthy();
     });
+
+    it('should generate with changed options', () => {
+        const defaultOptions = service.getOptions();
+        expect(defaultOptions.length).toEqual(20);
+        expect(defaultOptions.useNumbers).toEqual(true);
+        expect(defaultOptions.useSymbols).toEqual(true);
+        expect(defaultOptions.useLowercase).toEqual(true);
+        expect(defaultOptions.useUppercase).toEqual(true);
+
+        const options = new Options(5, false, false, false, true);
+        service.setOptions(options);
+
+        const secret = service.generate();
+        expect(secret.length).toEqual(options.length);
+        expect((/^[A-Z]+$/).test(secret)).toBeTruthy();
+    });
+
+    it('should return options fields', () => {
+        const optionsFields = service.getOptionsFields();
+        expect(optionsFields.length).toEqual(4);
+    });
 });

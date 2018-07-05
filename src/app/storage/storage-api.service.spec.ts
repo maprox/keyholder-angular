@@ -2,7 +2,9 @@ import { inject, TestBed } from '@angular/core/testing';
 import { Subject } from 'rxjs/index';
 
 import { EncryptingService } from '../encrypting';
-import { Folder, Secret } from './model';
+import { PasswordGeneratorService } from '../password-generator';
+import { Options } from '../password-generator/model';
+import { Container, Folder, Secret } from './model';
 import { HttpService } from '../http';
 import { StorageApiService } from './storage-api.service';
 
@@ -10,6 +12,8 @@ describe('StorageApiService', () => {
     let service: StorageApiService,
         httpService,
         encryptingService,
+        passwordGeneratorService,
+        options,
         httpClientSubject,
         httpSpy;
 
@@ -26,6 +30,11 @@ describe('StorageApiService', () => {
             encrypt: jasmine.createSpy(),
             decrypt: jasmine.createSpy()
         };
+        options = new Options();
+        passwordGeneratorService = {
+            getOptions: jasmine.createSpy().and.returnValue(options),
+            setOptions: jasmine.createSpy()
+        };
 
         TestBed.configureTestingModule({
             providers: [
@@ -37,6 +46,10 @@ describe('StorageApiService', () => {
                 {
                     provide: EncryptingService,
                     useValue: encryptingService
+                },
+                {
+                    provide: PasswordGeneratorService,
+                    useValue: passwordGeneratorService
                 }
             ]
         });
@@ -52,27 +65,30 @@ describe('StorageApiService', () => {
 
     it('should save storage to localStorage', () => {
         const root = getRoot();
-        const encryptedRoot = 'EnCr YPt=eeed!';
-        encryptingService.encrypt.and.returnValue(encryptedRoot);
+        const encryptedContainer = 'EnCr YPt=eeed!';
+        const container = new Container(root, options);
+        encryptingService.encrypt.and.returnValue(encryptedContainer);
 
         service.save(root);
 
-        expect(encryptingService.encrypt).toHaveBeenCalledWith(JSON.stringify(root));
+        expect(passwordGeneratorService.getOptions).toHaveBeenCalled();
+
+        expect(encryptingService.encrypt).toHaveBeenCalledWith(JSON.stringify(container));
         expect(httpService.put).toHaveBeenCalledWith('/storage', {
-            data: encodeURIComponent(encryptedRoot)
+            data: encodeURIComponent(encryptedContainer)
         });
 
         expect(localStorage.getItem('storage')).toEqual(null);
 
         httpClientSubject.next();
 
-        expect(localStorage.getItem('storage')).toEqual(encodeURIComponent(encryptedRoot));
+        expect(localStorage.getItem('storage')).toEqual(encodeURIComponent(encryptedContainer));
         localStorage.clear();
         expect(localStorage.getItem('storage')).toEqual(null);
 
         httpClientSubject.error();
 
-        expect(localStorage.getItem('storage')).toEqual(encodeURIComponent(encryptedRoot));
+        expect(localStorage.getItem('storage')).toEqual(encodeURIComponent(encryptedContainer));
     });
 
     it('should load data from server when failed to decrypt', () => {
@@ -96,17 +112,18 @@ describe('StorageApiService', () => {
     it('should load data from server when successfully decrypted', () => {
         const onSuccess = jasmine.createSpy();
         const onFailure = jasmine.createSpy();
-        const encryptedRoot = 'EnCr YPt=eeed!';
+        const encryptedContainer = 'EnCr YPt=eeed!';
         const root = getRoot();
-        const data = JSON.stringify(root);
+        const container = new Container(root, options);
+        const data = JSON.stringify(container);
 
         service.load().subscribe(onSuccess, onFailure);
 
         encryptingService.decrypt.and.returnValue(data);
-        httpClientSubject.next(encryptedRoot);
-        expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedRoot);
+        httpClientSubject.next(encryptedContainer);
+        expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedContainer);
         expect(onSuccess).toHaveBeenCalledTimes(1);
-        expect(onSuccess).toHaveBeenCalledWith(root);
+        expect(onSuccess).toHaveBeenCalledWith(container);
         expect(onFailure).toHaveBeenCalledTimes(0);
     });
 
@@ -115,6 +132,7 @@ describe('StorageApiService', () => {
         const onFailure = jasmine.createSpy();
         const encryptedRoot = 'EnCr YPt=eeed!';
         const root = getRoot();
+        const container = new Container(root, options);
         const data = JSON.stringify(root);
 
         service.load().subscribe(onSuccess, onFailure);
@@ -124,7 +142,7 @@ describe('StorageApiService', () => {
         httpClientSubject.error();
         expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedRoot);
         expect(onSuccess).toHaveBeenCalledTimes(1);
-        expect(onSuccess).toHaveBeenCalledWith(root);
+        expect(onSuccess).toHaveBeenCalledWith(container);
     });
 
     /**

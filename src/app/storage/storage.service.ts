@@ -95,9 +95,9 @@ export class StorageService {
         }
 
         this.storageApi.load().subscribe(
-            root => {
+            container => {
                 this.isLoaded = true;
-                this.root = root || this.getRoot();
+                this.root = container.getStorage();
                 this.openPath(path || '/');
             }
         );
