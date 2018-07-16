@@ -6,6 +6,7 @@
     "ng": "ng",
     "start": "ng serve --host 0.0.0.0 --disable-host-check",
     "build": "ng build --prod",
+    "build-staging": "ng build -c staging",
     "test": "ng test --code-coverage true",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -37,7 +38,7 @@
     "zone.js": "^0.8.26"
   },
   "devDependencies": {
-    "@angular/cli": "6.0.3",
+    "@angular/cli": "6.0.8",
     "@angular/compiler-cli": "6.0.2",
     "@angular/language-service": "6.0.2",
     "@types/crypto-js": "^3.1.37",
