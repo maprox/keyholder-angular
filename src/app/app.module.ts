@@ -5,6 +5,7 @@ import { AlertModule } from './alert';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AuthModule } from './auth';
+import { DemoWarningBarComponent } from './demo-warning-bar';
 import { EncryptingService } from './encrypting';
 import { HttpService } from './http';
 import { NavigationComponent } from './navigation';
@@ -30,7 +31,8 @@ import { StorageModule } from './storage';
         AppComponent,
         NavigationComponent,
         PageNotFoundComponent,
-        OfflineBarComponent
+        OfflineBarComponent,
+        DemoWarningBarComponent
     ],
     bootstrap: [
         AppComponent
