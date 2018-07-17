@@ -11,6 +11,8 @@ WORKDIR /opt/keyholder
 
 RUN npm install
 
-CMD ["./start-script.sh"]
+ENTRYPOINT ["sh", "./start-script.sh"]
+
+CMD ["build"]
 
 EXPOSE 80
