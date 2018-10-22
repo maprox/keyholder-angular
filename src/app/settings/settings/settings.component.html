@@ -1,5 +1,8 @@
-<div class="panel panel-default">
-    <div class="panel-body">
+<div class="card">
+    <div class="card-header card-title">
+        Password settings
+    </div>
+    <div class="card-body">
         <div class="form-group">
             <label for="length">Password length</label>
             <input id="length"
@@ -11,14 +14,33 @@
                    [(ngModel)]="options.length"
                    (change)="save()">
         </div>
-        <div class="checkbox" *ngFor="let field of fields">
-            <label>
-                <input type="checkbox"
-                       data-toggle="toggle"
-                       [checked]="options[field.name]"
-                       (change)="toggle(field.name)">
-                <span title='{{field.hint}}'>{{field.text}}</span>
-            </label>
+        <div class="custom-control custom-checkbox" *ngFor="let field of fields">
+            <input type="checkbox"
+                   class="custom-control-input"
+                   data-toggle="toggle"
+                   (change)="toggle(field.name)"
+                   [checked]="options[field.name]"
+                   [id]="field.name">
+            <label class="custom-control-label"
+                   [for]="field.name">{{field.text}}</label>
         </div>
+
+        <!--<div class="checkbox" *ngFor="let field of fields">-->
+            <!--<label>-->
+                <!--<input type="checkbox"-->
+                       <!--data-toggle="toggle"-->
+                       <!--[checked]="options[field.name]"-->
+                       <!--(change)="toggle(field.name)">-->
+                <!--<span title='{{field.hint}}'>{{field.text}}</span>-->
+            <!--</label>-->
+        <!--</div>-->
     </div>
 </div>
+<!--<div class="card">-->
+    <!--<div class="card-header card-title">-->
+        <!--Backup-->
+    <!--</div>-->
+    <!--<div class="card-body">-->
+        <!--<app-import-export></app-import-export>-->
+    <!--</div>-->
+<!--</div>-->

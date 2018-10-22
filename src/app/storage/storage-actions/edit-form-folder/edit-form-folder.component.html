@@ -1,30 +1,32 @@
 <form name="add-folder" (ngSubmit)="submit()" *ngIf="isActive">
-  <h3>{{ isEditMode() ? 'Edit' : 'Add' }} Folder</h3>
-  <div class="form-group form-group-lg">
-    <input [(ngModel)]="itemName"
-           class="form-control"
-           placeholder="Enter folder name"
-           name="fieldName"
-           #fieldName>
-  </div>
-  <div class="form-group">
-    <button class="btn btn-lg btn-success" [disabled]="!itemName">
-      <i class="fa fa-plus-circle"></i>
-      <span class="hidden-xxs">{{ isEditMode() ? 'Save' : 'Add' }}</span>
-    </button>
-    <button class="btn btn-lg btn-default"
-            type="button"
-            title="Cancel"
-            (click)="close()">
-      <i class="fa fa-ban"></i>
-      <span class="hidden-xxs">Cancel</span>
-    </button>
-    <button *ngIf="isEditMode()"
-            class="btn btn-lg btn-danger pull-right"
-            type="button"
-            title="Remove"
-            (click)="remove(itemSource)">
-      <i class="fa fa-trash"></i>
-    </button>
+  <div class="card bg-light mt-4">
+    <div class="card-body">
+      <h3>{{ isEditMode() ? 'Edit' : 'Add' }} Folder</h3>
+      <input [(ngModel)]="itemName"
+             class="form-control form-control-lg"
+             placeholder="Enter folder name"
+             name="fieldName"
+             #fieldName>
+    </div>
+    <div class="card-footer">
+      <button class="btn btn-lg btn-success mr-2" [disabled]="!itemName">
+        <i class="fa fa-plus-circle"></i>
+        <span class="hidden-xxs ml-2">{{ isEditMode() ? 'Save' : 'Add' }}</span>
+      </button>
+      <button class="btn btn-lg btn-default"
+              type="button"
+              title="Cancel"
+              (click)="close()">
+        <i class="fa fa-ban"></i>
+        <span class="hidden-xxs ml-2">Cancel</span>
+      </button>
+      <button *ngIf="isEditMode()"
+              class="btn btn-lg btn-danger pull-right"
+              type="button"
+              title="Remove"
+              (click)="remove(itemSource)">
+        <i class="fa fa-trash"></i>
+      </button>
+    </div>
   </div>
 </form>
