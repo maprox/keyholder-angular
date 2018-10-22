@@ -30,9 +30,13 @@ export class StorageService {
 
     getRoot(): Folder {
         if (!this.root) {
-            this.root = new Folder('root');
+            this.setRoot(new Folder('root'));
         }
         return this.root;
+    }
+
+    setRoot(root: Folder) {
+        this.root = root;
     }
 
     getCurrent(): Folder {
@@ -82,7 +86,7 @@ export class StorageService {
     }
 
     save() {
-        this.storageApi.save(this.root);
+        this.storageApi.save(this.getRoot());
     }
 
     /**
@@ -97,7 +101,7 @@ export class StorageService {
         this.storageApi.load().subscribe(
             container => {
                 this.isLoaded = true;
-                this.root = container.getStorage();
+                this.setRoot(container.getStorage());
                 this.openPath(path || '/');
             }
         );

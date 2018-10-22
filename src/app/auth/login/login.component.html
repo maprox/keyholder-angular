@@ -1,134 +1,128 @@
 <app-fork-me url="https://github.com/maprox/keyholder-angular"></app-fork-me>
 <div class="container">
-    <div class="row">
-        <div class="col-md-8 col-md-offset-2">
-            <form class="form-horizontal auth-form"
-                  autocomplete="off"
-                  (ngSubmit)="onSubmit()"
-                  #loginForm="ngForm">
-                <h3 class="text-center">Welcome to Key Holder!</h3>
-                <hr/>
-                <div class="form-group"
-                     [ngClass]="{
-                         'has-error': signUp && fieldUsername.invalid && fieldUsername.dirty,
-                         'has-success': signUp && fieldUsername.valid && fieldUsername.dirty
-                     }">
-                    <label class="col-sm-2 control-label"
-                           for="username">
-                        E-mail
-                    </label>
-                    <div class="col-sm-10">
-                        <input type="email"
-                               name="username"
-                               id="username"
-                               [(ngModel)]="username"
-                               class="form-control"
-                               placeholder="someone@example.com"
-                               email
-                               required
-                               #fieldUsername="ngModel">
-                        <div *ngIf="signUp && fieldUsername.invalid && fieldUsername.dirty"
-                             class="alert alert-danger"
-                             role="alert">
-                            <div *ngIf="fieldUsername.errors.email">
-                                <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
-                                <span class="sr-only">Error:</span>
-                                Enter a valid email address
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group"
-                     [ngClass]="{
-                         'has-error': signUp && fieldPassword.invalid && fieldPassword.dirty,
-                         'has-success': signUp && fieldPassword.valid && fieldPassword.dirty
-                     }">
-                    <label class="col-sm-2 control-label"
-                           for="password">
-                        Password
-                    </label>
-                    <div class="col-sm-10">
-                        <div class="password-group">
-                            <input type="{{ passwordType }}"
-                                   name="password"
-                                   id="password"
-                                   pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*)"
-                                   minlength="8"
-                                   maxlength="50"
-                                   [(ngModel)]="password"
-                                   class="form-control"
-                                   placeholder="**************"
-                                   required
-                                   #fieldPassword="ngModel">
-                            <button *ngIf="signUp"
-                                    class="btn btn-link show"
-                                    type="button"
-                                    title="Show/hide password"
-                                    (click)="togglePasswordVisibility()">
-                                <span class="fa" aria-hidden="true" [ngClass]="{
-                                    'fa-eye': passwordType === 'password',
-                                    'fa-eye-slash': passwordType !== 'password'
-                                }"></span>
-                            </button>
-                        </div>
-                        <div class="alert" *ngIf="signUp && fieldPassword.dirty" [ngClass]="{
-                            'alert-success': fieldPassword.valid,
-                            'alert-danger': fieldPassword.invalid
-                        }">
-                            <app-regexp-error pattern=".{8,}" [value]="password">
-                                has more than 7 symbols
-                            </app-regexp-error>
-                            <app-regexp-error pattern="\d+" [value]="password">
-                                contains at least one digit
-                            </app-regexp-error>
-                            <app-regexp-error pattern="\W+" [value]="password">
-                                contains at least one special symbol
-                            </app-regexp-error>
-                            <app-regexp-error pattern="[a-z]+" [value]="password">
-                                contains at least one lowercase symbol
-                            </app-regexp-error>
-                            <app-regexp-error pattern="[A-Z]+" [value]="password">
-                                contains at least one uppercase symbol
-                            </app-regexp-error>
-                        </div>
-                        <div class="alert alert-warning" *ngIf="signUp && fieldPassword.dirty">
-                            Please make sure you remember the password (hopefully it is the last
-                            password you need to remember), because <b class="text-uppercase">
-                            there is no possibility to reset the password</b> - all the data
-                            is encrypted and nobody can decrypt the data without this password.
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-2 col-sm-8">
-                        <button class="btn btn-primary btn-lg btn-block"
-                                [disabled]="loading || loginForm.invalid"
-                                role="button">
-                            <span class="fa" aria-hidden="true" [ngClass]="{
-                                'fa-user-plus': signUp,
-                                'fa-sign-in': !signUp
-                            }"></span>
-                            <span *ngIf="loading">
-                                <i class='fa fa-spinner fa-spin'></i>
-                                {{ signUp ? 'Signing up' : 'Logging in...'}}
-                            </span>
-                            <span *ngIf="!loading">
-                                {{ signUp ? 'Sign up' : 'Log in'}}
-                            </span>
-                        </button>
-                    </div>
-                </div>
-            </form>
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <form class="form-horizontal auth-form"
+          autocomplete="off"
+          (ngSubmit)="onSubmit()"
+          #loginForm="ngForm">
+        <h3 class="text-center">Welcome to Key Holder!</h3>
+        <hr/>
+        <div class="form-group"
+           [ngClass]="{
+             'has-error': signUp && fieldUsername.invalid && fieldUsername.dirty,
+             'has-success': signUp && fieldUsername.valid && fieldUsername.dirty
+           }">
+          <label class="control-label" for="username">
+            E-mail
+          </label>
+          <input type="email"
+               name="username"
+               id="username"
+               [(ngModel)]="username"
+               class="form-control"
+               placeholder="someone@example.com"
+               email
+               required
+               #fieldUsername="ngModel">
+          <div *ngIf="signUp && fieldUsername.invalid && fieldUsername.dirty"
+             class="alert alert-danger"
+             role="alert">
+            <div *ngIf="fieldUsername.errors.email">
+              <span class="fa fa-exclamation-circle" aria-hidden="true"></span>
+              <span class="sr-only">Error:</span>
+              Enter a valid email address
+            </div>
+          </div>
         </div>
+        <div class="form-group"
+           [ngClass]="{
+             'has-error': signUp && fieldPassword.invalid && fieldPassword.dirty,
+             'has-success': signUp && fieldPassword.valid && fieldPassword.dirty
+           }">
+          <label class="control-label" for="password">
+            Password
+          </label>
+          <div class="password-group">
+            <input type="{{ passwordType }}"
+                 name="password"
+                 id="password"
+                 pattern="((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).*)"
+                 minlength="11"
+                 maxlength="50"
+                 [(ngModel)]="password"
+                 class="form-control"
+                 placeholder="**************"
+                 required
+                 #fieldPassword="ngModel">
+            <button *ngIf="signUp"
+                class="btn btn-link show"
+                type="button"
+                title="Show/hide password"
+                (click)="togglePasswordVisibility()">
+              <span class="fa" aria-hidden="true" [ngClass]="{
+                'fa-eye': passwordType === 'password',
+                'fa-eye-slash': passwordType !== 'password'
+              }"></span>
+            </button>
+          </div>
+          <div class="alert" *ngIf="signUp && fieldPassword.dirty" [ngClass]="{
+            'alert-success': fieldPassword.valid,
+            'alert-danger': fieldPassword.invalid
+          }">
+            <app-regexp-error pattern=".{11,}" [value]="password">
+              has more than 10 symbols
+            </app-regexp-error>
+            <app-regexp-error pattern="\d+" [value]="password">
+              contains at least one digit
+            </app-regexp-error>
+            <app-regexp-error pattern="\W+" [value]="password">
+              contains at least one special symbol
+            </app-regexp-error>
+            <app-regexp-error pattern="[a-z]+" [value]="password">
+              contains at least one lowercase symbol
+            </app-regexp-error>
+            <app-regexp-error pattern="[A-Z]+" [value]="password">
+              contains at least one uppercase symbol
+            </app-regexp-error>
+          </div>
+          <div class="alert alert-warning" *ngIf="signUp && fieldPassword.dirty">
+            Please make sure you remember the password (hopefully it is the last
+            password you need to remember), because <b class="text-uppercase">
+            there is no possibility to reset the password</b> - all the data
+            is encrypted and nobody can decrypt the data without this password.
+          </div>
+        </div>
+        <div class="row">
+          <div class="offset-sm-3 col-sm-6">
+            <button class="btn btn-primary btn-lg btn-block"
+                [disabled]="loading || loginForm.invalid"
+                role="button">
+              <span class="fa" aria-hidden="true" [ngClass]="{
+                'fa-user-plus': signUp,
+                'fa-sign-in': !signUp
+              }"></span>
+              <span *ngIf="loading">
+                <i class='fa fa-spinner fa-spin'></i>
+                {{ signUp ? 'Signing up' : 'Logging in...'}}
+              </span>
+              <span *ngIf="!loading">
+                {{ signUp ? 'Sign up' : 'Log in'}}
+              </span>
+            </button>
+          </div>
+        </div>
+      </form>
     </div>
-    <div class="row text-center">
-        <a routerLink="{{ !signUp ? '/register' : '/login' }}"
-           class="btn btn-info btn-lg">
-            <span class="fa" aria-hidden="true" [ngClass]="{
-                'fa-user-plus': !signUp,
-                'fa-sign-in': signUp
-            }"></span>
-            {{ !signUp ? 'Sign up' : 'Log in'}}
-        </a>
-    </div>
+  </div>
+  <div class="text-center">
+    <a routerLink="{{ !signUp ? '/register' : '/login' }}"
+       class="btn btn-info btn-lg">
+      <span class="fa" aria-hidden="true" [ngClass]="{
+        'fa-user-plus': !signUp,
+        'fa-sign-in': signUp
+      }"></span>
+      {{ !signUp ? 'Sign up' : 'Log in'}}
+    </a>
+  </div>
 </div>

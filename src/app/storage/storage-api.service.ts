@@ -19,11 +19,15 @@ export class StorageApiService {
         private passwordGenerator: PasswordGeneratorService
     ) { }
 
-    save(root: Folder) {
+    getEncryptedStorageContainer(root: Folder): string {
         const options = this.passwordGenerator.getOptions();
         const container = new Container(root, options);
+        return encodeURIComponent(this.encrypting.encrypt(JSON.stringify(container)));
+    }
+
+    save(root: Folder) {
         const input = {
-            data: encodeURIComponent(this.encrypting.encrypt(JSON.stringify(container)))
+            data: this.getEncryptedStorageContainer(root)
         };
 
         const copyToLocalStorage = () => {

@@ -6,6 +6,7 @@ import { PasswordGeneratorService } from '../../password-generator';
 import { Options } from '../../password-generator/model';
 import { StorageApiService, StorageService } from '../../storage';
 import { Container, Folder } from '../../storage/model';
+import { ImportExportModule } from '../../import-export';
 
 import { SettingsComponent } from './settings.component';
 
@@ -51,7 +52,8 @@ describe('SettingsComponent', () => {
         };
         TestBed.configureTestingModule({
             imports: [
-                FormsModule
+                FormsModule,
+                ImportExportModule
             ],
             declarations: [
                 SettingsComponent

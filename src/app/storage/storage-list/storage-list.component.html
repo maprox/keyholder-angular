@@ -1,38 +1,35 @@
-<div class="list-group list-group-lg m-0">
-    <button class="list-group-item"
+<div class="list-group list-group-lg mb-0">
+    <button class="list-group-item list-group-item-action"
        *ngIf="!storage.isRoot()"
        (click)="clickFolder(storage.getParent())">
 
-        <h3 class="list-group-item-heading">
-            <i class="fa fa-folder-open"></i>
-            ..
+        <h3 class="mb-0">
+            <i class="fa fa-folder-open mr-3"></i>..
         </h3>
 
     </button>
-    <button class="list-group-item"
+    <button class="list-group-item list-group-item-action"
        *ngFor="let item of storage.getCurrent().getFolders()"
        (click)="clickFolder(item)"
        appLongPress
        (onRelease)="editFolder(item)">
 
-        <h3 class="list-group-item-heading">
-            <i class="fa fa-folder"></i>&nbsp;
-            {{ item.getName() }}
+        <h3 class="mb-0">
+            <i class="fa fa-folder mr-3"></i>{{ item.getName() }}
         </h3>
 
     </button>
-    <button class="list-group-item"
+    <button class="list-group-item list-group-item-action"
        *ngFor="let item of storage.getCurrent().getItems()"
        (click)="clickItem(item)"
        ngxClipboard [cbContent]="asSecret(item).getSecret()"
        appLongPress
        (onRelease)="editSecret(item)">
 
-        <h3 class="list-group-item-heading">
-            <i class="fa fa-file-o"></i>&nbsp;
-            {{ item.getName() }}
+        <h3 class="mb-0">
+            <i class="fa fa-file-o mr-3"></i>{{ item.getName() }}
         </h3>
-        <p class="list-group-item-text">
+        <p class="mb-0">
             <small class="text-muted">
                 {{ asSecret(item).getContent() }}
             </small>
@@ -41,6 +38,6 @@
     </button>
 </div>
 
-<div *ngIf="storage.getCurrent().isEmpty()" class="well well-lg m-0">
+<div *ngIf="storage.getCurrent().isEmpty()" class="jumbotron">
     <h2>This folder is empty</h2>
 </div>
