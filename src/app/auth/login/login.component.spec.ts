@@ -104,6 +104,8 @@ describe('LoginComponent', () => {
     });
 
     it('should navigate to storage when logged in', () => {
+        isLoggedIn = true;
+
         fixture.detectChanges();
 
         expect(page.navSpy).toHaveBeenCalledTimes(1);

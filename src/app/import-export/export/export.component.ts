@@ -2,7 +2,7 @@ import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { StorageApiService, StorageService } from '../../storage';
 
-import { saveAs } from 'file-saver/FileSaver';
+import saveAs from 'file-saver';
 
 @Component({
     selector: 'app-export',
