@@ -21,7 +21,7 @@ describe('PasswordGeneratorService', () => {
 
     it('should generate passwords with default options', () => {
         const options = new Options();
-        expect(options.length).toEqual(20);
+        expect(options.length).toEqual(30);
         expect(service.generate().length).toEqual(options.length);
     });
 
@@ -69,7 +69,7 @@ describe('PasswordGeneratorService', () => {
 
     it('should generate with changed options', () => {
         const defaultOptions = service.getOptions();
-        expect(defaultOptions.length).toEqual(20);
+        expect(defaultOptions.length).toEqual(30);
         expect(defaultOptions.useNumbers).toEqual(true);
         expect(defaultOptions.useSymbols).toEqual(true);
         expect(defaultOptions.useLowercase).toEqual(true);
