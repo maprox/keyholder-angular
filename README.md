@@ -47,7 +47,7 @@ cd keyholder-angular
 Install all dependencies
 
 ```bash
-npm ce
+npm ci
 ```
 
 You may also [check that tests are green](#running-the-tests) after installation

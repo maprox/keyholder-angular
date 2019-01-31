@@ -34,9 +34,10 @@
     "jquery": "^3.2.1",
     "karma-coverage-istanbul-reporter": "^2.0.4",
     "ngx-clipboard": "^11.1.9",
-    "rxjs": "^6.3.3",
-    "rxjs-compat": "^6.3.3",
-    "zone.js": "^0.8.26"
+    "popper.js": "^1.14.7",
+    "rxjs": "^6.4.0",
+    "rxjs-compat": "^6.4.0",
+    "zone.js": "^0.8.29"
   },
   "devDependencies": {
     "@angular/cli": "^7.3.0",
