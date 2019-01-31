@@ -1,3 +1,4 @@
+import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs/Subject';
@@ -6,9 +7,14 @@ import { PasswordGeneratorService } from '../../password-generator';
 import { Options } from '../../password-generator/model';
 import { StorageApiService, StorageService } from '../../storage';
 import { Container, Folder } from '../../storage/model';
-import { ImportExportModule } from '../../import-export';
 
 import { SettingsComponent } from './settings.component';
+
+@Component({
+    selector: 'app-import-export',
+    template: '<div>Fake import-export component</div>'
+})
+class FakeImportExportComponent {}
 
 describe('SettingsComponent', () => {
     let component: SettingsComponent,
@@ -52,11 +58,11 @@ describe('SettingsComponent', () => {
         };
         TestBed.configureTestingModule({
             imports: [
-                FormsModule,
-                ImportExportModule
+                FormsModule
             ],
             declarations: [
-                SettingsComponent
+                SettingsComponent,
+                FakeImportExportComponent
             ],
             providers: [
                 {

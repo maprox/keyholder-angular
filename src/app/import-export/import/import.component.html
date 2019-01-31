@@ -1,4 +1,10 @@
-<button class="btn btn-warning btn-lg" (click)="import()">
-    <i class="fa fa-download"></i>
-    Import...
-</button>
+<label for="import-input" class="btn btn-warning btn-lg">
+  <i class="fa fa-download mr-2"></i>Import...
+</label>
+<input
+  type="file"
+  class="d-none"
+  accept=".kh"
+  id="import-input"
+  (change)="fileChanged($event)"
+>

@@ -25,7 +25,7 @@ export class StorageApiService {
         return encodeURIComponent(this.encrypting.encrypt(JSON.stringify(container)));
     }
 
-    save(root: Folder) {
+    save(root: Folder): Observable<any> {
         const input = {
             data: this.getEncryptedStorageContainer(root)
         };
@@ -34,10 +34,10 @@ export class StorageApiService {
             localStorage.setItem(this.storageKey, input.data);
         };
 
-        this.http.put('/storage', input).subscribe(
-            copyToLocalStorage,
-            copyToLocalStorage
-        );
+        const request = this.http.put('/storage', input);
+        request.subscribe(copyToLocalStorage, copyToLocalStorage);
+
+        return request;
     }
 
     load(): Observable<any> {
@@ -48,23 +48,29 @@ export class StorageApiService {
         return this.subject.asObservable();
     }
 
-    loadData(data: string) {
-        const input = this.encrypting.decrypt(data);
-        if (input) {
-            let container = JSON.parse(input, SerializerService.getReviver({
-                'Container': Container,
-                'Folder': Folder,
-                'Options': Options,
-                'Secret': Secret
-            }));
+    loadData(data: string): Container {
+        let container: Container = null;
+        try {
+            const input = this.encrypting.decrypt(data);
+            if (input) {
+                container = JSON.parse(input, SerializerService.getReviver({
+                    'Container': Container,
+                    'Folder': Folder,
+                    'Options': Options,
+                    'Secret': Secret
+                }));
 
-            if (container instanceof Folder) {
-                // legacy version, to be removed after deploy
-                container = new Container(container, this.passwordGenerator.getOptions());
+                if (container instanceof Folder) {
+                    // legacy version, to be removed after deploy
+                    container = new Container(container, this.passwordGenerator.getOptions());
+                }
+
+                this.passwordGenerator.setOptions(container.getOptions());
+                this.subject.next(container);
             }
-
-            this.passwordGenerator.setOptions(container.getOptions());
-            this.subject.next(container);
+        } catch (e) {
+            // todo do something here?
         }
+        return container;
     }
 }

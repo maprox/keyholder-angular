@@ -5,12 +5,12 @@ https://travis-ci.org/maprox/keyholder-angular)
 [![codecov](https://codecov.io/gh/maprox/keyholder-angular/branch/master/graph/badge.svg)](
 https://codecov.io/gh/maprox/keyholder-angular)
 
-Hi, this is an Angular 6 Example Project, which can be used as a frontend for
+Hi, this is an Angular 7 Example Project, which can be used as a frontend for
 password manager when paired with a simple key-value backend
 [keyholder-server](https://github.com/maprox/keyholder-server).
 
 Its **main purpose** is to help learning different aspects of frontend development
-using Angular 6, such as authentication, routing, unit testing, etc.
+using Angular 7, such as authentication, routing, unit testing, etc.
 
 It's not a tutorial but rather a compilation of different ideas/components
 I've found over the Internet which were incorporated into one project.
@@ -26,8 +26,8 @@ browser and send already encrypted data to the server.
 
 ### Prerequisites
 
-Since this project is written using the latest Angular 6 it has the same
-prerequisites as the Angular 6 itself (Angular-CLI in particular):
+Since this project is written using the latest Angular 7 it has the same
+prerequisites as the Angular 7 itself (Angular-CLI in particular):
 Node 8.9.0 or higher, together with NPM 5.5.1 or higher.
 
 > Install [Node.js® and npm](https://nodejs.org/en/download/) if they are not
@@ -47,7 +47,7 @@ cd keyholder-angular
 Install all dependencies
 
 ```bash
-npm install
+npm ce
 ```
 
 You may also [check that tests are green](#running-the-tests) after installation
@@ -69,7 +69,7 @@ This project does not have any e2e tests yet,
 so running tests is as simple as running standard
 
 ```bash
-ng tests
+ng test
 ```
 
 ## License
