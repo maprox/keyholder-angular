@@ -11,13 +11,13 @@ import { LoginComponent } from './login.component';
 import { RegexpErrorComponent } from './regexp-error/regexp-error.component';
 
 describe('LoginComponent', () => {
-    let fixture: ComponentFixture<LoginComponent>,
-        de: DebugElement,
-        el: HTMLElement,
-        isLoggedIn = true,
-        page: Page,
-        authSubject: Subject<Object>,
-        authServiceStub: any;
+    let fixture: ComponentFixture<LoginComponent>;
+    let de: DebugElement;
+    let el: HTMLElement;
+    let isLoggedIn = true;
+    let page: Page;
+    let authSubject: Subject<Object>;
+    let authServiceStub: any;
 
     class Page {
         navSpy: jasmine.Spy;

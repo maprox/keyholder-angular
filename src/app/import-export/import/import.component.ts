@@ -1,18 +1,53 @@
 import { Component, OnInit } from '@angular/core';
+import { AlertService } from '../../alert';
+import { StorageApiService } from '../../storage';
+import { FileIoService } from '../file-io.service';
 
 @Component({
-    selector: 'app-import',
-    templateUrl: './import.component.html',
-    styleUrls: ['./import.component.scss']
+  selector: 'app-import',
+  templateUrl: './import.component.html',
+  styleUrls: ['./import.component.scss'],
 })
 export class ImportComponent implements OnInit {
+  constructor(
+    private storageApiService: StorageApiService,
+    private alertService: AlertService,
+    private fileIoService: FileIoService
+  ) {
+  }
 
-    constructor() { }
+  ngOnInit() {}
 
-    ngOnInit() {
+  fileChanged(event: any) {
+    const fileList: FileList = event.target.files;
+    if (!fileList.length) {
+      return;
     }
 
-    import() {
-        alert('Import!');
+    this.fileIoService.readFile(fileList[0]).subscribe(
+      (contents) => {
+        this.onFileLoad(contents);
+      },
+      (error) => {
+        this.alertService.error(`Import failed! Error reading the file! ${error || ''}`);
+      }
+    );
+  }
+
+  onFileLoad(data: string) {
+    // todo ask if user ready to rewrite existing storage
+    const container = this.storageApiService.loadData(data);
+    if (!container) {
+      this.alertService.error('Import failed! Error decrypting file contents!');
+      return;
     }
+    this.storageApiService.save(container.getStorage()).subscribe(
+      () => {
+        this.alertService.success('Successfully imported!');
+      },
+      () => {
+        this.alertService.error('Import failed! Error saving the storage!');
+      }
+    );
+  }
 }

@@ -9,7 +9,7 @@ RUN mkdir -p /opt/keyholder
 COPY . /opt/keyholder
 WORKDIR /opt/keyholder
 
-RUN npm install
+RUN npm ce
 
 ENTRYPOINT ["sh", "./start-script.sh"]
 
