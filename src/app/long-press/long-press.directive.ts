@@ -5,6 +5,8 @@ import {
 import { Observable, SubscriptionLike as ISubscription } from 'rxjs';
 import { TimerObservable } from 'rxjs/observable/TimerObservable';
 
+const SCROLL_DISTANCE = 10;
+
 @Directive({
     selector: '[appLongPress]'
 })
@@ -14,6 +16,7 @@ export class LongPressDirective implements OnInit, OnDestroy {
 
     private timer: Observable<number>;
     private subscription: ISubscription;
+    private distance: number;
 
     constructor() { }
 
@@ -25,6 +28,17 @@ export class LongPressDirective implements OnInit, OnDestroy {
         this.unsubscribe();
     }
 
+    @HostListener('mousemove', ['$event'])
+    public onMouseMove(event: MouseEvent): void {
+        if (!this.subscription) {
+            return;
+        }
+        this.distance += Math.abs(event.movementY);
+        if (this.distance > SCROLL_DISTANCE) {
+            this.unsubscribe();
+        }
+    }
+
     @HostListener('mouseup')
     @HostListener('touchend')
     public onMouseUp(): void {
@@ -34,6 +48,7 @@ export class LongPressDirective implements OnInit, OnDestroy {
     @HostListener('mousedown', ['$event'])
     @HostListener('touchstart', ['$event'])
     public onMouseDown(event: MouseEvent): void {
+        this.distance = 0;
         this.subscription = this.timer.subscribe(() => {
             this.unsubscribe();
             this.onRelease.emit(event);
