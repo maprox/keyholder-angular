@@ -9,213 +9,217 @@ import { AuthService } from './auth.service';
 import { Session, User } from './model';
 
 describe('AuthService', () => {
-    let httpSubject,
-        httpPostSubject,
-        httpServiceMock,
-        encryptingServiceMock,
-        routerMock;
+  let httpSubject,
+    httpPostSubject,
+    httpServiceMock,
+    encryptingServiceMock,
+    routerMock;
 
-    beforeEach(() => {
-        sessionStorage.clear();
+  beforeEach(() => {
+    httpSubject = new Subject<Object>();
+    httpPostSubject = new Subject<Object>();
+    httpServiceMock = {
+      getConnectionEvent: () => httpSubject.asObservable(),
+      post: jasmine.createSpy().and.returnValue(httpPostSubject)
+    };
+    encryptingServiceMock = {
+      setUser: jasmine.createSpy(),
+      getLogin: jasmine.createSpy(),
+      getSecret: jasmine.createSpy(),
+    };
+    routerMock = {
+      navigate: jasmine.createSpy()
+    };
 
-        httpSubject = new Subject<Object>();
-        httpPostSubject = new Subject<Object>();
-        httpServiceMock = {
-            getConnectionEvent: () => httpSubject.asObservable(),
-            post: jasmine.createSpy().and.returnValue(httpPostSubject)
-        };
-        encryptingServiceMock = {
-            setUser: jasmine.createSpy(),
-            getSecret: jasmine.createSpy()
-        };
-        routerMock = {
-            navigate: jasmine.createSpy()
-        };
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        {
+          provide: HttpService,
+          useValue: httpServiceMock
+        },
+        {
+          provide: EncryptingService,
+          useValue: encryptingServiceMock
+        },
+        {
+          provide: Router,
+          useValue: routerMock
+        }
+      ]
+    });
+  });
 
-        TestBed.configureTestingModule({
-            providers: [
-                AuthService,
-                {
-                    provide: HttpService,
-                    useValue: httpServiceMock
-                },
-                {
-                    provide: EncryptingService,
-                    useValue: encryptingServiceMock
-                },
-                {
-                    provide: Router,
-                    useValue: routerMock
-                }
-            ]
-        });
+  it('should be created', inject([AuthService], (service: AuthService) => {
+    expect(service).toBeTruthy();
+    expect(routerMock.navigate.calls.count()).toEqual(0);
+  }));
+
+  it('should logout when auth failed', inject([AuthService], (service: AuthService) => {
+    expect(service).toBeTruthy();
+
+    const res1 = new HttpErrorResponse({ status: 400 });
+    httpSubject.next(res1);
+    expect(routerMock.navigate.calls.count()).toEqual(0);
+
+    const res2 = new HttpErrorResponse({ status: 403 });
+    httpSubject.next(res2);
+    expect(routerMock.navigate.calls.count()).toEqual(1);
+    expect(routerMock.navigate).toHaveBeenCalledWith(['/logout']);
+  }));
+
+  it('should not be logged in', inject([AuthService], (service: AuthService) => {
+    let sessionFromEvent = 0;
+
+    service.getAuthEvent().subscribe((val) => {
+      sessionFromEvent = val;
+    });
+    expect(sessionFromEvent).toEqual(0);
+
+    const session = service.getSession();
+    expect(session).toBeNull();
+
+    expect(service.isLoggedIn()).toBeFalsy();
+  }));
+
+  it('should log out', inject([AuthService], (service: AuthService) => {
+    let sessionFromEvent = 0;
+
+    service.getAuthEvent().subscribe((val) => {
+      sessionFromEvent = val;
+    });
+    expect(sessionFromEvent).toEqual(0);
+
+    service.logOut();
+
+    expect(sessionFromEvent).toBeUndefined();
+    expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(null);
+  }));
+
+  it('should sign in', inject([AuthService], (service: AuthService) => {
+    let sessionFromEvent: any = null;
+
+    service.getAuthEvent().subscribe((val) => {
+      sessionFromEvent = val;
     });
 
-    it('should be created', inject([AuthService], (service: AuthService) => {
-        expect(service).toBeTruthy();
-        expect(routerMock.navigate.calls.count()).toEqual(0);
-    }));
+    const username = 'some@example.com';
+    const password = 'secret';
+    const hash = username + password;
+    const user = new User(username, password);
 
-    it('should logout when auth failed', inject([AuthService], (service: AuthService) => {
-        expect(service).toBeTruthy();
+    encryptingServiceMock.getLogin.and.returnValue(username);
+    encryptingServiceMock.getSecret.and.returnValue(hash);
 
-        const res1 = new HttpErrorResponse({ status: 400 });
-        httpSubject.next(res1);
-        expect(routerMock.navigate.calls.count()).toEqual(0);
+    service.signIn(user);
 
-        const res2 = new HttpErrorResponse({ status: 403 });
-        httpSubject.next(res2);
-        expect(routerMock.navigate.calls.count()).toEqual(1);
-        expect(routerMock.navigate).toHaveBeenCalledWith(['/logout']);
-    }));
+    expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(user);
+    expect(encryptingServiceMock.getLogin).toHaveBeenCalled();
+    expect(encryptingServiceMock.getSecret).toHaveBeenCalled();
 
-    it('should not be logged in', inject([AuthService], (service: AuthService) => {
-        let sessionFromEvent = 0;
+    expect(httpServiceMock.post).toHaveBeenCalledWith('/sign_in', {
+      login: username,
+      secret: hash
+    });
 
-        service.getAuthEvent().subscribe((val) => {
-            sessionFromEvent = val;
-        });
-        expect(sessionFromEvent).toEqual(0);
+    const sessionData = {
+      token: 'some-token',
+      data: 'some-data'
+    };
 
-        const session = service.getSession();
-        expect(session).toBeNull();
-        expect(sessionFromEvent).toBeNull();
+    const session = new Session(
+      sessionData.token,
+      sessionData.data
+    );
 
-        expect(service.isLoggedIn()).toBeFalsy();
-    }));
+    httpPostSubject.next(sessionData);
 
-    it('should log out', inject([AuthService], (service: AuthService) => {
-        let sessionFromEvent = 0;
+    expect(sessionFromEvent).toEqual(session);
 
-        service.getAuthEvent().subscribe((val) => {
-            sessionFromEvent = val;
-        });
-        expect(sessionFromEvent).toEqual(0);
+    sessionFromEvent = null;
 
-        service.logOut();
+    expect(service.getSession()).toEqual(session, 'Should return session instance');
+    expect(sessionFromEvent).toBeNull('Session should be taken from local cache');
+  }));
 
-        expect(sessionFromEvent).toBeUndefined();
-        expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(null);
-    }));
+  it('should sign up', inject([AuthService], (service: AuthService) => {
+    let sessionFromEvent: any = null;
 
-    it('should sign in', inject([AuthService], (service: AuthService) => {
-        let sessionFromEvent: any = null;
+    service.getAuthEvent().subscribe((val) => {
+      sessionFromEvent = val;
+    });
 
-        service.getAuthEvent().subscribe((val) => {
-            sessionFromEvent = val;
-        });
+    const username = 'some@example.com';
+    const password = 'secret';
+    const hash = username + password;
+    const user = new User(username, password);
 
-        const username = 'some@example.com';
-        const password = 'secret';
-        const hash = username + password;
-        const user = new User(username, password);
+    encryptingServiceMock.getLogin.and.returnValue(username);
+    encryptingServiceMock.getSecret.and.returnValue(hash);
 
-        encryptingServiceMock.getSecret.and.returnValue(hash);
+    service.signUp(user);
 
-        service.signIn(user);
+    expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(user);
+    expect(encryptingServiceMock.getLogin).toHaveBeenCalled();
+    expect(encryptingServiceMock.getSecret).toHaveBeenCalled();
 
-        expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(user);
-        expect(encryptingServiceMock.getSecret).toHaveBeenCalled();
+    expect(httpServiceMock.post).toHaveBeenCalledWith('/sign_up', {
+      login: username,
+      secret: hash
+    });
 
-        expect(httpServiceMock.post).toHaveBeenCalledWith('/sign_in', {
-            login: username,
-            secret: hash
-        });
+    const sessionData = {
+      token: 'some-token',
+      data: 'some-data'
+    };
 
-        const sessionData = {
-            token: 'some-token',
-            data: 'some-data'
-        };
+    const session = new Session(
+      sessionData.token,
+      sessionData.data
+    );
 
-        const session = new Session(
-            sessionData.token,
-            sessionData.data
-        );
+    httpPostSubject.next(sessionData);
 
-        httpPostSubject.next(sessionData);
+    expect(sessionFromEvent).toEqual(session);
 
-        expect(sessionFromEvent).toEqual(session);
+    sessionFromEvent = null;
 
-        sessionFromEvent = null;
+    expect(service.getSession()).toEqual(session, 'Should return session instance');
+    expect(sessionFromEvent).toBeNull('Session should be taken from local cache');
+    expect(service.getAuthorizationHeader()).toEqual('Bearer some-token');
+  }));
 
-        expect(service.getSession()).toEqual(session, 'Should return session instance');
-        expect(sessionFromEvent).toBeNull('Session should be taken from local cache');
-    }));
+  it('should logout on network error', inject([AuthService], (service: AuthService) => {
+    let sessionFromEvent: any = null;
 
-    it('should sign up', inject([AuthService], (service: AuthService) => {
-        let sessionFromEvent: any = null;
+    service.getAuthEvent().subscribe((val) => {
+      sessionFromEvent = val;
+    });
 
-        service.getAuthEvent().subscribe((val) => {
-            sessionFromEvent = val;
-        });
+    const username = 'some@example.com';
+    const password = 'secret';
+    const hash = username + password;
+    const user = new User(username, password);
 
-        const username = 'some@example.com';
-        const password = 'secret';
-        const hash = username + password;
-        const user = new User(username, password);
+    encryptingServiceMock.getLogin.and.returnValue(username);
+    encryptingServiceMock.getSecret.and.returnValue(hash);
 
-        encryptingServiceMock.getSecret.and.returnValue(hash);
+    service.signIn(user);
 
-        service.signUp(user);
+    expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(user);
+    expect(encryptingServiceMock.getLogin).toHaveBeenCalled();
+    expect(encryptingServiceMock.getSecret).toHaveBeenCalled();
 
-        expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(user);
-        expect(encryptingServiceMock.getSecret).toHaveBeenCalled();
+    expect(httpServiceMock.post).toHaveBeenCalledWith('/sign_in', {
+      login: username,
+      secret: hash
+    });
 
-        expect(httpServiceMock.post).toHaveBeenCalledWith('/sign_up', {
-            login: username,
-            secret: hash
-        });
+    expect(sessionFromEvent).toBeNull();
+    httpPostSubject.error('No matter which error has happened');
 
-        const sessionData = {
-            token: 'some-token',
-            data: 'some-data'
-        };
-
-        const session = new Session(
-            sessionData.token,
-            sessionData.data
-        );
-
-        httpPostSubject.next(sessionData);
-
-        expect(sessionFromEvent).toEqual(session);
-
-        sessionFromEvent = null;
-
-        expect(service.getSession()).toEqual(session, 'Should return session instance');
-        expect(sessionFromEvent).toBeNull('Session should be taken from local cache');
-        expect(service.getAuthorizationHeader()).toEqual('Bearer some-token');
-    }));
-
-    it('should logout on network error', inject([AuthService], (service: AuthService) => {
-        let sessionFromEvent: any = null;
-
-        service.getAuthEvent().subscribe((val) => {
-            sessionFromEvent = val;
-        });
-
-        const username = 'some@example.com';
-        const password = 'secret';
-        const hash = username + password;
-        const user = new User(username, password);
-
-        encryptingServiceMock.getSecret.and.returnValue(hash);
-
-        service.signIn(user);
-
-        expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(user);
-        expect(encryptingServiceMock.getSecret).toHaveBeenCalled();
-
-        expect(httpServiceMock.post).toHaveBeenCalledWith('/sign_in', {
-            login: username,
-            secret: hash
-        });
-
-        expect(sessionFromEvent).toBeNull();
-        httpPostSubject.error('No matter which error has happened');
-
-        expect(sessionFromEvent).toBeUndefined();
-        expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(null);
-        expect(service.getAuthorizationHeader()).toEqual('');
-    }));
+    expect(sessionFromEvent).toBeUndefined();
+    expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(null);
+    expect(service.getAuthorizationHeader()).toEqual('');
+  }));
 });

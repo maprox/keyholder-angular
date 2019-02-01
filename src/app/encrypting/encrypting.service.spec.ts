@@ -8,8 +8,6 @@ describe('EncryptingService', () => {
     let service: EncryptingService;
 
     beforeEach(() => {
-        sessionStorage.clear();
-
         TestBed.configureTestingModule({
             providers: [
                 EncryptingService
@@ -27,6 +25,7 @@ describe('EncryptingService', () => {
 
     it('should return null without specified user', () => {
         expect(service.getUser()).toBeNull();
+        expect(service.getLogin()).toBeNull();
         expect(service.getSecret()).toBeNull();
         expect(service.encrypt('test')).toBeNull();
         expect(service.decrypt('test')).toBeNull();
@@ -39,6 +38,17 @@ describe('EncryptingService', () => {
 
         service.setUser(user);
         expect(service.getUser()).toEqual(user);
+    });
+
+    it('should get login hash', () => {
+        const username = 'some@example.com';
+        const password = 'secret';
+        const user = new User(username, password);
+
+        service.setUser(user);
+
+        const hash = '605001639c8e97e3f8320e73d494b28a118e59643edb711071aa82aa6cf5991a';
+        expect(service.getLogin()).toEqual(hash);
     });
 
     it('should get secret hash', () => {
