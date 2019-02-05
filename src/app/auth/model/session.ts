@@ -15,16 +15,4 @@ export class Session extends SerializableClass {
   getToken(): string {
     return this.token;
   }
-
-  setToken(token) {
-    this.token = token;
-  }
-
-  getData(): string {
-    return this.data;
-  }
-
-  setData(data) {
-    this.data = data;
-  }
 }

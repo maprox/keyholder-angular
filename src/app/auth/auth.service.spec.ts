@@ -222,4 +222,11 @@ describe('AuthService', () => {
     expect(encryptingServiceMock.setUser).toHaveBeenCalledWith(null);
     expect(service.getAuthorizationHeader()).toEqual('');
   }));
+
+  it('should check class names for models', () => {
+    const user = new User('', '');
+    const session = new Session('', '');
+    expect(user.getClassName()).toEqual('User');
+    expect(session.getClassName()).toEqual('Session');
+  });
 });
