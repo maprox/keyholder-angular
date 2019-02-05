@@ -200,6 +200,10 @@ describe('LoginComponent', () => {
     expect(authServiceStub.signUp).toHaveBeenCalledTimes(1);
     expect(authServiceStub.signIn).toHaveBeenCalledTimes(0);
 
+    authSubject.next(false);
+    fixture.detectChanges();
+    expect(page.navSpy).toHaveBeenCalledTimes(0);
+
     authSubject.next(true);
     fixture.detectChanges();
 
@@ -227,5 +231,10 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     expect(page.password.nativeElement.type).toEqual('text');
+
+    page.togglePasswordVisibility.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(page.password.nativeElement.type).toEqual('password');
   }));
 });

@@ -115,6 +115,21 @@ describe('ImportComponent', () => {
     expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(0);
   });
 
+  it('should handle failed import (error reading file - empty error)', () => {
+    widget.fileInput.triggerEventHandler('change', {
+      target: {
+        files: [{
+          contents: 'test',
+        }],
+      },
+    });
+    expect(widget.mocks[FileIoService.name].readFile).toHaveBeenCalledTimes(1);
+    readFileSubject.error('');
+    expect(widget.mocks[AlertService.name].error).toHaveBeenCalledWith(
+      'Import failed! Error reading the file! ');
+    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(0);
+  });
+
   it('should handle failed import (error decrypting)', () => {
     widget.fileInput.triggerEventHandler('change', {
       target: {

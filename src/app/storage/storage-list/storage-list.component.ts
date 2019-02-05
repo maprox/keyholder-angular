@@ -8,53 +8,49 @@ import { EditFormSecretService } from '../storage-actions/edit-form-secret';
 import { StorageService } from '../storage.service';
 
 @Component({
-    selector: 'app-storage-list',
-    templateUrl: './storage-list.component.html',
-    styleUrls: ['./storage-list.component.scss']
+  selector: 'app-storage-list',
+  templateUrl: './storage-list.component.html',
+  styleUrls: ['./storage-list.component.scss']
 })
 export class StorageListComponent implements OnInit {
-    constructor(
-        private alert: AlertService,
-        private editFormFolderService: EditFormFolderService,
-        private editFormSecretService: EditFormSecretService,
-        private router: Router,
-        public storage: StorageService
-    ) {}
+  constructor(
+    private alert: AlertService,
+    private editFormFolderService: EditFormFolderService,
+    private editFormSecretService: EditFormSecretService,
+    private router: Router,
+    public storage: StorageService
+  ) {}
 
-    ngOnInit() {
-        //
+  ngOnInit() {
+    //
+  }
+
+  asSecret(item: Item): Secret {
+    return item instanceof Secret ? item as Secret : null;
+  }
+
+  clickItem(item: Item) {
+    const secret = this.asSecret(item);
+    if (!secret) {
+      return;
     }
 
-    asSecret(item: Item): Secret {
-        return item instanceof Secret ? item as Secret : null;
-    }
+    // copy to clipboard
+    this.alert.success('Successfully copied to clipboard', 2000);
+  }
 
-    clickItem(item: Item) {
-        const secret = this.asSecret(item);
-        if (!secret) {
-            return;
-        }
+  clickFolder(item: Item) {
+    this.storage.openFolder(item as Folder);
+    this.router.navigate(['/storage' + this.storage.getPathAsString()]);
+  }
 
-        // copy to clipboard
-        this.alert.success('Successfully copied to clipboard', 2000);
-    }
+  editSecret(item: Item) {
+    this.editFormSecretService.edit(item);
+    this.editFormFolderService.close();
+  }
 
-    clickFolder(item: Item) {
-        if (!(item instanceof Folder)) {
-            return;
-        }
-
-        this.storage.openFolder(item as Folder);
-        this.router.navigate(['/storage' + this.storage.getPathAsString()]);
-    }
-
-    editSecret(item: Item) {
-        this.editFormSecretService.edit(item);
-        this.editFormFolderService.close();
-    }
-
-    editFolder(item: Item) {
-        this.editFormFolderService.edit(item);
-        this.editFormSecretService.close();
-    }
+  editFolder(item: Item) {
+    this.editFormFolderService.edit(item);
+    this.editFormSecretService.close();
+  }
 }
