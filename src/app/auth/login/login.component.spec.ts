@@ -11,221 +11,221 @@ import { LoginComponent } from './login.component';
 import { RegexpErrorComponent } from './regexp-error/regexp-error.component';
 
 describe('LoginComponent', () => {
-    let fixture: ComponentFixture<LoginComponent>;
-    let de: DebugElement;
-    let el: HTMLElement;
-    let isLoggedIn = true;
-    let page: Page;
-    let authSubject: Subject<Object>;
-    let authServiceStub: any;
+  let fixture: ComponentFixture<LoginComponent>;
+  let de: DebugElement;
+  let el: HTMLElement;
+  let isLoggedIn = true;
+  let page: Page;
+  let authSubject: Subject<Object>;
+  let authServiceStub: any;
 
-    class Page {
-        navSpy: jasmine.Spy;
+  class Page {
+    navSpy: jasmine.Spy;
 
-        submit: DebugElement;
-        togglePasswordVisibility: DebugElement;
-        username: DebugElement;
-        password: DebugElement;
+    submit: DebugElement;
+    togglePasswordVisibility: DebugElement;
+    username: DebugElement;
+    password: DebugElement;
 
-        constructor() {
-            const router = TestBed.get(Router);
-            this.navSpy = spyOn(router, 'navigate');
-        }
-
-        buildPageElements() {
-            this.submit = fixture.debugElement.query(By.css('button.btn-primary'));
-            const inputs = fixture.debugElement.queryAll(By.css('input'));
-            this.username = inputs[0];
-            this.password = inputs[1];
-            this.togglePasswordVisibility = fixture.debugElement.query(By.css('button.btn-link'));
-        }
-
-        getSubmitLabel() {
-            return this.submit.nativeElement.textContent.trim();
-        }
+    constructor() {
+      const router = TestBed.get(Router);
+      this.navSpy = spyOn(router, 'navigate');
     }
 
-    @Component({ template: '' }) class DummyComponent {}
+    buildPageElements() {
+      this.submit = fixture.debugElement.query(By.css('button.btn-primary'));
+      const inputs = fixture.debugElement.queryAll(By.css('input'));
+      this.username = inputs[0];
+      this.password = inputs[1];
+      this.togglePasswordVisibility = fixture.debugElement.query(By.css('button.btn-link'));
+    }
 
-    @Component({
-        selector: 'app-fork-me',
-        template: '<div>Fake fork me component</div>'
-    })
-    class FakeForkMeComponent {}
+    getSubmitLabel() {
+      return this.submit.nativeElement.textContent.trim();
+    }
+  }
 
-    beforeEach(async(() => {
-        authSubject = new Subject<Object>();
-        authServiceStub = {
-            isLoggedIn() {
-                return isLoggedIn;
-            },
-            getAuthEvent() {
-                return authSubject.asObservable();
-            },
-            signIn: jasmine.createSpy(),
-            signUp: jasmine.createSpy()
-        };
+  @Component({ template: '' }) class DummyComponent {}
 
-        TestBed.configureTestingModule({
-            imports: [
-                FormsModule,
-                RouterTestingModule.withRoutes([
-                    { path: 'storage', component: DummyComponent },
-                    { path: 'register', component: DummyComponent, data: { signUp: true } },
-                    { path: 'login', component: DummyComponent }
-                ])
-            ],
-            declarations: [
-                FakeForkMeComponent,
-                LoginComponent,
-                DummyComponent,
-                RegexpErrorComponent
-            ],
-            providers: [
-                {
-                    provide: AuthService,
-                    useValue: authServiceStub
-                }
-            ]
-        }).compileComponents();
-    }));
+  @Component({
+    selector: 'app-fork-me',
+    template: '<div>Fake fork me component</div>'
+  })
+  class FakeForkMeComponent {}
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(LoginComponent);
-        page = new Page();
+  beforeEach(async(() => {
+    authSubject = new Subject<Object>();
+    authServiceStub = {
+      isLoggedIn() {
+        return isLoggedIn;
+      },
+      getAuthEvent() {
+        return authSubject.asObservable();
+      },
+      signIn: jasmine.createSpy(),
+      signUp: jasmine.createSpy()
+    };
 
-        //  get the element by CSS selector (e.g., by class name)
-        de = fixture.debugElement.query(By.css('.container'));
-        el = de.nativeElement;
-    });
+    TestBed.configureTestingModule({
+      imports: [
+        FormsModule,
+        RouterTestingModule.withRoutes([
+          { path: 'storage', component: DummyComponent },
+          { path: 'register', component: DummyComponent, data: { signUp: true } },
+          { path: 'login', component: DummyComponent }
+        ])
+      ],
+      declarations: [
+        FakeForkMeComponent,
+        LoginComponent,
+        DummyComponent,
+        RegexpErrorComponent
+      ],
+      providers: [
+        {
+          provide: AuthService,
+          useValue: authServiceStub
+        }
+      ]
+    }).compileComponents();
+  }));
 
-    it('should be created', () => {
-        expect(de).toBeTruthy();
-    });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(LoginComponent);
+    page = new Page();
 
-    it('should navigate to storage when logged in', () => {
-        isLoggedIn = true;
+    //  get the element by CSS selector (e.g., by class name)
+    de = fixture.debugElement.query(By.css('.container'));
+    el = de.nativeElement;
+  });
 
-        fixture.detectChanges();
+  it('should be created', () => {
+    expect(de).toBeTruthy();
+  });
 
-        expect(page.navSpy).toHaveBeenCalledTimes(1);
-        expect(page.navSpy).toHaveBeenCalledWith(['/storage']);
-    });
+  it('should navigate to storage when logged in', () => {
+    isLoggedIn = true;
 
-    it('should switch mode', inject([ActivatedRoute], (route: ActivatedRoute) => {
-        isLoggedIn = false;
+    fixture.detectChanges();
 
-        const routeSubject = new Subject<Object>();
-        route.data = routeSubject.asObservable();
+    expect(page.navSpy).toHaveBeenCalledTimes(1);
+    expect(page.navSpy).toHaveBeenCalledWith(['/storage']);
+  });
 
-        fixture.detectChanges();
+  it('should switch mode', inject([ActivatedRoute], (route: ActivatedRoute) => {
+    isLoggedIn = false;
 
-        page.buildPageElements();
+    const routeSubject = new Subject<Object>();
+    route.data = routeSubject.asObservable();
 
-        expect(de.children.length).toEqual(2);
+    fixture.detectChanges();
 
-        const switchDe = de.children[1].query(By.css('a.btn'));
+    page.buildPageElements();
 
-        expect(page.getSubmitLabel()).toEqual('Log in');
-        expect(switchDe.nativeElement.textContent.trim()).toEqual('Sign up');
+    expect(de.children.length).toEqual(2);
 
-        // emulate navigating to /register
-        routeSubject.next({signUp: true});
-        fixture.detectChanges();
+    const switchDe = de.children[1].query(By.css('a.btn'));
 
-        expect(page.getSubmitLabel()).toEqual('Sign up');
-        expect(switchDe.nativeElement.textContent.trim()).toEqual('Log in');
-    }));
+    expect(page.getSubmitLabel()).toEqual('Log in');
+    expect(switchDe.nativeElement.textContent.trim()).toEqual('Sign up');
 
-    it('should catch auth change', () => {
-        isLoggedIn = false;
+    // emulate navigating to /register
+    routeSubject.next({signUp: true});
+    fixture.detectChanges();
 
-        fixture.detectChanges();
+    expect(page.getSubmitLabel()).toEqual('Sign up');
+    expect(switchDe.nativeElement.textContent.trim()).toEqual('Log in');
+  }));
 
-        authSubject.next(true);
-        fixture.detectChanges();
+  it('should catch auth change', () => {
+    isLoggedIn = false;
 
-        expect(page.navSpy).toHaveBeenCalledTimes(1);
-        expect(page.navSpy).toHaveBeenCalledWith(['/']);
-    });
+    fixture.detectChanges();
 
-    it('should sign in', () => {
-        isLoggedIn = false;
+    authSubject.next(true);
+    fixture.detectChanges();
 
-        fixture.detectChanges();
-        page.buildPageElements();
-        expect(page.getSubmitLabel()).toEqual('Log in');
+    expect(page.navSpy).toHaveBeenCalledTimes(1);
+    expect(page.navSpy).toHaveBeenCalledWith(['/']);
+  });
 
-        // simulate user entering new name into the input box
-        page.username.nativeElement.value = 'test-username';
-        page.password.nativeElement.value = 'test-password';
+  it('should sign in', () => {
+    isLoggedIn = false;
 
-        // dispatch a DOM event so that Angular learns of input value change.
-        page.username.nativeElement.dispatchEvent(new Event('input'));
-        page.password.nativeElement.dispatchEvent(new Event('input'));
+    fixture.detectChanges();
+    page.buildPageElements();
+    expect(page.getSubmitLabel()).toEqual('Log in');
 
-        page.submit.nativeElement.click();
-        fixture.detectChanges();
+    // simulate user entering new name into the input box
+    page.username.nativeElement.value = 'test-username';
+    page.password.nativeElement.value = 'test-password';
 
-        expect(authServiceStub.signUp).toHaveBeenCalledTimes(0);
-        expect(authServiceStub.signIn).toHaveBeenCalledTimes(1);
-    });
+    // dispatch a DOM event so that Angular learns of input value change.
+    page.username.nativeElement.dispatchEvent(new Event('input'));
+    page.password.nativeElement.dispatchEvent(new Event('input'));
 
-    it('should sign up', inject([ActivatedRoute], (route: ActivatedRoute) => {
-        isLoggedIn = false;
+    page.submit.nativeElement.click();
+    fixture.detectChanges();
 
-        const routeSubject = new Subject<Object>();
-        route.data = routeSubject.asObservable();
-        route.snapshot.queryParams = {returnUrl: '/return-url'};
-        fixture.detectChanges();
+    expect(authServiceStub.signUp).toHaveBeenCalledTimes(0);
+    expect(authServiceStub.signIn).toHaveBeenCalledTimes(1);
+  });
 
-        // emulate navigating to /register
-        routeSubject.next({signUp: true});
-        fixture.detectChanges();
+  it('should sign up', inject([ActivatedRoute], (route: ActivatedRoute) => {
+    isLoggedIn = false;
 
-        page.buildPageElements();
-        expect(page.getSubmitLabel()).toEqual('Sign up');
+    const routeSubject = new Subject<Object>();
+    route.data = routeSubject.asObservable();
+    route.snapshot.queryParams = {returnUrl: '/return-url'};
+    fixture.detectChanges();
 
-        // simulate user entering new name into the input box
-        page.username.nativeElement.value = 'test-username';
-        page.password.nativeElement.value = 'test-password';
+    // emulate navigating to /register
+    routeSubject.next({signUp: true});
+    fixture.detectChanges();
 
-        // dispatch a DOM event so that Angular learns of input value change.
-        page.username.nativeElement.dispatchEvent(new Event('input'));
-        page.password.nativeElement.dispatchEvent(new Event('input'));
+    page.buildPageElements();
+    expect(page.getSubmitLabel()).toEqual('Sign up');
 
-        page.submit.nativeElement.click();
-        fixture.detectChanges();
+    // simulate user entering new name into the input box
+    page.username.nativeElement.value = 'test-username';
+    page.password.nativeElement.value = 'test-password';
 
-        expect(authServiceStub.signUp).toHaveBeenCalledTimes(1);
-        expect(authServiceStub.signIn).toHaveBeenCalledTimes(0);
+    // dispatch a DOM event so that Angular learns of input value change.
+    page.username.nativeElement.dispatchEvent(new Event('input'));
+    page.password.nativeElement.dispatchEvent(new Event('input'));
 
-        authSubject.next(true);
-        fixture.detectChanges();
+    page.submit.nativeElement.click();
+    fixture.detectChanges();
 
-        expect(page.navSpy).toHaveBeenCalledTimes(1);
-        expect(page.navSpy).toHaveBeenCalledWith(['/return-url']);
-    }));
+    expect(authServiceStub.signUp).toHaveBeenCalledTimes(1);
+    expect(authServiceStub.signIn).toHaveBeenCalledTimes(0);
 
-    it('should toggle password visibility', inject([ActivatedRoute], (route: ActivatedRoute) => {
-        isLoggedIn = false;
+    authSubject.next(true);
+    fixture.detectChanges();
 
-        const routeSubject = new Subject<Object>();
-        route.data = routeSubject.asObservable();
+    expect(page.navSpy).toHaveBeenCalledTimes(1);
+    expect(page.navSpy).toHaveBeenCalledWith(['/return-url']);
+  }));
 
-        fixture.detectChanges();
+  it('should toggle password visibility', inject([ActivatedRoute], (route: ActivatedRoute) => {
+    isLoggedIn = false;
 
-        // emulate navigating to /register
-        routeSubject.next({signUp: true});
-        fixture.detectChanges();
+    const routeSubject = new Subject<Object>();
+    route.data = routeSubject.asObservable();
 
-        page.buildPageElements();
+    fixture.detectChanges();
 
-        expect(page.password.nativeElement.type).toEqual('password');
+    // emulate navigating to /register
+    routeSubject.next({signUp: true});
+    fixture.detectChanges();
 
-        page.togglePasswordVisibility.nativeElement.click();
-        fixture.detectChanges();
+    page.buildPageElements();
 
-        expect(page.password.nativeElement.type).toEqual('text');
-    }));
+    expect(page.password.nativeElement.type).toEqual('password');
+
+    page.togglePasswordVisibility.nativeElement.click();
+    fixture.detectChanges();
+
+    expect(page.password.nativeElement.type).toEqual('text');
+  }));
 });

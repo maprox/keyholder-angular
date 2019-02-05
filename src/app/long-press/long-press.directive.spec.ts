@@ -94,4 +94,34 @@ describe('LongPressDirective', () => {
     expect(component.release).not.toHaveBeenCalled();
     inputEl.triggerEventHandler('mouseup', null);
   }));
+
+  it('should emit event on long press when was slightly touched and moved', fakeAsync(() => {
+    fixture.detectChanges();
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 50 }] });
+    inputEl.triggerEventHandler('touchstart', null);
+    expect(component.release).not.toHaveBeenCalled();
+    tick(499);
+    expect(component.release).not.toHaveBeenCalled();
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 100 }] });
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 105 }] });
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 110 }] });
+    tick(1);
+    expect(component.release).toHaveBeenCalled();
+    inputEl.triggerEventHandler('touchend', null);
+  }));
+
+  it('should not emit event on long press when was touched and moved', fakeAsync(() => {
+    fixture.detectChanges();
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 50 }] });
+    inputEl.triggerEventHandler('touchstart', null);
+    expect(component.release).not.toHaveBeenCalled();
+    tick(499);
+    expect(component.release).not.toHaveBeenCalled();
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 100 }] });
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 105 }] });
+    inputEl.triggerEventHandler('touchmove', { touches: [{ clientY: 111 }] });
+    tick(1);
+    expect(component.release).not.toHaveBeenCalled();
+    inputEl.triggerEventHandler('touchend', null);
+  }));
 });

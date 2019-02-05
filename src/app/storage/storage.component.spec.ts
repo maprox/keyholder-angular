@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { Router } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { StorageComponent } from './storage.component';
 
@@ -27,6 +29,11 @@ describe('StorageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [
+        RouterTestingModule.withRoutes([
+          { path: 'storage', component: StorageComponent },
+        ]),
+      ],
       declarations: [
         StorageComponent,
         FakeStorageActionsComponent,
@@ -44,5 +51,11 @@ describe('StorageComponent', () => {
 
   it('should be created', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should navigate', () => {
+    expect(component).toBeTruthy();
+    // const router = TestBed.get(Router);
+    // router.navigate('test');
   });
 });

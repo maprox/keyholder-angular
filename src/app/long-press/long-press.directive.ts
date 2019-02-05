@@ -17,6 +17,7 @@ export class LongPressDirective implements OnInit, OnDestroy {
     private timer: Observable<number>;
     private subscription: ISubscription;
     private distance: number;
+    private lastY: number;
 
     constructor() { }
 
@@ -28,15 +29,29 @@ export class LongPressDirective implements OnInit, OnDestroy {
         this.unsubscribe();
     }
 
+    private addDistance(value: number) {
+        this.distance += Math.abs(value);
+        if (this.distance > SCROLL_DISTANCE) {
+            this.unsubscribe();
+        }
+    }
+
+    @HostListener('touchmove', ['$event'])
+    public onTouchMove(event: TouchEvent): void {
+        if (!this.subscription) {
+            return;
+        }
+        const { clientY } = event.touches[0];
+        this.addDistance(clientY - (this.lastY || clientY));
+        this.lastY = clientY;
+    }
+
     @HostListener('mousemove', ['$event'])
     public onMouseMove(event: MouseEvent): void {
         if (!this.subscription) {
             return;
         }
-        this.distance += Math.abs(event.movementY);
-        if (this.distance > SCROLL_DISTANCE) {
-            this.unsubscribe();
-        }
+        this.addDistance(event.movementY);
     }
 
     @HostListener('mouseup')
@@ -49,6 +64,7 @@ export class LongPressDirective implements OnInit, OnDestroy {
     @HostListener('touchstart', ['$event'])
     public onMouseDown(event: MouseEvent): void {
         this.distance = 0;
+        this.lastY = 0;
         this.subscription = this.timer.subscribe(() => {
             this.unsubscribe();
             this.onRelease.emit(event);
