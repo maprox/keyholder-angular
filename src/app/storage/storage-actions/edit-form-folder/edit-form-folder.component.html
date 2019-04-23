@@ -6,10 +6,17 @@
              class="form-control form-control-lg"
              placeholder="Enter folder name"
              name="fieldName"
-             #fieldName>
+             pattern="[^/]*"
+             #fieldName="ngModel">
+      <div *ngIf="fieldName.invalid && (fieldName.dirty || fieldName.touched)"
+           class="alert alert-danger">
+        <div *ngIf="fieldName.errors['pattern']">
+          Some symbols are not allowed. Please remove them to proceed
+        </div>
+      </div>
     </div>
     <div class="card-footer">
-      <button class="btn btn-lg btn-success mr-2" [disabled]="!itemName">
+      <button class="btn btn-lg btn-success mr-2" [disabled]="!itemName || fieldName.invalid">
         <i class="fa fa-plus-circle"></i>
         <span class="hidden-xxs ml-2">{{ isEditMode() ? 'Save' : 'Add' }}</span>
       </button>
