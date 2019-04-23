@@ -47,10 +47,12 @@ export class StorageListComponent implements OnInit {
   editSecret(item: Item) {
     this.editFormSecretService.edit(item);
     this.editFormFolderService.close();
+    window.scroll(0, 0);
   }
 
   editFolder(item: Item) {
     this.editFormFolderService.edit(item);
     this.editFormSecretService.close();
+    window.scroll(0, 0);
   }
 }

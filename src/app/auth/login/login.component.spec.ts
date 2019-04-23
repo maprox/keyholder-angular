@@ -176,7 +176,7 @@ describe('LoginComponent', () => {
 
     const routeSubject = new Subject<Object>();
     route.data = routeSubject.asObservable();
-    route.snapshot.queryParams = {returnUrl: '/return-url'};
+    route.snapshot.queryParams = {returnUrl: '/return-url/%28%29'};
     fixture.detectChanges();
 
     // emulate navigating to /register
@@ -208,7 +208,7 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     expect(page.navSpy).toHaveBeenCalledTimes(1);
-    expect(page.navSpy).toHaveBeenCalledWith(['/return-url']);
+    expect(page.navSpy).toHaveBeenCalledWith(['/return-url/()']);
   }));
 
   it('should toggle password visibility', inject([ActivatedRoute], (route: ActivatedRoute) => {
