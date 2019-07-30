@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { AuthService } from '../auth';
 import { Container, Folder } from './model';

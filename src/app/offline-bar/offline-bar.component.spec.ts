@@ -1,5 +1,5 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { HttpService } from '../http';
 import { OfflineBarComponent } from './offline-bar.component';

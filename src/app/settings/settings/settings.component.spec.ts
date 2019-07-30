@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 
 import { PasswordGeneratorService } from '../../password-generator';
 import { Options } from '../../password-generator/model';
