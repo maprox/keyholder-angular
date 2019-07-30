@@ -5,7 +5,7 @@ import { StorageService } from '../../storage.service';
 import { EditFormService } from './edit-form.service';
 
 export abstract class EditFormComponent implements OnInit {
-    @ViewChild('fieldName') fieldName: ElementRef;
+    @ViewChild('fieldName', { static: false }) fieldName: ElementRef;
 
     isActive = false;
 

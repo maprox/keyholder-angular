@@ -2,8 +2,7 @@ import {
     Directive, EventEmitter, HostListener, Input, OnDestroy, OnInit,
     Output
 } from '@angular/core';
-import { Observable, SubscriptionLike as ISubscription } from 'rxjs';
-import { TimerObservable } from 'rxjs/observable/TimerObservable';
+import { Observable, SubscriptionLike as ISubscription, timer } from 'rxjs';
 
 const SCROLL_DISTANCE = 10;
 
@@ -22,7 +21,7 @@ export class LongPressDirective implements OnInit, OnDestroy {
     constructor() { }
 
     public ngOnInit() {
-        this.timer = TimerObservable.create(this.appLongPress || 500);
+        this.timer = timer(this.appLongPress || 500);
     }
 
     public ngOnDestroy() {

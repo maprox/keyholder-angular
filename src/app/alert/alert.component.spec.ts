@@ -2,7 +2,7 @@ import { DebugElement } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { NavigationEnd, NavigationStart, Router } from '@angular/router';
-import { RouterEvent } from '@angular/router/src/events';
+import { RouterEvent } from '@angular/router';
 import { Subject } from 'rxjs';
 
 import { AlertComponent, AlertService } from '.';
