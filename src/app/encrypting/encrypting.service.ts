@@ -3,6 +3,8 @@ import { AES, enc, SHA256 } from 'crypto-js';
 
 import { User } from '../auth/model';
 
+const HASH_CALCULATION_ITERATIONS_COUNT = 1;
+
 @Injectable()
 export class EncryptingService {
   private user: User = null;
@@ -17,12 +19,20 @@ export class EncryptingService {
     return this.user;
   }
 
+  getHash(value): string {
+      let hash = value;
+      for (let count = 0; count < HASH_CALCULATION_ITERATIONS_COUNT; count += 1) {
+          hash = SHA256(hash).toString();
+      }
+      return hash;
+  }
+
   getLogin(): string {
     const user = this.getUser();
     if (!user) {
       return null;
     }
-    return SHA256(user.getUsername()).toString();
+    return this.getHash(user.getUsername());
   }
 
   getSecret(): string {
@@ -30,7 +40,7 @@ export class EncryptingService {
     if (!user) {
       return null;
     }
-    return SHA256(user.getUsername() + ':' + user.getPassword()).toString();
+    return this.getHash(user.getUsername() + ':' + user.getPassword());
   }
 
   encrypt(data: string): string {

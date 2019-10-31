@@ -40,7 +40,7 @@ export class LoginComponent implements OnInit {
     onSubmit() {
         const user = new User(this.username, this.password);
         // get return url from route parameters or default to '/'
-        this.returnUrl = decodeURIComponent(this.route.snapshot.queryParams.returnUrl);
+        this.returnUrl = decodeURIComponent(this.route.snapshot.queryParams.returnUrl || '/');
         this.loading = true;
         if (this.signUp) {
             this.auth.signUp(user);
