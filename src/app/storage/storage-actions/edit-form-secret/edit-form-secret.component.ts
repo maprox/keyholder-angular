@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { PasswordGeneratorService } from '../../../password-generator';
 import { Secret } from '../../model';
 import { StorageService } from '../../storage.service';
-import { EditFormComponent } from '../edit-form';
+import { EditFormComponentDirective } from '../edit-form';
 import { EditFormSecretService } from './edit-form-secret.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { EditFormSecretService } from './edit-form-secret.service';
     templateUrl: './edit-form-secret.component.html',
     styleUrls: ['./edit-form-secret.component.scss']
 })
-export class EditFormSecretComponent extends EditFormComponent implements OnInit {
+export class EditFormSecretComponent extends EditFormComponentDirective implements OnInit {
     detailsShown = false;
 
     itemSecret: string;
