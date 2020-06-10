@@ -6,7 +6,7 @@ import { EditFormService } from './edit-form.service';
 
 @Directive({})
 export abstract class EditFormComponentDirective implements OnInit {
-    @ViewChild('fieldName', { static: false }) fieldName: ElementRef;
+    @ViewChild('fieldName') fieldName: ElementRef;
 
     isActive = false;
 
