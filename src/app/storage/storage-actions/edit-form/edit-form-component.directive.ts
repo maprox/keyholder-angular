@@ -1,11 +1,12 @@
-import { ElementRef, OnInit, ViewChild } from '@angular/core';
+import { ElementRef, OnInit, ViewChild, Directive } from '@angular/core';
 
 import { Item } from '../../model';
 import { StorageService } from '../../storage.service';
 import { EditFormService } from './edit-form.service';
 
-export abstract class EditFormComponent implements OnInit {
-    @ViewChild('fieldName', { static: false }) fieldName: ElementRef;
+@Directive()
+export abstract class EditFormComponentDirective implements OnInit {
+    @ViewChild('fieldName') fieldName: ElementRef;
 
     isActive = false;
 

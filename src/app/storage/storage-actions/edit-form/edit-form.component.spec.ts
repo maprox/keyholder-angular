@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
-import { EditFormComponent } from './edit-form.component';
+import { EditFormComponentDirective } from './edit-form-component.directive';
 import { EditFormService } from './edit-form.service';
 import { Folder, Secret } from '../../model';
 import { StorageService } from '../../storage.service';
@@ -10,7 +10,7 @@ import { StorageService } from '../../storage.service';
 @Component({
   template: '<input name="fieldName" #fieldName>'
 })
-class EditFormTestComponent extends EditFormComponent implements OnInit {
+class EditFormTestComponent extends EditFormComponentDirective implements OnInit {
   constructor(
     protected storage: StorageService,
     protected editFormService: EditFormService

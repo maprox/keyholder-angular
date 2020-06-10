@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { Folder } from '../../model';
 import { StorageService } from '../../storage.service';
-import { EditFormComponent } from '../edit-form';
+import { EditFormComponentDirective } from '../edit-form';
 import { EditFormFolderService } from './edit-form-folder.service';
 
 @Component({
@@ -11,7 +11,7 @@ import { EditFormFolderService } from './edit-form-folder.service';
   templateUrl: './edit-form-folder.component.html',
   styleUrls: ['./edit-form-folder.component.scss']
 })
-export class EditFormFolderComponent extends EditFormComponent implements OnInit {
+export class EditFormFolderComponent extends EditFormComponentDirective implements OnInit {
   constructor(
     protected router: Router,
     protected storage: StorageService,

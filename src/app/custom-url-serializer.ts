@@ -1,5 +1,7 @@
 import { UrlTree, DefaultUrlSerializer } from '@angular/router';
+import { Injectable } from '@angular/core';
 
+@Injectable()
 export class CustomUrlSerializer extends DefaultUrlSerializer {
     serialize(tree: UrlTree): any {
         const path = super.serialize(tree);
