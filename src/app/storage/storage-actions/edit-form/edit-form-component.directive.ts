@@ -4,9 +4,9 @@ import { Item } from '../../model';
 import { StorageService } from '../../storage.service';
 import { EditFormService } from './edit-form.service';
 
-@Directive()
+@Directive({})
 export abstract class EditFormComponentDirective implements OnInit {
-    @ViewChild('fieldName') fieldName: ElementRef;
+    @ViewChild('fieldName', { static: false }) fieldName: ElementRef;
 
     isActive = false;
 
