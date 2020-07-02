@@ -1,3 +1,19 @@
-<app-storage-actions></app-storage-actions>
-<app-storage-path></app-storage-path>
-<app-storage-list></app-storage-list>
+<app-storage-actions
+  [current]="current"
+  (itemAdd)="onItemAdd($event)"
+  (itemRemove)="onItemRemove($event)"
+  (itemChange)="onItemChange($event)"
+>
+</app-storage-actions>
+<app-storage-path
+  [root]="root"
+  [current]="current"
+  (folderClicked)="onFolderClicked($event)"
+>
+</app-storage-path>
+<app-storage-list
+  [parent]="parent"
+  [current]="current"
+  (folderClicked)="onFolderClicked($event)"
+>
+</app-storage-list>

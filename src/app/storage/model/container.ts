@@ -1,3 +1,4 @@
+import { Option } from '@angular/cli/models/interface';
 import { Options } from '../../password-generator/model';
 import { SerializableClass } from '../../serializer';
 import { Folder } from './folder';
@@ -27,5 +28,13 @@ export class Container extends SerializableClass {
 
   getOptions(): Options {
     return this.options;
+  }
+
+  setStorage(storage: Folder) {
+    this.storage = storage;
+  }
+
+  setOptions(options: Options) {
+    this.options = options;
   }
 }

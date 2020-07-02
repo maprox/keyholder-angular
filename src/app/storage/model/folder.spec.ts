@@ -27,4 +27,8 @@ describe('Folder', () => {
     expect(items.length).toEqual(2);
     expect(root.getFolders().length).toEqual(0);
   });
+
+  it('should search for an item inside the Folder', () => {
+    const folderToFind = new Folder('find me');
+  });
 });

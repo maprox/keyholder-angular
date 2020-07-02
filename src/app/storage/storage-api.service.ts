@@ -10,67 +10,81 @@ import { Container, Folder, Secret } from './model';
 
 @Injectable()
 export class StorageApiService {
-    private storageKey = 'storage';
-    private subject = new Subject<Object>();
+  private storageKey = 'storage';
+  private subject = new Subject<Object>();
+  private container: Container;
 
-    constructor(
-        private http: HttpService,
-        private encrypting: EncryptingService,
-        private passwordGenerator: PasswordGeneratorService
-    ) { }
+  constructor(
+    private http: HttpService,
+    private encrypting: EncryptingService,
+    private passwordGenerator: PasswordGeneratorService
+  ) { }
 
-    getEncryptedStorageContainer(root: Folder): string {
-        const options = this.passwordGenerator.getOptions();
-        const container = new Container(root, options);
-        return encodeURIComponent(this.encrypting.encrypt(JSON.stringify(container)));
+  getEncryptedStorageContainer(root: Folder): string {
+    const options = this.passwordGenerator.getOptions();
+    if (!this.container) {
+      this.container = new Container(root, options);
+    } else {
+      this.container.setStorage(root);
+      this.container.setOptions(options);
     }
+    return encodeURIComponent(this.encrypting.encrypt(JSON.stringify(this.container)));
+  }
 
-    save(root: Folder): Observable<any> {
-        const input = {
-            data: this.getEncryptedStorageContainer(root)
-        };
+  save(root: Folder): Observable<any> {
+    console.log('save!');
 
-        const copyToLocalStorage = () => {
-            localStorage.setItem(this.storageKey, input.data);
-        };
+    const input = {
+      data: this.getEncryptedStorageContainer(root)
+    };
 
-        const request = this.http.put('/storage', input);
-        request.subscribe(copyToLocalStorage, copyToLocalStorage);
+    const copyToLocalStorage = () => {
+      localStorage.setItem(this.storageKey, input.data);
+    };
 
-        return request;
+    const request = this.http.put('/storage', input);
+    request.subscribe(copyToLocalStorage, copyToLocalStorage);
+
+    return request;
+  }
+
+  load(): Observable<any> {
+    if (!this.container) {
+      this.http.get('/storage', {responseType: 'text'}).subscribe(
+        (data) => this.loadData(decodeURIComponent(data)),
+        () => this.loadData(localStorage.getItem(this.storageKey))
+      );
+    } else {
+      this.subject.next(this.container);
     }
+    return this.subject.asObservable();
+  }
 
-    load(): Observable<any> {
-        this.http.get('/storage', {responseType: 'text'}).subscribe(
-            (data) => this.loadData(decodeURIComponent(data)),
-            () => this.loadData(localStorage.getItem(this.storageKey))
-        );
-        return this.subject.asObservable();
-    }
+  loadData(data: string): Container {
+    try {
+      const input = this.encrypting.decrypt(data);
+      if (input) {
+        this.container = JSON.parse(input, SerializerService.getReviver({
+          'Container': Container,
+          'Folder': Folder,
+          'Options': Options,
+          'Secret': Secret
+        }));
 
-    loadData(data: string): Container {
-        let container: Container = null;
-        try {
-            const input = this.encrypting.decrypt(data);
-            if (input) {
-                container = JSON.parse(input, SerializerService.getReviver({
-                    'Container': Container,
-                    'Folder': Folder,
-                    'Options': Options,
-                    'Secret': Secret
-                }));
-
-                if (container instanceof Folder) {
-                    // legacy version, to be removed after deploy
-                    container = new Container(container, this.passwordGenerator.getOptions());
-                }
-
-                this.passwordGenerator.setOptions(container.getOptions());
-                this.subject.next(container);
-            }
-        } catch (e) {
-            // todo do something here?
+        if (this.container instanceof Folder) {
+          // legacy version, to be removed after deploy
+          this.container = new Container(
+            this.container,
+            this.passwordGenerator.getOptions()
+          );
         }
-        return container;
+
+        this.passwordGenerator.setOptions(this.container.getOptions());
+        this.subject.next(this.container);
+      }
+    } catch (e) {
+      // todo do something here?
     }
+    return this.container;
+  }
 }

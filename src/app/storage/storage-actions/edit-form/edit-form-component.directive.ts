@@ -1,73 +1,85 @@
-import { ElementRef, OnInit, ViewChild, Directive } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild
+} from '@angular/core';
 
-import { Item } from '../../model';
-import { StorageService } from '../../storage.service';
+import { Folder, Item } from '../../model';
 import { EditFormService } from './edit-form.service';
 
 @Directive({})
 export abstract class EditFormComponentDirective implements OnInit {
-    @ViewChild('fieldName') fieldName: ElementRef;
+  @ViewChild('fieldName') fieldName: ElementRef;
 
-    isActive = false;
+  @Input() current: Folder;
 
-    itemSource: Item;
-    itemName: string;
+  @Output() itemAdd = new EventEmitter<Item>();
+  @Output() itemRemove = new EventEmitter<Item>();
+  @Output() itemChange = new EventEmitter<Item>();
 
-    constructor(
-        protected storage: StorageService,
-        protected editFormService: EditFormService
-    ) {}
+  isActive = false;
 
-    ngOnInit() {
-        this.editFormService.getEditEvent().subscribe((item) => {
-            if (item === null) {
-                this.close();
-            } else {
-                this.open(item);
-            }
-        });
-    }
+  itemSource: Item;
+  itemName: string;
 
-    focusName() {
-        setTimeout(() => {
-            if (this.fieldName && this.fieldName.nativeElement) {
-                this.fieldName.nativeElement.focus();
-            }
-        });
-    }
+  constructor(
+    protected editFormService: EditFormService
+  ) {}
 
-    isEditMode(): boolean {
-        return !!this.itemSource;
-    }
-
-    open(item: Item) {
-        this.itemSource = item;
-        this.itemName = item && item.getName() || '';
-        this.focusName();
-        this.isActive = true;
-    }
-
-    close() {
-        this.isActive = false;
-    }
-
-    add(item: Item) {
-        this.storage.getCurrent().add(item);
-        this.storage.save();
-    }
-
-    save(item: Item) {
-        item.setName(this.itemName);
-        this.storage.save();
-    }
-
-    remove(item: Item) {
-        this.storage.getCurrent().remove(item);
-        this.storage.save();
+  ngOnInit() {
+    this.editFormService.getEditEvent().subscribe((item) => {
+      if (item === null) {
         this.close();
-    }
+      } else {
+        this.open(item);
+      }
+    });
+  }
 
-    submit() {
-        this.close();
-    }
+  focusName() {
+    setTimeout(() => {
+      if (this.fieldName && this.fieldName.nativeElement) {
+        this.fieldName.nativeElement.focus();
+      }
+    });
+  }
+
+  isEditMode(): boolean {
+    return !!this.itemSource;
+  }
+
+  open(item: Item) {
+    this.itemSource = item;
+    this.itemName = item && item.getName() || '';
+    this.focusName();
+    this.isActive = true;
+  }
+
+  close() {
+    this.isActive = false;
+  }
+
+  add(item: Item) {
+    this.current.add(item);
+    this.itemAdd.emit(item);
+  }
+
+  remove(item: Item) {
+    this.current.remove(item);
+    this.itemRemove.emit(item);
+    this.close();
+  }
+
+  change(item: Item) {
+    item.setName(this.itemName);
+    this.itemChange.emit(item);
+  }
+
+  submit() {
+    this.close();
+  }
 }
