@@ -1,63 +1,57 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { Subject } from 'rxjs';
+import { Folder, Secret } from '../../model';
 
 import { EditFormComponentDirective } from './edit-form-component.directive';
 import { EditFormService } from './edit-form.service';
-import { Folder, Secret } from '../../model';
-import { StorageService } from '../../storage.service';
 
 @Component({
-  template: '<input name="fieldName" #fieldName>'
+  template: '<input name="fieldName" #fieldName>',
 })
-class EditFormTestComponent extends EditFormComponentDirective implements OnInit {
-  constructor(
-    protected storage: StorageService,
-    protected editFormService: EditFormService
-  ) {
-    super(storage, editFormService);
-  }
-}
+class EditFormTestComponent extends EditFormComponentDirective {}
 
 describe('EditFormComponent', () => {
-  let component: EditFormTestComponent,
-    fixture: ComponentFixture<EditFormTestComponent>,
-    storageCurrent: Folder,
-    storageServiceMock,
-    editEventSubject,
-    editFormServiceMock;
+  let component: EditFormTestComponent;
+  let fixture: ComponentFixture<EditFormTestComponent>;
+  let editEventSubject;
+  let editFormServiceMock;
+  let onItemAdd;
+  let onItemRemove;
+  let onItemChange;
 
   beforeEach(async(() => {
-    storageCurrent = new Folder('current');
-    storageServiceMock = {
-      getCurrent: jasmine.createSpy().and.returnValue(storageCurrent),
-      save: jasmine.createSpy()
-    };
     editEventSubject = new Subject<Object>();
     editFormServiceMock = {
-      getEditEvent: jasmine.createSpy().and.returnValue(editEventSubject)
+      getEditEvent: jasmine.createSpy().and.returnValue(editEventSubject),
     };
 
     TestBed.configureTestingModule({
       declarations: [
-        EditFormTestComponent
+        EditFormTestComponent,
       ],
       providers: [
         {
-          provide: StorageService,
-          useValue: storageServiceMock
-        },
-        {
           provide: EditFormService,
-          useValue: editFormServiceMock
-        }
-      ]
+          useValue: editFormServiceMock,
+        },
+      ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EditFormTestComponent);
     component = fixture.componentInstance;
+    component.current = new Folder('current');
+
+    onItemAdd = jasmine.createSpy();
+    onItemRemove = jasmine.createSpy();
+    onItemChange = jasmine.createSpy();
+
+    component.itemAdd.subscribe(onItemAdd);
+    component.itemRemove.subscribe(onItemRemove);
+    component.itemChange.subscribe(onItemChange);
+
     fixture.detectChanges();
   });
 
@@ -94,7 +88,6 @@ describe('EditFormComponent', () => {
     const compiled = fixture.debugElement.nativeElement.querySelector('input');
     spyOn(compiled, 'focus');
 
-
     tick();
 
     fixture.detectChanges();
@@ -117,24 +110,23 @@ describe('EditFormComponent', () => {
   });
 
   it('should add item', () => {
-    expect(storageCurrent.toJSON().items.length).toEqual(0);
+    expect(component.current.toJSON().items.length).toEqual(0);
 
-    component.add(new Secret('test'));
+    const item = new Secret('test');
+    component.add(item);
 
-    expect(storageServiceMock.getCurrent).toHaveBeenCalled();
-    expect(storageServiceMock.save).toHaveBeenCalled();
-    expect(storageCurrent.toJSON().items.length).toEqual(1);
+    expect(component.current.toJSON().items.length).toEqual(1);
+    expect(onItemAdd).toHaveBeenCalledWith(item);
   });
 
   it('should remove item', () => {
-    const secret = storageCurrent.add(new Secret('test'));
-    expect(storageCurrent.toJSON().items.length).toEqual(1);
+    const secret = component.current.add(new Secret('test'));
+    expect(component.current.toJSON().items.length).toEqual(1);
 
     component.remove(secret);
 
-    expect(storageServiceMock.getCurrent).toHaveBeenCalled();
-    expect(storageServiceMock.save).toHaveBeenCalled();
-    expect(storageCurrent.toJSON().items.length).toEqual(0);
+    expect(component.current.toJSON().items.length).toEqual(0);
+    expect(onItemRemove).toHaveBeenCalledWith(secret);
   });
 
   it('should save item', () => {
@@ -142,9 +134,9 @@ describe('EditFormComponent', () => {
     expect(secret.getName()).toEqual('test');
 
     component.itemName = 'something new';
-    component.save(secret);
+    component.change(secret);
 
     expect(secret.getName()).toEqual('something new');
-    expect(storageServiceMock.save).toHaveBeenCalled();
+    expect(onItemChange).toHaveBeenCalledWith(secret);
   });
 });

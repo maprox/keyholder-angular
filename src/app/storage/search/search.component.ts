@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { StorageSearcherService } from './storage-searcher.service';
+import { StorageService } from '../storage.service';
 
 @Component({
   selector: 'app-search',
@@ -13,13 +13,13 @@ export class SearchComponent implements OnInit {
 
   constructor(
       private router: Router,
-      private storageSearcher: StorageSearcherService
+      private storage: StorageService
   ) { }
 
   ngOnInit() {
   }
 
   onChange(query: string) {
-    this.storageSearcher.search(query);
+    this.storage.search(query);
   }
 }

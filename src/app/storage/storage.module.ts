@@ -11,7 +11,7 @@ import { StoragePathComponent } from './storage-path';
 import { StorageRoutingModule } from './storage-routing.module';
 import { StorageComponent } from './storage.component';
 import { StorageService } from './storage.service';
-import { SearchComponent, StorageSearcherService } from './search';
+import { SearchComponent } from './search';
 
 @NgModule({
     imports: [
@@ -23,7 +23,6 @@ import { SearchComponent, StorageSearcherService } from './search';
         StorageRoutingModule
     ],
     providers: [
-        StorageSearcherService,
         StorageService,
         StorageApiService
     ],

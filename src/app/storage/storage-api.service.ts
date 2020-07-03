@@ -32,8 +32,6 @@ export class StorageApiService {
   }
 
   save(root: Folder): Observable<any> {
-    console.log('save!');
-
     const input = {
       data: this.getEncryptedStorageContainer(root)
     };

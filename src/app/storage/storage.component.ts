@@ -27,7 +27,6 @@ export class StorageComponent implements OnInit, OnDestroy {
       if (event instanceof NavigationEnd && this.auth.isLoggedIn()) {
         const urlParts = decodeURIComponent(event.url).split('/');
         if (urlParts[1] === 'storage') {
-          console.log(event);
           this.currentPath = urlParts.splice(2).join('/');
           if (this.storage.isAvailable) {
             this.setRoot(this.storage.getRoot());

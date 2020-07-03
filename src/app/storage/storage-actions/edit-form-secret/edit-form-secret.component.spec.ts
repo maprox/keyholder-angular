@@ -4,62 +4,50 @@ import { Subject } from 'rxjs';
 import { PasswordGeneratorService } from '../../../password-generator';
 
 import { Folder, Secret } from '../../model';
-import { StorageService } from '../../storage.service';
 import { EditFormSecretComponent } from './edit-form-secret.component';
 import { EditFormSecretService } from './edit-form-secret.service';
 
 describe('EditFormSecretComponent', () => {
   const password = 'super-secret!11!';
-  let component: EditFormSecretComponent,
-    fixture: ComponentFixture<EditFormSecretComponent>,
-    storageCurrent: Folder,
-    storageServiceMock,
-    passwordGeneratorService,
-    editEventSubject,
-    editFormSecretService;
+  let component: EditFormSecretComponent;
+  let fixture: ComponentFixture<EditFormSecretComponent>;
+  let passwordGeneratorService;
+  let editEventSubject;
+  let editFormSecretService;
 
   beforeEach(async(() => {
-    storageCurrent = new Folder('current');
-    storageServiceMock = {
-      getCurrent: jasmine.createSpy().and.returnValue(storageCurrent),
-      openFolder: jasmine.createSpy(),
-      save: jasmine.createSpy()
-    };
     editEventSubject = new Subject<Object>();
     editFormSecretService = {
-      getEditEvent: jasmine.createSpy().and.returnValue(editEventSubject)
+      getEditEvent: jasmine.createSpy().and.returnValue(editEventSubject),
     };
     passwordGeneratorService = {
-      generate: jasmine.createSpy().and.returnValue(password)
+      generate: jasmine.createSpy().and.returnValue(password),
     };
 
     TestBed.configureTestingModule({
       imports: [
-        FormsModule
+        FormsModule,
       ],
       declarations: [
-        EditFormSecretComponent
+        EditFormSecretComponent,
       ],
       providers: [
         {
-          provide: StorageService,
-          useValue: storageServiceMock
-        },
-        {
           provide: PasswordGeneratorService,
-          useValue: passwordGeneratorService
+          useValue: passwordGeneratorService,
         },
         {
           provide: EditFormSecretService,
-          useValue: editFormSecretService
-        }
-      ]
+          useValue: editFormSecretService,
+        },
+      ],
     }).compileComponents();
   }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(EditFormSecretComponent);
     component = fixture.componentInstance;
+    component.current = new Folder('current');
     fixture.detectChanges();
   });
 
@@ -114,7 +102,6 @@ describe('EditFormSecretComponent', () => {
     component.submit();
 
     expect(component.itemSource.getName()).toEqual('hello virtual world!');
-    expect(storageServiceMock.save).toHaveBeenCalled();
     expect(component.isActive).toBeFalsy();
   });
 
@@ -131,9 +118,7 @@ describe('EditFormSecretComponent', () => {
     component.submit();
 
     expect(component.itemSource).toBeUndefined();
-    expect(storageServiceMock.getCurrent).toHaveBeenCalled();
-    expect(storageServiceMock.save).toHaveBeenCalled();
-    expect(storageCurrent.getItems().length).toEqual(1);
+    expect(component.current.getItems().length).toEqual(1);
     expect(component.isActive).toBeFalsy();
   });
 });
