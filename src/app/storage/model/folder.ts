@@ -2,7 +2,7 @@ import { Item } from './item';
 
 export class Folder extends Item {
   constructor(
-    name: string = null,
+    name: string = '',
     private folders: Folder[] = [],
     private items: Item[] = []
   ) {

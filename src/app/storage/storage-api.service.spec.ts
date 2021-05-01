@@ -106,9 +106,7 @@ describe('StorageApiService', () => {
   it('should save loaded storage', () => {
     const root = new Folder('root');
     const container = new Container(root, options);
-    const onSuccess = jasmine.createSpy();
     const encryptedContainer = 'EnCr YPt=eeed!';
-    const data = JSON.stringify(container);
     const newOptions = new Options(22);
 
     service.load();
@@ -132,22 +130,19 @@ describe('StorageApiService', () => {
     const root = new Folder('root');
     const container = new Container(root, options);
     const onSuccess = jasmine.createSpy();
-    const onFailure = jasmine.createSpy();
     const encryptedRoot = 'EnCr YPt=eeed!';
     const encodedEncryptedRoot = encodeURIComponent(encryptedRoot);
 
-    service.load().pipe(first()).subscribe(onSuccess, onFailure);
+    service.load().pipe(first()).subscribe(onSuccess);
 
     expect(httpService.get).toHaveBeenCalledTimes(1);
     expect(httpService.get).toHaveBeenCalledWith('/storage', {responseType: 'text'});
     expect(onSuccess).toHaveBeenCalledTimes(0);
-    expect(onFailure).toHaveBeenCalledTimes(0);
 
     httpClientSubject.next(encodedEncryptedRoot);
     expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedRoot);
     expect(onSuccess).toHaveBeenCalledTimes(1);
     expect(onSuccess).toHaveBeenCalledWith(container);
-    expect(onFailure).toHaveBeenCalledTimes(0);
 
     httpService.get = jasmine.createSpy();
     const onSuccess2 = jasmine.createSpy();
@@ -160,31 +155,26 @@ describe('StorageApiService', () => {
 
   it('should load data from server when successfully decrypted', () => {
     const onSuccess = jasmine.createSpy();
-    const onFailure = jasmine.createSpy();
     const encryptedContainer = 'EnCr YPt=eeed!';
-    const root = getRoot();
-    const container = new Container(root, options);
+    const container = new Container(getRoot(), options);
     const data = JSON.stringify(container);
 
-    service.load().subscribe(onSuccess, onFailure);
+    service.load().subscribe(onSuccess);
 
     encryptingService.decrypt.and.returnValue(data);
     httpClientSubject.next(encryptedContainer);
     expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedContainer);
     expect(onSuccess).toHaveBeenCalledTimes(1);
     expect(onSuccess).toHaveBeenCalledWith(container);
-    expect(onFailure).toHaveBeenCalledTimes(0);
   });
 
   it('should load data from localStorage', () => {
     const onSuccess = jasmine.createSpy();
-    const onFailure = jasmine.createSpy();
     const encryptedRoot = 'EnCr YPt=eeed!';
-    const root = getRoot();
-    const container = new Container(root, options);
+    const container = new Container(getRoot(), options);
     const data = JSON.stringify(container);
 
-    service.load().subscribe(onSuccess, onFailure);
+    service.load().subscribe(onSuccess);
 
     localStorage.setItem('storage', encryptedRoot);
     encryptingService.decrypt.and.returnValue(data);
@@ -192,13 +182,40 @@ describe('StorageApiService', () => {
     expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedRoot);
     expect(onSuccess).toHaveBeenCalledTimes(1);
     expect(onSuccess).toHaveBeenCalledWith(container);
-    expect(onFailure).toHaveBeenCalledTimes(0);
   });
 
-  /**
-   * @return {Folder}
-   */
-  function getRoot() {
+  it('should try to reload storage from server when logged out', <any>fakeAsync((): void => {
+    const onSuccess = jasmine.createSpy();
+    const encryptedContainer = 'EnCr YPt=eeed!';
+    const container = new Container(getRoot(), options);
+
+    service.load().pipe(first()).subscribe(onSuccess);
+    expect(httpService.get).toHaveBeenCalledTimes(1);
+    encryptingService.decrypt.and.returnValue(JSON.stringify(container));
+    httpClientSubject.next(encryptedContainer);
+    expect(onSuccess).toHaveBeenCalledTimes(1);
+
+    httpService.get = jasmine.createSpy().and.returnValue({ subscribe: () => {} });
+    const onSuccess2 = jasmine.createSpy();
+
+    service.load().pipe(first()).subscribe(onSuccess2);
+    tick();
+    expect(httpService.get).toHaveBeenCalledTimes(0);
+    expect(onSuccess2).toHaveBeenCalledTimes(1);
+
+    // NOT logged out
+    getAuthEventSubject.next(true);
+    service.load();
+    tick();
+    expect(httpService.get).toHaveBeenCalledTimes(0);
+
+    // logged out
+    getAuthEventSubject.next(false);
+    service.load();
+    expect(httpService.get).toHaveBeenCalledTimes(1);
+  }));
+
+  function getRoot(): Folder {
     const root = new Folder();
     (root.add(new Folder('test')) as Folder).add(new Secret(
       'secret',
