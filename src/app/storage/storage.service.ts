@@ -38,9 +38,6 @@ export class StorageService {
   }
 
   getRoot(): Folder {
-    if (!this.root) {
-      this.setRoot(new Folder('root'));
-    }
     return this.root;
   }
 

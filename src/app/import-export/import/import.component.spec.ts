@@ -5,7 +5,8 @@ import { Subject } from 'rxjs';
 import { AlertService } from '../../alert';
 
 import { BasicTestWidget } from '../../mocks/basic-widget.spec';
-import { StorageApiService } from '../../storage';
+import { Options } from '../../password-generator/model';
+import { StorageApiService, StorageService } from '../../storage';
 import { FileIoService } from '../file-io.service';
 
 import { ImportComponent } from './import.component';
@@ -21,10 +22,14 @@ describe('ImportComponent', () => {
   let widget: TestWidget;
   let readFileSubject: Subject<string>;
   let saveSubject: Subject<Object>;
+  let storageService;
 
   beforeEach(async(() => {
     readFileSubject = new Subject<string>();
     saveSubject = new Subject<Object>();
+    storageService = {
+      setRoot: jasmine.createSpy(),
+    };
 
     widget = new TestWidget();
     widget.compileComponents({
@@ -36,8 +41,12 @@ describe('ImportComponent', () => {
           provide: StorageApiService,
           useValue: {
             save: jasmine.createSpy().and.returnValue(saveSubject),
-            loadData: jasmine.createSpy(),
+            loadContainer: jasmine.createSpy(),
           },
+        },
+        {
+          provide: StorageService,
+          useValue: storageService,
         },
         {
           provide: AlertService,
@@ -74,18 +83,20 @@ describe('ImportComponent', () => {
       },
     });
     expect(widget.mocks[FileIoService.name].readFile).toHaveBeenCalledTimes(1);
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(0);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledTimes(0);
 
+    const options = new Options();
     const contents = 'ENCRYPTEDTEXT';
     const container = {
       getStorage: () => 'test storage',
+      getOptions: () => options,
     };
-    widget.mocks[StorageApiService.name].loadData.and.returnValue(container);
+    widget.mocks[StorageApiService.name].loadContainer.and.returnValue(container);
     readFileSubject.next(contents);
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(1);
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledWith(contents);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledTimes(1);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledWith(contents);
     expect(widget.mocks[StorageApiService.name].save).toHaveBeenCalledTimes(1);
-    expect(widget.mocks[StorageApiService.name].save).toHaveBeenCalledWith('test storage');
+    expect(widget.mocks[StorageApiService.name].save).toHaveBeenCalledWith('test storage', options);
     saveSubject.next();
     expect(widget.mocks[AlertService.name].success).toHaveBeenCalledWith(
       'Successfully imported!');
@@ -112,7 +123,7 @@ describe('ImportComponent', () => {
     readFileSubject.error('No permissions!');
     expect(widget.mocks[AlertService.name].error).toHaveBeenCalledWith(
       'Import failed! Error reading the file! No permissions!');
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(0);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledTimes(0);
   });
 
   it('should handle failed import (error reading file - empty error)', () => {
@@ -127,7 +138,7 @@ describe('ImportComponent', () => {
     readFileSubject.error('');
     expect(widget.mocks[AlertService.name].error).toHaveBeenCalledWith(
       'Import failed! Error reading the file! ');
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(0);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledTimes(0);
   });
 
   it('should handle failed import (error decrypting)', () => {
@@ -139,10 +150,10 @@ describe('ImportComponent', () => {
       },
     });
     const contents = 'ENCRYPTEDTEXT';
-    widget.mocks[StorageApiService.name].loadData.and.returnValue(null);
+    widget.mocks[StorageApiService.name].loadContainer.and.returnValue(null);
     readFileSubject.next(contents);
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(1);
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledWith(contents);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledTimes(1);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledWith(contents);
     expect(widget.mocks[AlertService.name].error).toHaveBeenCalledWith(
       'Import failed! Error decrypting file contents!');
   });
@@ -158,11 +169,12 @@ describe('ImportComponent', () => {
     const contents = 'ENCRYPTEDTEXT';
     const container = {
       getStorage: () => 'test storage',
+      getOptions: () => new Options(),
     };
-    widget.mocks[StorageApiService.name].loadData.and.returnValue(container);
+    widget.mocks[StorageApiService.name].loadContainer.and.returnValue(container);
     readFileSubject.next(contents);
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledTimes(1);
-    expect(widget.mocks[StorageApiService.name].loadData).toHaveBeenCalledWith(contents);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledTimes(1);
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledWith(contents);
     saveSubject.error({});
     expect(widget.mocks[AlertService.name].error).toHaveBeenCalledWith(
       'Import failed! Error saving the storage!');

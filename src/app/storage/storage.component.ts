@@ -25,7 +25,7 @@ export class StorageComponent implements OnInit, OnDestroy {
   ) {
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && this.auth.isLoggedIn()) {
-        const urlParts = decodeURIComponent(event.url).split('/');
+        const urlParts = decodeURIComponent(event.urlAfterRedirects).split('/');
         if (urlParts[1] === 'storage') {
           this.currentPath = urlParts.splice(2).join('/');
           if (this.storage.isAvailable) {
