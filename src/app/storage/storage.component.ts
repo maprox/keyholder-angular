@@ -7,7 +7,7 @@ import { StorageService } from './storage.service';
 @Component({
   selector: 'app-storage',
   templateUrl: './storage.component.html',
-  styleUrls: ['./storage.component.scss']
+  styleUrls: ['./storage.component.scss'],
 })
 export class StorageComponent implements OnInit, OnDestroy {
   root: Folder;
@@ -21,19 +21,17 @@ export class StorageComponent implements OnInit, OnDestroy {
   constructor(
     private router: Router,
     private storage: StorageService,
-    private auth: AuthService
+    private auth: AuthService,
   ) {
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && this.auth.isLoggedIn()) {
         const urlParts = decodeURIComponent(event.urlAfterRedirects).split('/');
-        if (urlParts[1] === 'storage') {
-          this.currentPath = urlParts.splice(2).join('/');
-          if (this.storage.isAvailable) {
-            this.setRoot(this.storage.getRoot());
-            this.setCurrent(this.getCurrentFolderByPath(this.currentPath));
-          } else {
-            this.storage.load();
-          }
+        this.currentPath = urlParts.splice(2).join('/');
+        if (this.storage.isAvailable) {
+          this.setRoot(this.storage.getRoot());
+          this.setCurrent(this.getCurrentFolderByPath(this.currentPath));
+        } else {
+          this.storage.load();
         }
       }
     });

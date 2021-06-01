@@ -6,7 +6,7 @@ import { EditFormSecretService } from './edit-form-secret';
 @Component({
   selector: 'app-storage-actions',
   templateUrl: './storage-actions.component.html',
-  styleUrls: ['./storage-actions.component.scss']
+  styleUrls: ['./storage-actions.component.scss'],
 })
 export class StorageActionsComponent {
   @Input() current: Folder;

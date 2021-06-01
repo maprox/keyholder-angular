@@ -8,10 +8,10 @@ import { StorageComponent } from './storage.component';
     path: 'storage',
     children: [{
       path: '**',
-      component: StorageComponent
+      component: StorageComponent,
     }],
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
   }])],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
 export class StorageRoutingModule {}
