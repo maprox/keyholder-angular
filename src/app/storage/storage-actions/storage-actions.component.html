@@ -1,22 +1,32 @@
 <div class="card">
   <div class="card-body">
     <div class="btn-group">
-      <button type="button"
-              class="btn btn-default btn-lg mr-1"
-              (click)="showAddSecret()">
+      <button
+        type="button"
+        class="btn btn-default btn-lg mr-1"
+        (click)="showAddSecret()">
         <i class="fa fa-key"></i>
         <span class="hidden-xxs ml-2">Add Secret</span>
       </button>
-      <button type="button"
-              class="btn btn-default btn-lg"
-              (click)="showAddFolder()">
+      <button
+        type="button"
+        class="btn btn-default btn-lg"
+        (click)="showAddFolder()">
         <i class="fa fa-folder-o"></i>
         <span class="hidden-xxs ml-2">Add Folder</span>
       </button>
     </div>
-
-    <app-edit-form-secret></app-edit-form-secret>
-    <app-edit-form-folder></app-edit-form-folder>
-
+    <app-edit-form-secret
+      [current]="current"
+      (itemAdd)="itemAdd.emit($event)"
+      (itemRemove)="itemRemove.emit($event)"
+      (itemChange)="itemChange.emit($event)">
+    </app-edit-form-secret>
+    <app-edit-form-folder
+      [current]="current"
+      (itemAdd)="itemAdd.emit($event)"
+      (itemRemove)="itemRemove.emit($event)"
+      (itemChange)="itemChange.emit($event)">
+    </app-edit-form-folder>
   </div>
 </div>

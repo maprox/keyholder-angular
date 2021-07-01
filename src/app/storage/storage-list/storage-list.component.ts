@@ -1,29 +1,26 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 
 import { AlertService } from '../../alert';
 import { Folder, Item, Secret } from '../model';
 import { EditFormFolderService } from '../storage-actions/edit-form-folder';
 import { EditFormSecretService } from '../storage-actions/edit-form-secret';
-import { StorageService } from '../storage.service';
 
 @Component({
   selector: 'app-storage-list',
   templateUrl: './storage-list.component.html',
   styleUrls: ['./storage-list.component.scss']
 })
-export class StorageListComponent implements OnInit {
+export class StorageListComponent {
+  @Input() parent: Folder;
+  @Input() current: Folder;
+
+  @Output() folderClicked = new EventEmitter<Folder>();
+
   constructor(
     private alert: AlertService,
     private editFormFolderService: EditFormFolderService,
     private editFormSecretService: EditFormSecretService,
-    private router: Router,
-    public storage: StorageService
   ) {}
-
-  ngOnInit() {
-    //
-  }
 
   asSecret(item: Item): Secret {
     return item instanceof Secret ? item as Secret : null;
@@ -40,8 +37,7 @@ export class StorageListComponent implements OnInit {
   }
 
   clickFolder(item: Item) {
-    this.storage.openFolder(item as Folder);
-    this.router.navigate(['/storage' + this.storage.getPathAsString()]);
+    this.folderClicked.emit(item as Folder);
   }
 
   editSecret(item: Item) {

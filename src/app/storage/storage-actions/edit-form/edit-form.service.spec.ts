@@ -4,61 +4,61 @@ import { Secret } from '../../model';
 import { EditFormService } from './edit-form.service';
 
 describe('EditFormService', () => {
-    let service: EditFormService;
+  let service: EditFormService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                EditFormService
-            ]
-        });
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        EditFormService,
+      ],
+    });
+  });
+
+  beforeEach(inject([EditFormService], (editFormService: EditFormService) => {
+    service = editFormService;
+  }));
+
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+
+  it('should edit item', () => {
+    let expectedItem = null;
+    service.getEditEvent().subscribe((item) => {
+      expectedItem = item;
     });
 
-    beforeEach(inject([EditFormService], (editFormService: EditFormService) => {
-        service = editFormService;
-    }));
+    expect(expectedItem).toBeNull();
 
-    it('should be created', () => {
-        expect(service).toBeTruthy();
+    const secret = new Secret('hello');
+    service.edit(secret);
+
+    expect(expectedItem).toEqual(secret);
+  });
+
+  it('should create item', () => {
+    let expectedItem = null;
+    service.getEditEvent().subscribe((item) => {
+      expectedItem = item;
     });
 
-    it('should edit item', () => {
-        let expectedItem = null;
-        service.getEditEvent().subscribe((item) => {
-            expectedItem = item;
-        });
+    expect(expectedItem).toBeNull();
 
-        expect(expectedItem).toBeNull();
+    service.create();
 
-        const secret = new Secret('hello');
-        service.edit(secret);
+    expect(expectedItem).toEqual(undefined);
+  });
 
-        expect(expectedItem).toEqual(secret);
+  it('should close edit form', () => {
+    let expectedItem = 'test';
+    service.getEditEvent().subscribe((item) => {
+      expectedItem = item;
     });
 
-    it('should create item', () => {
-        let expectedItem = null;
-        service.getEditEvent().subscribe((item) => {
-            expectedItem = item;
-        });
+    expect(expectedItem).toEqual('test');
 
-        expect(expectedItem).toBeNull();
+    service.close();
 
-        service.create();
-
-        expect(expectedItem).toEqual(undefined);
-    });
-
-    it('should close edit form', () => {
-        let expectedItem = 'test';
-        service.getEditEvent().subscribe((item) => {
-            expectedItem = item;
-        });
-
-        expect(expectedItem).toEqual('test');
-
-        service.close();
-
-        expect(expectedItem).toBeNull();
-    });
+    expect(expectedItem).toBeNull();
+  });
 });

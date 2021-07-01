@@ -1,6 +1,6 @@
 import { formatDate } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { StorageApiService, StorageService } from '../../storage';
+import { StorageApiService } from '../../storage';
 import { FileIoService } from '../file-io.service';
 
 @Component({
@@ -16,14 +16,13 @@ export class ExportComponent implements OnInit {
 
   constructor(
     private storageApi: StorageApiService,
-    private storageService: StorageService,
     private fileIoService: FileIoService
   ) { }
 
   ngOnInit() {}
 
   export() {
-    const data = this.storageApi.getEncryptedStorageContainer(this.storageService.getRoot());
+    const data = this.storageApi.getEncryptedContainer();
     const blob = new Blob([data], { type: 'text/plain' });
     this.fileIoService.saveAs(blob, ExportComponent.getFilename());
   }

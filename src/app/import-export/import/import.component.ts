@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertService } from '../../alert';
-import { StorageApiService } from '../../storage';
+import { StorageApiService, StorageService } from '../../storage';
 import { FileIoService } from '../file-io.service';
 
 @Component({
@@ -11,6 +11,7 @@ import { FileIoService } from '../file-io.service';
 export class ImportComponent implements OnInit {
   constructor(
     private storageApiService: StorageApiService,
+    private storageService: StorageService,
     private alertService: AlertService,
     private fileIoService: FileIoService
   ) {
@@ -36,13 +37,17 @@ export class ImportComponent implements OnInit {
 
   onFileLoad(data: string) {
     // todo ask if user ready to rewrite existing storage
-    const container = this.storageApiService.loadData(data);
+    const container = this.storageApiService.loadContainer(data);
     if (!container) {
       this.alertService.error('Import failed! Error decrypting file contents!');
       return;
     }
-    this.storageApiService.save(container.getStorage()).subscribe(
+    this.storageApiService.save(
+      container.getStorage(),
+      container.getOptions()
+    ).subscribe(
       () => {
+        this.storageService.setRoot(container.getStorage());
         this.alertService.success('Successfully imported!');
       },
       () => {
