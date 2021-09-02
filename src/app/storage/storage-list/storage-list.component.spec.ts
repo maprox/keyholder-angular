@@ -1,93 +1,80 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { DebugElement } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
 import { ClipboardModule } from 'ngx-clipboard';
 import { AlertService } from '../../alert';
-import { Folder, Item, Secret } from '../model';
+import TestComponentWrapper from '../../utils/test-component-wrapper';
+import { Folder } from '../model';
 import { EditFormFolderService } from '../storage-actions/edit-form-folder';
 import { EditFormSecretService } from '../storage-actions/edit-form-secret';
-import { StorageService } from '../storage.service';
 
 import { StorageListComponent } from './storage-list.component';
 
 describe('StorageListComponent', () => {
-  // let component: StorageListComponent,
-  //   fixture: ComponentFixture<StorageListComponent>,
-  //   alertServiceMock,
-  //   currentFolder,
-  //   editFormFolderServiceMock,
-  //   editFormSecretServiceMock,
-  //   routerMock,
-  //   storageServiceMock;
-  //
-  // beforeEach(async(() => {
-  //   alertServiceMock = {
-  //     success: jasmine.createSpy()
-  //   };
-  //   editFormFolderServiceMock = {
-  //     edit: jasmine.createSpy(),
-  //     close: jasmine.createSpy()
-  //   };
-  //   editFormSecretServiceMock = {
-  //     edit: jasmine.createSpy(),
-  //     close: jasmine.createSpy()
-  //   };
-  //   routerMock = {
-  //     navigate: jasmine.createSpy()
-  //   };
-  //   currentFolder = new Folder();
-  //   storageServiceMock = {
-  //     isRoot: jasmine.createSpy(),
-  //     getParent: jasmine.createSpy(),
-  //     getCurrent: function () {
-  //       return currentFolder;
-  //     },
-  //     openFolder: jasmine.createSpy(),
-  //     getPathAsString: jasmine.createSpy(),
-  //     getPath: jasmine.createSpy().and.returnValue([])
-  //   };
-  //
-  //   TestBed.configureTestingModule({
-  //     declarations: [
-  //       StorageListComponent
-  //     ],
-  //     providers: [
-  //       {
-  //         provide: AlertService,
-  //         useValue: alertServiceMock
-  //       },
-  //       {
-  //         provide: EditFormFolderService,
-  //         useValue: editFormFolderServiceMock
-  //       },
-  //       {
-  //         provide: EditFormSecretService,
-  //         useValue: editFormSecretServiceMock
-  //       },
-  //       {
-  //         provide: Router,
-  //         useValue: routerMock
-  //       },
-  //       {
-  //         provide: StorageService,
-  //         useValue: storageServiceMock
-  //       }
-  //     ],
-  //     imports: [
-  //       ClipboardModule
-  //     ]
-  //   }).compileComponents();
-  // }));
-  //
-  // beforeEach(() => {
-  //   fixture = TestBed.createComponent(StorageListComponent);
-  //   component = fixture.componentInstance;
-  //   fixture.detectChanges();
-  // });
-  //
-  // it('should be created', () => {
-  //   expect(component).toBeTruthy();
-  // });
-  //
+  let alertServiceMock;
+  let currentFolder;
+  let editFormFolderServiceMock;
+  let editFormSecretServiceMock;
+  let page: Page;
+
+  class Page extends TestComponentWrapper {
+    componentInstance: StorageListComponent;
+
+    list: DebugElement;
+
+    initElements() {
+      super.initElements();
+      this.list = this.getElementByCss('ol');
+    }
+  }
+
+  beforeEach(async(() => {
+    alertServiceMock = {
+      success: jasmine.createSpy()
+    };
+    editFormFolderServiceMock = {
+      edit: jasmine.createSpy(),
+      close: jasmine.createSpy()
+    };
+    editFormSecretServiceMock = {
+      edit: jasmine.createSpy(),
+      close: jasmine.createSpy()
+    };
+    currentFolder = new Folder();
+
+    TestBed.configureTestingModule({
+      declarations: [
+        StorageListComponent,
+      ],
+      providers: [
+        {
+          provide: AlertService,
+          useValue: alertServiceMock
+        },
+        {
+          provide: EditFormFolderService,
+          useValue: editFormFolderServiceMock
+        },
+        {
+          provide: EditFormSecretService,
+          useValue: editFormSecretServiceMock
+        },
+      ],
+      imports: [
+        ClipboardModule,
+      ],
+    }).compileComponents();
+  }));
+
+  beforeEach(() => {
+    page = new Page(TestBed.createComponent(StorageListComponent));
+    page.fixture.detectChanges();
+    page.initElements();
+  });
+
+  it('should be created', () => {
+    expect(page.componentInstance).toBeTruthy();
+  });
+
   // it('should treat item as secret', () => {
   //   expect(component.asSecret(new Folder())).toBeNull();
   //

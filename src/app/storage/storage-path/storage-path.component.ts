@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
 import { Folder } from '../model';
-import { StorageService } from '../storage.service';
 
 @Component({
   selector: 'app-storage-path',
@@ -15,10 +14,6 @@ export class StoragePathComponent implements OnChanges {
   @Output() folderClicked = new EventEmitter<Folder>();
 
   path: Folder[] = [];
-
-  constructor(
-    public storage: StorageService
-  ) { }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.root) {

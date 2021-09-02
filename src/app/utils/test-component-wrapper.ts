@@ -21,6 +21,10 @@ export class TestComponentWrapper {
     return this.fixture.debugElement.query(By.css(css));
   }
 
+  getElementsByCss(css: string): DebugElement[] {
+    return this.fixture.debugElement.queryAll(By.css(css));
+  }
+
   initElements() {
     // to be implemented by ancestors
   }

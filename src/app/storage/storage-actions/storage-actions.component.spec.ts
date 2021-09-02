@@ -88,15 +88,21 @@ describe('StorageActionsComponent', () => {
     expect(page.componentInstance).toBeTruthy();
   });
 
-  it('should show add folder panel', () => {
-    page.componentInstance.showAddFolder();
-    expect(editFormFolderServiceMock.create).toHaveBeenCalled();
-    expect(editFormSecretServiceMock.close).toHaveBeenCalled();
+  it('should show add folder panel', (done) => {
+    page.whenStable(() => {
+      page.buttonAddFolder.nativeElement.click();
+      expect(editFormFolderServiceMock.create).toHaveBeenCalled();
+      expect(editFormSecretServiceMock.close).toHaveBeenCalled();
+      done();
+    });
   });
 
-  it('should show add secret panel', () => {
-    page.componentInstance.showAddSecret();
-    expect(editFormSecretServiceMock.create).toHaveBeenCalled();
-    expect(editFormFolderServiceMock.close).toHaveBeenCalled();
+  it('should show add secret panel', (done) => {
+    page.whenStable(() => {
+      page.buttonAddSecret.nativeElement.click();
+      expect(editFormSecretServiceMock.create).toHaveBeenCalled();
+      expect(editFormFolderServiceMock.close).toHaveBeenCalled();
+      done();
+    });
   });
 });
