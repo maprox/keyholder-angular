@@ -4,15 +4,17 @@ import { By } from '@angular/platform-browser';
 import { Router } from '@angular/router';
 
 export class TestComponentWrapper {
-  component: any;
+  componentInstance: any;
   fixture: ComponentFixture<any>;
   navSpy: jasmine.Spy;
   router: Router;
 
-  constructor(fixture: ComponentFixture<any>) {
-    this.component = fixture.componentInstance;
+  constructor(fixture: ComponentFixture<any>, { router = false } = {}) {
+    this.componentInstance = fixture.componentInstance;
     this.fixture = fixture;
-    this.router = TestBed.inject(Router);
+    if (router) {
+      this.router = TestBed.inject(Router);
+    }
   }
 
   getElementByCss(css: string): DebugElement {

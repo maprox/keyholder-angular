@@ -64,7 +64,7 @@ describe('StorageComponent', () => {
   let storageRoot: Folder;
 
   class Page extends TestComponentWrapper {
-    component: StorageComponent;
+    componentInstance: StorageComponent;
 
     appStorageActions: DebugElement;
     appStoragePath: DebugElement;
@@ -131,13 +131,13 @@ describe('StorageComponent', () => {
   }));
 
   beforeEach(() => {
-    page = new Page(TestBed.createComponent(StorageComponent));
+    page = new Page(TestBed.createComponent(StorageComponent), { router: true });
     page.fixture.detectChanges();
     page.initElements();
   });
 
   it('should be created', () => {
-    expect(page.component).toBeTruthy();
+    expect(page.componentInstance).toBeTruthy();
   });
 
   it('should do nothing if logged out', (done) => {
@@ -262,5 +262,52 @@ describe('StorageComponent', () => {
       expect(storageService.save).toHaveBeenCalledTimes(1);
       done();
     });
+  });
+
+  it('should return empty path if root is not set', () => {
+    expect(page.componentInstance.getCurrentPathAsString()).toEqual('/');
+  });
+
+  it('should return correct current path', (done) => {
+    onChangeSubject.next(storageRoot);
+    page.fixture.detectChanges();
+
+    const navigate = spyOn(page.router, 'navigate');
+    const folder = storageRoot.getFolderByName('alpha').getFolderByName('alpha-sub-folder1');
+    page.whenStable(() => {
+      page.appStoragePath.componentInstance.folderClicked.emit(folder);
+      page.fixture.detectChanges();
+      expect(page.storageActionsCurrentPageName).toEqual('alpha-sub-folder1');
+      expect(page.componentInstance.getCurrentPathAsString()).toEqual('/alpha/alpha-sub-folder1');
+      expect(navigate).toHaveBeenCalledTimes(1);
+      expect(navigate).toHaveBeenCalledWith(['/storage/alpha/alpha-sub-folder1']);
+      done();
+    });
+  });
+
+  it('should check storage root items', () => {
+    // check folders
+    const alpha = storageRoot.getFolderByName('alpha');
+    const alphaSubFolder1 = alpha.getFolderByName('alpha-sub-folder1');
+    const alphaSubFolder2 = alpha.getFolderByName('alpha-sub-folder2');
+    expect(storageRoot.hasFolder(alpha)).toBeTruthy();
+    expect(storageRoot.hasFolder(alphaSubFolder1)).toBeFalsy();
+    expect(alpha.isEmpty()).toBeFalsy();
+    expect(alphaSubFolder1.isEmpty()).toBeFalsy();
+    expect(alphaSubFolder2.isEmpty()).toBeTruthy();
+
+    // check secrets
+    expect(alphaSubFolder1.getItems().length).toEqual(1);
+    const alphaSubFolder1Secret = (alphaSubFolder1.getItems()[0] as Secret);
+    expect(alphaSubFolder1Secret.getName()).toEqual('asf-1');
+    expect(alphaSubFolder1Secret.getSecret()).toEqual('abc');
+    expect(alphaSubFolder1Secret.getContent()).toEqual('test note');
+
+    alphaSubFolder1Secret.setName('asf-2');
+    alphaSubFolder1Secret.setSecret('new-abc');
+    alphaSubFolder1Secret.setContent('');
+    expect(alphaSubFolder1Secret.getName()).toEqual('asf-2');
+    expect(alphaSubFolder1Secret.getSecret()).toEqual('new-abc');
+    expect(alphaSubFolder1Secret.getContent()).toEqual('');
   });
 });
