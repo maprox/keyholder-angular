@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 
@@ -20,7 +20,7 @@ describe('ExportComponent', () => {
   let widget: TestWidget;
   let storageApiSubject;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     storageApiSubject = new Subject<Object>();
 
     widget = new TestWidget();

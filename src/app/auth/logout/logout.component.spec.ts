@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { AuthService } from '../auth.service';
@@ -9,7 +9,7 @@ describe('LogoutComponent', () => {
         authServiceStub,
         routerStub;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         // mock services
         authServiceStub = {
             logOut: jasmine.createSpy()

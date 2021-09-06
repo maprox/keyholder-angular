@@ -1,6 +1,6 @@
 import { FormsModule } from '@angular/forms';
 import { DebugElement } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { Router } from '@angular/router';
 
 import { StorageService } from '../storage.service';
@@ -24,7 +24,7 @@ describe('SearchComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     storageServiceMock = {
       search: jasmine.createSpy(),
     };

@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async } from '@angular/core/testing';
+import { waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { Subject } from 'rxjs';
 import { AlertService } from '../../alert';
@@ -24,7 +24,7 @@ describe('ImportComponent', () => {
   let saveSubject: Subject<Object>;
   let storageService;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     readFileSubject = new Subject<string>();
     saveSubject = new Subject<Object>();
     storageService = {

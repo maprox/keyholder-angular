@@ -1,5 +1,5 @@
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import TestComponentWrapper from '../../utils/test-component-wrapper';
 import { Folder, Item } from '../model';
 import { EditFormFolderService } from './edit-form-folder';
@@ -49,7 +49,7 @@ describe('StorageActionsComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     editFormSecretServiceMock = {
       create: jasmine.createSpy(),
       close: jasmine.createSpy()

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
 
@@ -26,7 +26,7 @@ describe('SettingsComponent', () => {
         storageApiService,
         storageService;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         options = new Options();
         optionFields = [{
             text: 'Use numbers',

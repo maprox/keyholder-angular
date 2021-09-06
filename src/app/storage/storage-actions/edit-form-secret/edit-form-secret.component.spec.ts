@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { PasswordGeneratorService } from '../../../password-generator';
 import { Folder, Secret } from '../../model';
@@ -52,7 +52,7 @@ describe('EditFormSecretComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     editFormSecretService = new EditFormSecretService();
     generationAttempt = 0;
     passwordGeneratorService = {
@@ -112,7 +112,7 @@ describe('EditFormSecretComponent', () => {
     const currentFolder = Folder.create('test');
     let newSecret: Secret;
     page.componentInstance.current = currentFolder;
-    page.componentInstance.itemAdd.subscribe((item) => { newSecret = item });
+    page.componentInstance.itemAdd.subscribe((item) => { newSecret = item as Secret });
 
     const newSecretName = 'new secret';
     page.setFieldNameTo(newSecretName);
@@ -147,7 +147,7 @@ describe('EditFormSecretComponent', () => {
     const currentFolder = Folder.create('test');
     let newSecret: Secret;
     page.componentInstance.current = currentFolder;
-    page.componentInstance.itemAdd.subscribe((item) => { newSecret = item });
+    page.componentInstance.itemAdd.subscribe((item) => { newSecret = item as Secret });
 
     const newSecretName = 'new secret';
     const newSecretNote = 'This is a test note';
@@ -200,7 +200,7 @@ describe('EditFormSecretComponent', () => {
 
     let removedSecret: Secret;
     page.componentInstance.current = currentFolder;
-    page.componentInstance.itemRemove.subscribe((item) => { removedSecret = item });
+    page.componentInstance.itemRemove.subscribe((item) => { removedSecret = item as Secret });
 
     page.remove();
 

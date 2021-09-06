@@ -1,5 +1,5 @@
 import { DebugElement } from '@angular/core';
-import { async, fakeAsync, TestBed } from '@angular/core/testing';
+import { fakeAsync, TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { ClipboardModule } from 'ngx-clipboard';
 import { AlertService } from '../../alert';
@@ -49,7 +49,7 @@ describe('StorageListComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     alertServiceMock = {
       success: jasmine.createSpy()
     };
