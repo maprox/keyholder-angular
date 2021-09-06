@@ -5,12 +5,12 @@ https://travis-ci.org/maprox/keyholder-angular)
 [![codecov](https://codecov.io/gh/maprox/keyholder-angular/branch/master/graph/badge.svg)](
 https://codecov.io/gh/maprox/keyholder-angular)
 
-Hi, this is an Angular 9 Example Project, which can be used as a frontend for
+Hi, this is an Angular 12 Example Project, which can be used as a frontend for
 password manager when paired with a simple key-value backend
 [keyholder-server](https://github.com/maprox/keyholder-server).
 
 Its **main purpose** is to help learning different aspects of frontend development
-using Angular 9, such as authentication, routing, unit testing, etc.
+using Angular 12, such as authentication, routing, unit testing, etc.
 
 It's not a tutorial but rather a compilation of different ideas/components
 I've found over the Internet which were incorporated into one project.
@@ -26,8 +26,8 @@ browser and send already encrypted data to the server.
 
 ### Prerequisites
 
-Since this project is written using the latest Angular 9 it has the same
-prerequisites as the Angular 9 itself (Angular-CLI in particular):
+Since this project is written using the latest Angular 12 it has the same
+prerequisites as the Angular 12 itself (Angular-CLI in particular):
 Node 12 or higher, together with NPM 6 or higher.
 
 > Install [Node.js® and npm](https://nodejs.org/en/download/) if they are not
