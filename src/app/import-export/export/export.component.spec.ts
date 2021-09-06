@@ -33,13 +33,7 @@ describe('ExportComponent', () => {
           provide: StorageApiService,
           useValue: {
             load: jasmine.createSpy().and.returnValue(storageApiSubject),
-            getEncryptedStorageContainer: jasmine.createSpy().and.returnValue('fake container'),
-          },
-        },
-        {
-          provide: StorageService,
-          useValue: {
-            getRoot: jasmine.createSpy().and.returnValue('fake root'),
+            getEncryptedContainer: jasmine.createSpy().and.returnValue('fake container'),
           },
         },
         {
@@ -73,11 +67,8 @@ describe('ExportComponent', () => {
 
   it('should export', () => {
     widget.export.nativeElement.click();
-    expect(widget.mocks[StorageApiService.name].getEncryptedStorageContainer)
+    expect(widget.mocks[StorageApiService.name].getEncryptedContainer)
       .toHaveBeenCalledTimes(1);
-    expect(widget.mocks[StorageApiService.name].getEncryptedStorageContainer)
-      .toHaveBeenCalledWith('fake root');
-    expect(widget.mocks[StorageService.name].getRoot).toHaveBeenCalledTimes(1);
     expect(widget.mocks[FileIoService.name].saveAs).toHaveBeenCalledTimes(1);
     expect(widget.mocks[FileIoService.name].saveAs.calls.argsFor(0)).toEqual([
       new Blob(['fake container'], { type: 'text/plain' }),

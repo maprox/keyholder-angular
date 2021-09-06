@@ -1,10 +1,18 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb m-0">
-    <li class="breadcrumb-item" *ngFor="let item of storage.getPath(); last as isLast">
-        <a *ngIf="!isLast" (click)="openFolder(item)" href="javascript:void(0)"
-        >{{ item.getName() }}</a>
-        <span *ngIf="isLast" class="active" aria-current="page"
-        >{{ item.getName() }}</span>
+    <li
+      class="breadcrumb-item"
+      *ngFor="let item of path; last as isLast">
+      <a
+        *ngIf="!isLast"
+        (click)="openFolder(item)"
+        href="javascript:void(0)"
+      >{{ item.getName() }}</a>
+      <span
+        *ngIf="isLast"
+        class="active"
+        aria-current="page"
+      >{{ item.getName() }}</span>
     </li>
   </ol>
 </nav>

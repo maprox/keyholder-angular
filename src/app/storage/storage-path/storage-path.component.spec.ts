@@ -1,61 +1,83 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { Folder } from '../model';
-import { StorageService } from '../storage.service';
+import { DebugElement } from '@angular/core';
+import { async, TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 
+import TestComponentWrapper from '../../utils/test-component-wrapper';
+
+import { getSophisticatedRoot } from '../../utils/test-folder-mocks';
+import { Folder } from '../model';
 import { StoragePathComponent } from './storage-path.component';
 
-describe('StoragePathComponent', () => {
-    let component: StoragePathComponent,
-        fixture: ComponentFixture<StoragePathComponent>,
-        routerMock,
-        storageServiceMock;
+describe('SearchPathComponent', () => {
+  let page: Page;
 
-    beforeEach(async(() => {
-        routerMock = {
-            navigate: jasmine.createSpy()
-        };
-        storageServiceMock = {
-            openFolder: jasmine.createSpy(),
-            getPathAsString: jasmine.createSpy(),
-            getPath: jasmine.createSpy().and.returnValue([])
-        };
+  class Page extends TestComponentWrapper {
+    componentInstance: StoragePathComponent;
 
-        TestBed.configureTestingModule({
-            declarations: [
-                StoragePathComponent
-            ],
-            providers: [
-                {
-                    provide: Router,
-                    useValue: routerMock
-                },
-                {
-                    provide: StorageService,
-                    useValue: storageServiceMock
-                }
-            ]
-        }).compileComponents();
-    }));
+    list: DebugElement;
+    items: DebugElement[];
 
-    beforeEach(() => {
-        fixture = TestBed.createComponent(StoragePathComponent);
-        component = fixture.componentInstance;
-        fixture.detectChanges();
+    detectChanges() {
+      super.detectChanges();
+      this.list = this.getElementByCss('ol');
+      this.items = this.getElementsByCss('li');
+    }
+  }
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [
+        StoragePathComponent,
+      ],
+    })
+      .compileComponents();
+  }));
+
+  beforeEach(() => {
+    page = new Page(TestBed.createComponent(StoragePathComponent));
+    page.detectChanges();
+  });
+
+  it('should be created', () => {
+    expect(page.componentInstance).toBeTruthy();
+  });
+
+  it('should have empty list', ((done) => {
+    page.componentInstance.ngOnChanges(null);
+    page.whenStable(() => {
+      page.detectChanges();
+      expect(page.items.length).toBe(0);
+      done();
     });
+  }));
 
-    it('should be created', () => {
-        expect(component).toBeTruthy();
+  it('should have breadcrumbs', ((done) => {
+    const root = getSophisticatedRoot();
+    page.componentInstance.root = root;
+    page.componentInstance.current = root
+      .getFolderByName('alpha')
+      .getFolderByName('alpha-sub-folder1');
+    page.componentInstance.ngOnChanges(null);
+    page.whenStable(() => {
+      page.detectChanges();
+      expect(page.items.length).toBe(3);
+      expect(page.items.map((el) => el.nativeElement.textContent.trim())).toEqual([
+        '/',
+        'alpha',
+        'alpha-sub-folder1',
+      ]);
+
+      // let's also click the second item and check that we emit a "folder-clicked" event
+      let selectedFolder: Folder;
+      page.componentInstance.folderClicked.subscribe((folder) => {
+        selectedFolder = folder;
+      });
+      page.items[1].query(By.css('a')).nativeElement.click();
+      page.detectChanges();
+      expect(selectedFolder).toBeInstanceOf(Folder);
+      expect(selectedFolder.getName()).toBe('alpha');
+
+      done();
     });
-
-    it('should open folder', () => {
-        const folder = new Folder();
-
-        storageServiceMock.getPathAsString.and.returnValue('/some/path');
-
-        component.openFolder(folder);
-
-        expect(storageServiceMock.openFolder).toHaveBeenCalledWith(folder);
-        expect(routerMock.navigate).toHaveBeenCalledWith(['/storage/some/path']);
-    });
+  }));
 });

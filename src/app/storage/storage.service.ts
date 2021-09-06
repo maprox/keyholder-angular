@@ -1,14 +1,26 @@
 import { Injectable } from '@angular/core';
+import { Observable, Subject } from 'rxjs';
+import { first } from 'rxjs/operators';
 
 import { AuthService } from '../auth';
-import { Folder } from './model';
+import { Folder, Item, Secret } from './model';
 import { StorageApiService } from './storage-api.service';
 
 @Injectable()
 export class StorageService {
-  private path: Folder[] = [];
+  private subject = new Subject<Object>();
   private root: Folder;
+  private originalRoot: Folder;
   private isLoaded = false;
+  private isSearchMode = false;
+
+  get isAvailable(): boolean {
+    return this.isLoaded;
+  }
+
+  get isInSearchMode(): boolean {
+    return this.isSearchMode;
+  }
 
   constructor(
     public storageApi: StorageApiService,
@@ -21,88 +33,66 @@ export class StorageService {
     });
   }
 
-  getPath(): Folder[] {
-    if (this.path.length === 0) {
-      this.path.push(this.getRoot());
-    }
-    return this.path;
+  onChange(): Observable<any> {
+    return this.subject.asObservable();
   }
 
   getRoot(): Folder {
-    if (!this.root) {
-      this.setRoot(new Folder('root'));
-    }
     return this.root;
   }
 
   setRoot(root: Folder) {
     this.root = root;
+    this.subject.next(root);
   }
 
-  getCurrent(): Folder {
-    const path = this.getPath();
-    return path[path.length - 1];
+  setSearchMode(isSearchMode: boolean) {
+    this.isSearchMode = isSearchMode;
   }
 
-  getParent(): Folder {
-    const path = this.getPath();
-    return (path.length > 1) ? path[path.length - 2] : null;
-  }
-
-  getPathAsString(): string {
-    let result = '';
-    this.getPath().map((item, index) => {
-      if (index === 0) {
-        // skip root folder
-        return;
-      }
-      result += (result ? '/' : '') + item.getName();
-    });
-    return '/' + result;
-  }
-
-  openFolder(folder: Folder): Folder {
-    if (this.getCurrent().hasFolder(folder)) {
-      this.getPath().push(folder);
-    } else {
-      const position = this.path.indexOf(folder);
-      if (position >= 0) {
-        this.getPath().splice(position + 1);
-      }
+  search(query: string) {
+    if (!query || !query.trim()) {
+      this.setSearchMode(false);
+      this.setRoot(this.originalRoot);
+      return;
     }
-    return folder;
+    const q = query.toLowerCase();
+    const results: Item[] = this.searchFolder(q, this.originalRoot);
+    const searchFolder = new Folder('Search results');
+    results.forEach(item => searchFolder.add(item));
+    this.setSearchMode(true);
+    this.setRoot(searchFolder);
   }
 
-  openPath(path: string) {
-    this.path = [this.getRoot()];
-    path.split('/').filter((item) => item).map((folderName: string) => {
-      const folder = this.getCurrent().getFolderByName(folderName);
-      this.openFolder(folder);
-    });
-  }
-
-  isRoot(folder: Folder = this.getCurrent()): boolean {
-    return folder === this.getRoot();
+  searchFolder(query: string, folder: Folder): Item[] {
+    const match = item => item.getName().toLowerCase().indexOf(query) >= 0
+      || (item instanceof Secret
+        && (item as Secret).getContent().toLowerCase().indexOf(query) >= 0);
+    return [].concat(
+      folder.getFolders().filter(match),
+      folder.getItems().filter(match),
+      ...folder.getFolders()
+        .map(subfolder => this.searchFolder(query, subfolder))
+    );
   }
 
   save() {
+    if (this.isInSearchMode) {
+      return;
+    }
     this.storageApi.save(this.getRoot());
   }
 
-  /**
-   * @param {string} [path='/']
-   */
-  load(path?: string) {
+  load() {
     if (this.isLoaded) {
-      this.openPath(path || '/');
       return;
     }
 
-    this.storageApi.load().subscribe(
+    this.storageApi.load().pipe(first()).subscribe(
       container => {
         this.isLoaded = true;
-        this.setRoot(container.getStorage());
-        this.openPath(path || '/');
+        this.originalRoot = container.getStorage();
+        this.setRoot(this.originalRoot);
       }
     );
   }

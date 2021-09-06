@@ -4,6 +4,8 @@ export interface Serializable {
     toJSON(): any;
 
     getClassName(): string;
+
+    serialize(): string;
 }
 
 export class SerializableClass implements Serializable {
@@ -19,5 +21,9 @@ export class SerializableClass implements Serializable {
         return Object.assign({}, this, {
             _type: this.getClassName()
         });
+    }
+
+    serialize(): string {
+      return JSON.stringify(this);
     }
 }

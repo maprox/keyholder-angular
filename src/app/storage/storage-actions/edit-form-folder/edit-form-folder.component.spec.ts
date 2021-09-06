@@ -1,54 +1,29 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
-import { Subject } from 'rxjs';
-
 import { Folder } from '../../model';
-import { StorageService } from '../../storage.service';
+import EditFormPage from '../edit-form/edit-form.component.spec';
 import { EditFormFolderComponent } from './edit-form-folder.component';
 import { EditFormFolderService } from './edit-form-folder.service';
 
 describe('EditFormFolderComponent', () => {
-  let component: EditFormFolderComponent,
-    fixture: ComponentFixture<EditFormFolderComponent>,
-    routerMock,
-    storageCurrent: Folder,
-    storageServiceMock,
-    editEventSubject,
-    editFormFolderService;
+  let editFormFolderService;
+  let page: Page;
+
+  class Page extends EditFormPage {
+    componentInstance: EditFormFolderComponent;
+  }
 
   beforeEach(async(() => {
-    routerMock = {
-      navigate: jasmine.createSpy()
-    };
-    storageCurrent = new Folder('current');
-    storageServiceMock = {
-      getCurrent: jasmine.createSpy().and.returnValue(storageCurrent),
-      getPathAsString: () => '/some/path',
-      openFolder: jasmine.createSpy(),
-      save: jasmine.createSpy()
-    };
-    editEventSubject = new Subject<Object>();
-    editFormFolderService = {
-      getEditEvent: jasmine.createSpy().and.returnValue(editEventSubject)
-    };
+    editFormFolderService = new EditFormFolderService();
 
     TestBed.configureTestingModule({
       imports: [
-        FormsModule
+        FormsModule,
       ],
       declarations: [
-        EditFormFolderComponent
+        EditFormFolderComponent,
       ],
       providers: [
-        {
-          provide: StorageService,
-          useValue: storageServiceMock
-        },
-        {
-          provide: Router,
-          useValue: routerMock
-        },
         {
           provide: EditFormFolderService,
           useValue: editFormFolderService
@@ -58,51 +33,86 @@ describe('EditFormFolderComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditFormFolderComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    page = new Page(TestBed.createComponent(EditFormFolderComponent));
+    page.detectChanges();
   });
 
   it('should be created', () => {
-    expect(component).toBeTruthy();
+    expect(page.componentInstance).toBeTruthy();
+    expect(page.form).toBeFalsy();
   });
 
-  it('should save in edit mode', () => {
-    expect(component.isEditMode()).toBeFalsy();
-    expect(component.isActive).toBeFalsy();
+  it('should open the form (new folder) and close', fakeAsync(() => {
+    editFormFolderService.create();
+    page.detectChanges();
 
-    editEventSubject.next(new Folder('test'));
+    page.componentInstance.fieldName = null; // \_(o_O)_/ don't ask about this :D
+    tick();
 
-    expect(component.isEditMode()).toBeTruthy();
-    expect(component.isActive).toBeTruthy();
+    page.detectChanges();
+    expect(page.form).toBeTruthy();
+    expect(page.headerName).toEqual('Add Folder');
 
-    component.itemName = 'hello virtual world!';
-    component.submit();
+    editFormFolderService.close();
+    page.detectChanges();
 
-    expect(component.itemSource.getName()).toEqual('hello virtual world!');
-    expect(storageServiceMock.save).toHaveBeenCalled();
-    expect(component.isActive).toBeFalsy();
-  });
+    expect(page.form).toBeFalsy();
+  }));
 
-  it('should add in create mode', () => {
-    expect(component.isEditMode()).toBeFalsy();
-    expect(component.isActive).toBeFalsy();
+  it('should open the form and create a folder', fakeAsync(() => {
+    editFormFolderService.create();
+    page.detectChanges();
+    tick();
 
-    editEventSubject.next();
+    const currentFolder = Folder.create('test');
+    let newFolder: Folder;
+    page.componentInstance.current = currentFolder;
+    page.componentInstance.itemAdd.subscribe((folder) => { newFolder = folder });
 
-    expect(component.isEditMode()).toBeFalsy();
-    expect(component.isActive).toBeTruthy();
+    page.setFieldNameTo('new folder');
+    page.submit();
 
-    const msg = 'hello virtual world!';
-    component.itemName = msg;
-    component.submit();
+    expect(newFolder.getName()).toEqual('new folder');
+    expect(currentFolder.getFolders()).toEqual([newFolder]);
+  }));
 
-    expect(component.itemSource).toBeUndefined();
-    expect(storageServiceMock.getCurrent).toHaveBeenCalled();
-    expect(storageServiceMock.save).toHaveBeenCalled();
-    expect(storageServiceMock.openFolder).toHaveBeenCalled();
-    expect(routerMock.navigate).toHaveBeenCalledWith(['/storage/some/path']);
-    expect(storageCurrent.getFolderByName(msg)).toEqual(new Folder(msg));
-    expect(component.isActive).toBeFalsy();
-  });
+  it('should open the form and edit a folder', fakeAsync(() => {
+    const initialFolderName = 'test';
+    const changedFolderName = 'changed';
+    const folder = Folder.create(initialFolderName);
+
+    editFormFolderService.edit(folder);
+    page.detectChanges();
+    tick();
+
+    expect(page.form).toBeTruthy();
+    expect(page.headerName).toEqual('Edit Folder');
+    expect(folder.getName()).toEqual(initialFolderName);
+    expect(page.fields.name.nativeElement.value).toEqual(initialFolderName);
+    expect(page.fields.submit.nativeElement.innerText).toEqual('Save');
+
+    page.setFieldNameTo(changedFolderName);
+    page.submit();
+
+    expect(folder.getName()).toEqual(changedFolderName);
+  }));
+
+  it('should open the form and remove a folder', fakeAsync(() => {
+    const childFolder1 = Folder.create('child-1');
+    const childFolder2 = Folder.create('child-2');
+    const currentFolder = Folder.create('test', [childFolder1, childFolder2]);
+
+    editFormFolderService.edit(childFolder1);
+    page.detectChanges();
+    tick();
+
+    let removedFolder: Folder;
+    page.componentInstance.current = currentFolder;
+    page.componentInstance.itemRemove.subscribe((folder) => { removedFolder = folder });
+
+    page.remove();
+
+    expect(removedFolder).toEqual(childFolder1);
+    expect(currentFolder.getFolders()).toEqual([childFolder2]);
+  }));
 });

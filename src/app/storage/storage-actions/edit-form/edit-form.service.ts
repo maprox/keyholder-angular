@@ -5,21 +5,21 @@ import { Item } from '../../model';
 
 @Injectable()
 export class EditFormService {
-    private subject = new Subject<Object>();
+  private subject = new Subject<Object>();
 
-    getEditEvent(): Observable<any> {
-        return this.subject.asObservable();
-    }
+  getEditEvent(): Observable<any> {
+    return this.subject.asObservable();
+  }
 
-    edit(item: Item) {
-        this.subject.next(item);
-    }
+  edit(item: Item) {
+    this.subject.next(item);
+  }
 
-    create() {
-        this.subject.next();
-    }
+  create() {
+    this.subject.next();
+  }
 
-    close() {
-        this.subject.next(null);
-    }
+  close() {
+    this.subject.next(null);
+  }
 }

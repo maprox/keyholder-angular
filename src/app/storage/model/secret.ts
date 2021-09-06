@@ -1,10 +1,14 @@
 import { Item } from './item';
 
 export class Secret extends Item {
+  static create(...rest): Secret {
+    return new Secret(...rest);
+  }
+
   constructor(
-    name: string = null,
-    private secret: string = null,
-    private content: string = null
+    name: string = '',
+    private secret: string = '',
+    private content: string = ''
   ) {
     super(name);
   }

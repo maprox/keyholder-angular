@@ -1,25 +1,29 @@
-import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
 
 import { Folder } from '../model';
-import { StorageService } from '../storage.service';
 
 @Component({
-    selector: 'app-storage-path',
-    templateUrl: './storage-path.component.html',
-    styleUrls: ['./storage-path.component.scss']
+  selector: 'app-storage-path',
+  templateUrl: './storage-path.component.html',
+  styleUrls: ['./storage-path.component.scss']
 })
-export class StoragePathComponent implements OnInit {
-    constructor(
-        private router: Router,
-        public storage: StorageService
-    ) { }
+export class StoragePathComponent implements OnChanges {
+  @Input() root: Folder;
+  @Input() current: Folder;
 
-    ngOnInit() {
-    }
+  @Output() folderClicked = new EventEmitter<Folder>();
 
-    openFolder(folder: Folder) {
-        this.storage.openFolder(folder);
-        this.router.navigate(['/storage' + this.storage.getPathAsString()]);
+  path: Folder[] = [];
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.root) {
+      this.path = [];
+      return;
     }
+    this.path = [this.root, ...this.root.find(this.current)];
+  }
+
+  openFolder(folder: Folder) {
+    this.folderClicked.emit(folder);
+  }
 }

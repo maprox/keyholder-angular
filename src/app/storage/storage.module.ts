@@ -11,6 +11,7 @@ import { StoragePathComponent } from './storage-path';
 import { StorageRoutingModule } from './storage-routing.module';
 import { StorageComponent } from './storage.component';
 import { StorageService } from './storage.service';
+import { SearchComponent } from './search';
 
 @NgModule({
     imports: [
@@ -28,10 +29,12 @@ import { StorageService } from './storage.service';
     declarations: [
         StoragePathComponent,
         StorageListComponent,
-        StorageComponent
+        StorageComponent,
+        SearchComponent
     ],
     exports: [
-        StorageComponent
+        StorageComponent,
+        SearchComponent
     ]
 })
 export class StorageModule { }
