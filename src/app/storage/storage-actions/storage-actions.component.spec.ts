@@ -42,8 +42,8 @@ describe('StorageActionsComponent', () => {
     buttonAddSecret: DebugElement;
     buttonAddFolder: DebugElement;
 
-    initElements() {
-      super.initElements();
+    detectChanges() {
+      super.detectChanges();
       this.buttonAddSecret = this.getElementByCss('button[data-cy=add-secret]');
       this.buttonAddFolder = this.getElementByCss('button[data-cy=add-folder]');
     }
@@ -80,8 +80,7 @@ describe('StorageActionsComponent', () => {
 
   beforeEach(() => {
     page = new Page(TestBed.createComponent(StorageActionsComponent));
-    page.fixture.detectChanges();
-    page.initElements();
+    page.detectChanges();
   });
 
   it('should be created', () => {

@@ -1,37 +1,62 @@
 import { DebugElement } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
-import { Subject } from 'rxjs';
 import { PasswordGeneratorService } from '../../../password-generator';
-import TestComponentWrapper from '../../../utils/test-component-wrapper';
+import { Folder, Secret } from '../../model';
+import EditFormPage from '../edit-form/edit-form.component.spec';
 import { EditFormSecretComponent } from './edit-form-secret.component';
 import { EditFormSecretService } from './edit-form-secret.service';
 
 describe('EditFormSecretComponent', () => {
   const password = 'super-secret!11!';
+  let generationAttempt;
   let passwordGeneratorService;
-  let editEventSubject;
   let editFormSecretService;
   let page: Page;
 
-  class Page extends TestComponentWrapper {
+  class Page extends EditFormPage {
     componentInstance: EditFormSecretComponent;
 
-    list: DebugElement;
+    getFields(): ({ [key: string]: DebugElement }) {
+      return {
+        ...super.getFields(),
+        details: this.getElementByCss('[data-cy=details]'),
+        secret: this.getElementByCss('[name=secretValue]'),
+        generate: this.getElementByCss('[data-cy=generate]'),
+        notes: this.getElementByCss('[name=secretContent]'),
+      };
+    }
 
-    initElements() {
-      super.initElements();
-      this.list = this.getElementByCss('ol');
+    setFieldSecretTo(text: string) {
+      this.fields.secret.nativeElement.value = text;
+      this.fields.secret.nativeElement.dispatchEvent(new Event('input'));
+      this.detectChanges();
+    }
+
+    setFieldNotesTo(text: string) {
+      this.fields.notes.nativeElement.value = text;
+      this.fields.notes.nativeElement.dispatchEvent(new Event('input'));
+      this.detectChanges();
+    }
+
+    seeDetails() {
+      this.fields.details.nativeElement.click();
+      this.detectChanges();
+      tick();
+    }
+
+    generate() {
+      this.fields.generate.nativeElement.click();
+      this.detectChanges();
+      tick();
     }
   }
 
   beforeEach(async(() => {
-    editEventSubject = new Subject<Object>();
-    editFormSecretService = {
-      getEditEvent: jasmine.createSpy().and.returnValue(editEventSubject),
-    };
+    editFormSecretService = new EditFormSecretService();
+    generationAttempt = 0;
     passwordGeneratorService = {
-      generate: jasmine.createSpy().and.returnValue(password),
+      generate: () => `${password}${generationAttempt++}`,
     };
 
     TestBed.configureTestingModule({
@@ -56,79 +81,130 @@ describe('EditFormSecretComponent', () => {
 
   beforeEach(() => {
     page = new Page(TestBed.createComponent(EditFormSecretComponent));
-    page.fixture.detectChanges();
-    // page.componentInstance.current = new Folder('current');
-    page.initElements();
+    page.detectChanges();
   });
 
   it('should be created', () => {
     expect(page.componentInstance).toBeTruthy();
+    expect(page.form).toBeFalsy();
   });
 
-  // it('should generate password', () => {
-  //   expect(component.itemSecret).toEqual(undefined);
-  //   expect(component.itemContent).toEqual(undefined);
-  //
-  //   component.generate();
-  //
-  //   expect(component.itemSecret).toEqual(password);
-  // });
-  //
-  // it('should create a secret', () => {
-  //   expect(component.itemSecret).toEqual(undefined);
-  //   expect(component.itemContent).toEqual(undefined);
-  //
-  //   editEventSubject.next();
-  //
-  //   expect(component.isEditMode()).toBeFalsy();
-  //   expect(component.detailsShown).toBeFalsy();
-  //   expect(component.itemSecret).toEqual(password);
-  //   expect(component.itemContent).toEqual('');
-  // });
-  //
-  // it('should open a secret', () => {
-  //   expect(component.itemSecret).toEqual(undefined);
-  //   expect(component.itemContent).toEqual(undefined);
-  //
-  //   const secret = new Secret('test');
-  //   editEventSubject.next(secret);
-  //
-  //   expect(component.isEditMode()).toBeTruthy();
-  //   expect(component.detailsShown).toBeTruthy();
-  //   expect(component.itemSecret).toEqual('');
-  //   expect(component.itemContent).toEqual('');
-  // });
-  //
-  // it('should save in edit mode', () => {
-  //   expect(component.isEditMode()).toBeFalsy();
-  //   expect(component.isActive).toBeFalsy();
-  //
-  //   editEventSubject.next(new Secret('test'));
-  //
-  //   expect(component.isEditMode()).toBeTruthy();
-  //   expect(component.isActive).toBeTruthy();
-  //
-  //   component.itemName = 'hello virtual world!';
-  //   component.submit();
-  //
-  //   expect(component.itemSource.getName()).toEqual('hello virtual world!');
-  //   expect(component.isActive).toBeFalsy();
-  // });
-  //
-  // it('should add in create mode', () => {
-  //   expect(component.isEditMode()).toBeFalsy();
-  //   expect(component.isActive).toBeFalsy();
-  //
-  //   editEventSubject.next();
-  //
-  //   expect(component.isEditMode()).toBeFalsy();
-  //   expect(component.isActive).toBeTruthy();
-  //
-  //   component.itemName = 'hello virtual world!';
-  //   component.submit();
-  //
-  //   expect(component.itemSource).toBeUndefined();
-  //   expect(component.current.getItems().length).toEqual(1);
-  //   expect(component.isActive).toBeFalsy();
-  // });
+  it('should open the form (new folder) and close', fakeAsync(() => {
+    editFormSecretService.create();
+    page.detectChanges();
+    tick();
+
+    expect(page.form).toBeTruthy();
+    expect(page.headerName).toEqual('Add Secret');
+    expect(page.fields.submit.nativeElement.innerText).toEqual('Add');
+
+    editFormSecretService.close();
+    page.detectChanges();
+
+    expect(page.form).toBeFalsy();
+  }));
+
+  it('should open the form and create a secret', fakeAsync(() => {
+    editFormSecretService.create();
+    page.detectChanges();
+    tick();
+
+    const currentFolder = Folder.create('test');
+    let newSecret: Secret;
+    page.componentInstance.current = currentFolder;
+    page.componentInstance.itemAdd.subscribe((item) => { newSecret = item });
+
+    const newSecretName = 'new secret';
+    page.setFieldNameTo(newSecretName);
+    page.submit();
+
+    expect(currentFolder.getItems()).toEqual([newSecret]);
+    expect(newSecret.getName()).toEqual(newSecretName);
+    expect(newSecret.getSecret()).toEqual(`${password}0`);
+  }));
+
+  it('should open the form and create a secret with a custom password and notes', fakeAsync(() => {
+    editFormSecretService.create();
+    page.detectChanges();
+    tick();
+
+    // let's check that notes and secret not available
+    expect(page.fields.secret).toBeFalsy();
+    expect(page.fields.notes).toBeFalsy();
+
+    page.seeDetails();
+
+    // now available
+    expect(page.fields.secret).toBeTruthy();
+    expect(page.fields.notes).toBeTruthy();
+    expect(page.fields.secret.nativeElement.value).toEqual(`${password}0`);
+
+    // generate another password
+    page.generate();
+
+    expect(page.fields.secret.nativeElement.value).toEqual(`${password}1`);
+
+    const currentFolder = Folder.create('test');
+    let newSecret: Secret;
+    page.componentInstance.current = currentFolder;
+    page.componentInstance.itemAdd.subscribe((item) => { newSecret = item });
+
+    const newSecretName = 'new secret';
+    const newSecretNote = 'This is a test note';
+    page.setFieldNameTo(newSecretName);
+    page.setFieldNotesTo(newSecretNote);
+    page.submit();
+
+    expect(currentFolder.getItems()).toEqual([newSecret]);
+    expect(newSecret.getName()).toEqual(newSecretName);
+    expect(newSecret.getSecret()).toEqual(`${password}1`);
+    expect(newSecret.getContent()).toEqual(newSecretNote);
+  }));
+
+  it('should open the form and edit a secret', fakeAsync(() => {
+    const initial = { name: 'secret1',  secret: 'abcdefg', content: '' };
+    const changed = { name: 'superman', secret: 'is-dead', content: 'why so?' };
+    const secret = Secret.create(initial.name, initial.secret, initial.content);
+
+    editFormSecretService.edit(secret);
+    page.detectChanges();
+    tick();
+
+    expect(page.headerName).toEqual('Edit Secret');
+    expect(page.fields.details).toBeFalsy();
+    expect(secret.getName()).toEqual(initial.name);
+    expect(secret.getSecret()).toEqual(initial.secret);
+    expect(secret.getContent()).toEqual(initial.content);
+
+    expect(page.fields.name.nativeElement.value).toEqual(initial.name);
+    expect(page.fields.submit.nativeElement.innerText).toEqual('Save');
+
+    page.setFieldNameTo(changed.name);
+    page.setFieldSecretTo(changed.secret);
+    page.setFieldNotesTo(changed.content);
+    page.submit();
+
+    expect(secret.getName()).toEqual(changed.name);
+    expect(secret.getSecret()).toEqual(changed.secret);
+    expect(secret.getContent()).toEqual(changed.content);
+  }));
+
+  it('should open the form and remove a secret', fakeAsync(() => {
+    const childSecret1 = Secret.create('child-1');
+    const childSecret2 = Secret.create('child-2');
+    const currentFolder = Folder.create('test', [], [childSecret1, childSecret2]);
+
+    editFormSecretService.edit(childSecret1);
+    page.detectChanges();
+    tick();
+
+    let removedSecret: Secret;
+    page.componentInstance.current = currentFolder;
+    page.componentInstance.itemRemove.subscribe((item) => { removedSecret = item });
+
+    page.remove();
+
+    expect(removedSecret).toEqual(childSecret1);
+    expect(currentFolder.getItems()).toEqual([childSecret2]);
+  }));
 });

@@ -75,8 +75,8 @@ describe('StorageComponent', () => {
       return currentFolder.nativeElement.innerText;
     }
 
-    initElements() {
-      super.initElements();
+    detectChanges() {
+      super.detectChanges();
       this.appStorageActions = this.getElementByCss('app-storage-actions');
       this.appStoragePath = this.getElementByCss('app-storage-path');
       this.appStorageList = this.getElementByCss('app-storage-list');
@@ -132,8 +132,7 @@ describe('StorageComponent', () => {
 
   beforeEach(() => {
     page = new Page(TestBed.createComponent(StorageComponent), { router: true });
-    page.fixture.detectChanges();
-    page.initElements();
+    page.detectChanges();
   });
 
   it('should be created', () => {

@@ -42,7 +42,7 @@ export abstract class EditFormComponentDirective implements OnInit {
 
   focusName() {
     setTimeout(() => {
-      if (this.fieldName && this.fieldName.nativeElement) {
+      if (this.fieldName?.nativeElement) {
         this.fieldName.nativeElement.focus();
       }
     });

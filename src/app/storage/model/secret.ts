@@ -1,6 +1,10 @@
 import { Item } from './item';
 
 export class Secret extends Item {
+  static create(...rest): Secret {
+    return new Secret(...rest);
+  }
+
   constructor(
     name: string = '',
     private secret: string = '',

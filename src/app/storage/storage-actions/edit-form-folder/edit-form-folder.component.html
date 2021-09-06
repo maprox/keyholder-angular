@@ -1,37 +1,60 @@
-<form name="add-folder" (ngSubmit)="submit()" *ngIf="isActive">
+<form
+  *ngIf="isActive"
+  name="add-folder"
+  (ngSubmit)="submit()"
+>
   <div class="card bg-light mt-4">
     <div class="card-body">
-      <h3>{{ isEditMode() ? 'Edit' : 'Add' }} Folder</h3>
-      <input [(ngModel)]="itemName"
-             class="form-control form-control-lg"
-             placeholder="Enter folder name"
-             name="fieldName"
-             pattern="[^/]*"
-             #fieldName="ngModel">
-      <div *ngIf="fieldName.invalid && (fieldName.dirty || fieldName.touched)"
-           class="alert alert-danger">
-        <div *ngIf="fieldName.errors['pattern']">
+      <h3 data-cy="header">
+        {{ isEditMode() ? 'Edit' : 'Add' }} Folder
+      </h3>
+      <input
+        [(ngModel)]="itemName"
+        type="text"
+        class="form-control form-control-lg"
+        placeholder="Enter folder name"
+        name="fieldName"
+        pattern="[^/]*"
+        #fieldName
+        #name="ngModel"
+      >
+      <div
+        *ngIf="name.invalid && (name.dirty || name.touched)"
+        class="alert alert-danger"
+      >
+        <div *ngIf="name.errors['pattern']">
           Some symbols are not allowed. Please remove them to proceed
         </div>
       </div>
     </div>
     <div class="card-footer">
-      <button class="btn btn-lg btn-success mr-2" [disabled]="!itemName || fieldName.invalid">
+      <button
+        type="submit"
+        class="btn btn-lg btn-success mr-2" [disabled]="!itemName || name.invalid"
+        data-cy="submit"
+        title="Submit"
+      >
         <i class="fa fa-plus-circle"></i>
         <span class="hidden-xxs ml-2">{{ isEditMode() ? 'Save' : 'Add' }}</span>
       </button>
-      <button class="btn btn-lg btn-default"
-              type="button"
-              title="Cancel"
-              (click)="close()">
+      <button
+        type="button"
+        class="btn btn-lg btn-default"
+        data-cy="cancel"
+        title="Cancel"
+        (click)="close()"
+      >
         <i class="fa fa-ban"></i>
         <span class="hidden-xxs ml-2">Cancel</span>
       </button>
-      <button *ngIf="isEditMode()"
-              class="btn btn-lg btn-danger pull-right"
-              type="button"
-              title="Remove"
-              (click)="remove(itemSource)">
+      <button
+        *ngIf="isEditMode()"
+        type="button"
+        class="btn btn-lg btn-danger pull-right"
+        data-cy="remove"
+        title="Remove"
+        (click)="remove(itemSource)"
+      >
         <i class="fa fa-trash"></i>
       </button>
     </div>

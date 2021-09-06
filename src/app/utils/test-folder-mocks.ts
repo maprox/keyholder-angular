@@ -7,7 +7,10 @@ export function getSimpleRoot() {
 export function getSophisticatedRoot() {
   return new Folder('/', [
     new Folder('alpha', [
-      new Folder('alpha-sub-folder1', [], [
+      new Folder('alpha-sub-folder1', [
+        new Folder('alpha-sub-folder1-sub-folder1'),
+        new Folder('alpha-sub-folder1-sub-folder2'),
+      ], [
         new Secret('asf-1', 'abc', 'test note'),
       ]),
       new Folder('alpha-sub-folder2', [], []),

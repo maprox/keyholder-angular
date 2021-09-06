@@ -17,8 +17,8 @@ describe('SearchPathComponent', () => {
     list: DebugElement;
     items: DebugElement[];
 
-    initElements() {
-      super.initElements();
+    detectChanges() {
+      super.detectChanges();
       this.list = this.getElementByCss('ol');
       this.items = this.getElementsByCss('li');
     }
@@ -35,8 +35,7 @@ describe('SearchPathComponent', () => {
 
   beforeEach(() => {
     page = new Page(TestBed.createComponent(StoragePathComponent));
-    page.fixture.detectChanges();
-    page.initElements();
+    page.detectChanges();
   });
 
   it('should be created', () => {
@@ -46,8 +45,7 @@ describe('SearchPathComponent', () => {
   it('should have empty list', ((done) => {
     page.componentInstance.ngOnChanges(null);
     page.whenStable(() => {
-      page.fixture.detectChanges();
-      page.initElements();
+      page.detectChanges();
       expect(page.items.length).toBe(0);
       done();
     });
@@ -61,8 +59,7 @@ describe('SearchPathComponent', () => {
       .getFolderByName('alpha-sub-folder1');
     page.componentInstance.ngOnChanges(null);
     page.whenStable(() => {
-      page.fixture.detectChanges();
-      page.initElements();
+      page.detectChanges();
       expect(page.items.length).toBe(3);
       expect(page.items.map((el) => el.nativeElement.textContent.trim())).toEqual([
         '/',
@@ -76,7 +73,7 @@ describe('SearchPathComponent', () => {
         selectedFolder = folder;
       });
       page.items[1].query(By.css('a')).nativeElement.click();
-      page.fixture.detectChanges();
+      page.detectChanges();
       expect(selectedFolder).toBeInstanceOf(Folder);
       expect(selectedFolder.getName()).toBe('alpha');
 

@@ -1,46 +1,65 @@
-<div class="list-group list-group-lg mb-0"
-  *ngIf="current">
-  <button class="list-group-item list-group-item-action"
-     *ngIf="parent"
-     (click)="clickFolder(parent)">
-
-    <h3 class="mb-0">
+<div
+  *ngIf="current"
+  data-cy="list"
+  class="list-group list-group-lg mb-0"
+>
+  <button
+    *ngIf="parent"
+    type="button"
+    class="list-group-item list-group-item-action"
+    data-cy="parent"
+    (click)="clickFolder(parent)"
+  >
+    <span class="mb-0 h3">
       <i class="fa fa-folder-open mr-3"></i>..
-    </h3>
-
+    </span>
   </button>
 
-  <button class="list-group-item list-group-item-action"
-     *ngFor="let item of current.getFolders()"
-     (click)="clickFolder(item)"
-     appLongPress
-     (onRelease)="editFolder(item)">
-
-    <h3 class="mb-0">
+  <button
+    type="button"
+    class="list-group-item list-group-item-action"
+    data-cy="item"
+    *ngFor="let item of current.getFolders()"
+    (click)="clickFolder(item)"
+    appLongPress
+    (onRelease)="editFolder(item)"
+  >
+    <span class="mb-0 h3">
       <i class="fa fa-folder mr-3"></i>{{ item.getName() }}
-    </h3>
-
+    </span>
   </button>
 
-  <button class="list-group-item list-group-item-action"
-     *ngFor="let item of current.getItems()"
-     (click)="clickItem(item)"
-     ngxClipboard [cbContent]="asSecret(item).getSecret()"
-     appLongPress
-     (onRelease)="editSecret(item)">
-
-    <h3 class="mb-0">
+  <button
+    type="button"
+    class="list-group-item list-group-item-action"
+    data-cy="item"
+    *ngFor="let item of current.getItems()"
+    (click)="clickSecret(item)"
+    ngxClipboard [cbContent]="asSecret(item).getSecret()"
+    appLongPress
+    (onRelease)="editSecret(item)"
+  >
+    <span
+      class="mb-0 h3"
+      data-cy="secret-name"
+    >
       <i class="fa fa-file-o mr-3"></i>{{ item.getName() }}
-    </h3>
-    <p class="mb-0">
+    </span>
+    <span
+      class="mb-0 d-block"
+      data-cy="secret-content"
+    >
       <small class="text-muted">
         {{ asSecret(item).getContent() }}
       </small>
-    </p>
-
+    </span>
   </button>
 </div>
 
-<div *ngIf="!current || current.isEmpty()" class="jumbotron">
+<div
+  *ngIf="!current || current.isEmpty()"
+  data-cy="list"
+  class="jumbotron"
+>
   <h2>This folder is empty</h2>
 </div>

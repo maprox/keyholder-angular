@@ -26,12 +26,7 @@ export class StorageListComponent {
     return item instanceof Secret ? item as Secret : null;
   }
 
-  clickItem(item: Item) {
-    const secret = this.asSecret(item);
-    if (!secret) {
-      return;
-    }
-
+  clickSecret(item: Item) {
     // copy to clipboard
     this.alert.success('Successfully copied to clipboard', 2000);
   }

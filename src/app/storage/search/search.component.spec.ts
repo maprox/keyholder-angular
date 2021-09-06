@@ -18,8 +18,8 @@ describe('SearchComponent', () => {
 
     searchInput: DebugElement;
 
-    initElements() {
-      super.initElements();
+    detectChanges() {
+      super.detectChanges();
       this.searchInput = this.getElementByCss('input[type=search]');
     }
   }
@@ -52,8 +52,7 @@ describe('SearchComponent', () => {
 
   beforeEach(() => {
     page = new Page(TestBed.createComponent(SearchComponent));
-    page.fixture.detectChanges();
-    page.initElements();
+    page.detectChanges();
   });
 
   it('should be created', () => {

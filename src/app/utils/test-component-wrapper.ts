@@ -17,6 +17,16 @@ export class TestComponentWrapper {
     }
   }
 
+  get fields(): ({ [key: string]: DebugElement }) {
+    return this.getFields();
+  }
+
+  getFields(): ({ [key: string]: DebugElement }) {
+    return {
+      // to be implemented by ancestors
+    };
+  }
+
   getElementByCss(css: string): DebugElement {
     return this.fixture.debugElement.query(By.css(css));
   }
@@ -25,8 +35,8 @@ export class TestComponentWrapper {
     return this.fixture.debugElement.queryAll(By.css(css));
   }
 
-  initElements() {
-    // to be implemented by ancestors
+  detectChanges() {
+    this.fixture.detectChanges();
   }
 
   whenStable(fn) {

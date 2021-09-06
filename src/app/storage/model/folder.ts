@@ -1,6 +1,10 @@
 import { Item } from './item';
 
 export class Folder extends Item {
+  static create(...rest): Folder {
+    return new Folder(...rest);
+  }
+
   constructor(
     name: string = '',
     private folders: Folder[] = [],
