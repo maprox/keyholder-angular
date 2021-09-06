@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ImportExportComponent } from './import-export.component';
 
@@ -19,7 +19,7 @@ describe('ImportExportComponent', () => {
   let component: ImportExportComponent;
   let fixture: ComponentFixture<ImportExportComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [
         ImportExportComponent,

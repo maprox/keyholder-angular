@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 
 import { HttpService } from '../http';
@@ -10,7 +10,7 @@ describe('OfflineBarComponent', () => {
     httpSubject,
     httpServiceMock: any;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     httpSubject = new Subject<Object>();
     httpServiceMock = {
       getConnectionEvent: () => httpSubject.asObservable(),

@@ -1,5 +1,5 @@
 import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
-import { async, TestBed } from '@angular/core/testing';
+import { TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
 import { Subject } from 'rxjs';
@@ -83,7 +83,7 @@ describe('StorageComponent', () => {
     }
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     getAuthEventSubject = new Subject<Object>();
     authService = {
       isLoggedIn: jasmine.createSpy().and.returnValue(true),

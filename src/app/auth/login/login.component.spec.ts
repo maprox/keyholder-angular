@@ -1,5 +1,5 @@
 import { Component, DebugElement } from '@angular/core';
-import { async, ComponentFixture, inject, TestBed } from '@angular/core/testing';
+import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -53,7 +53,7 @@ describe('LoginComponent', () => {
   })
   class FakeForkMeComponent {}
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     authSubject = new Subject<Object>();
     authServiceStub = {
       isLoggedIn() {

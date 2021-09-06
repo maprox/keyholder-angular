@@ -1,4 +1,4 @@
-import { async, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import { fakeAsync, TestBed, tick, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { Folder } from '../../model';
 import EditFormPage from '../edit-form/edit-form.component.spec';
@@ -13,7 +13,7 @@ describe('EditFormFolderComponent', () => {
     componentInstance: EditFormFolderComponent;
   }
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     editFormFolderService = new EditFormFolderService();
 
     TestBed.configureTestingModule({
@@ -67,7 +67,7 @@ describe('EditFormFolderComponent', () => {
     const currentFolder = Folder.create('test');
     let newFolder: Folder;
     page.componentInstance.current = currentFolder;
-    page.componentInstance.itemAdd.subscribe((folder) => { newFolder = folder });
+    page.componentInstance.itemAdd.subscribe((item) => { newFolder = item as Folder });
 
     page.setFieldNameTo('new folder');
     page.submit();
@@ -108,7 +108,7 @@ describe('EditFormFolderComponent', () => {
 
     let removedFolder: Folder;
     page.componentInstance.current = currentFolder;
-    page.componentInstance.itemRemove.subscribe((folder) => { removedFolder = folder });
+    page.componentInstance.itemRemove.subscribe((item) => { removedFolder = item as Folder });
 
     page.remove();
 
