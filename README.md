@@ -53,14 +53,23 @@ You may also [check that tests are green](#running-the-tests) after installation
 
 ### Docker
 
-Every project should have [Dockerfile](Dockerfile) nowadays, so we have it as well.
-It is built on **`node:22`** and installs [nginx](https://nginx.org/)
-web-server which listens on 80 port. We use [nginx-default.conf](nginx-default.conf)
-configuration file, which has a simple rule to serve our SPA (check
-[Angular Docs](https://angular.io/guide/deployment#production-servers))
+Every project should have a [Dockerfile](Dockerfile). The image is **multi-stage**:
+Angular is built with **Node 22**, then static files are served by **nginx**
+([nginx-default.conf](nginx-default.conf) — SPA `try_files` fallback; see
+[Angular Docs](https://angular.io/guide/deployment#production-servers)).
 
-You can pull pre-built container using `maprox/keyholder-angular:latest` image
-which is hosted on [Docker Hub](https://hub.docker.com/r/maprox/keyholder-angular/).
+On every push to `master`, [GitHub Actions](.github/workflows/docker.yml) builds
+and pushes `maprox/keyholder-angular:latest` and a short-SHA tag to
+[Docker Hub](https://hub.docker.com/r/maprox/keyholder-angular/).
+Required repo secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
+
+In Kubernetes use `image: maprox/keyholder-angular:latest` with
+`imagePullPolicy: Always`, then after a release run a rollout restart (or pin a
+SHA tag for immutable deploys).
+
+```bash
+docker pull maprox/keyholder-angular:latest
+```
 
 ## Running the tests
 
