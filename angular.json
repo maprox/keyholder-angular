@@ -100,21 +100,21 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "keyholder-angular:build"
+            "buildTarget": "keyholder-angular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "keyholder-angular:build:production"
+              "buildTarget": "keyholder-angular:build:production"
             },
             "staging": {
-              "browserTarget": "keyholder-angular:build:staging"
+              "buildTarget": "keyholder-angular:build:staging"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "keyholder-angular:build"
+            "buildTarget": "keyholder-angular:build"
           }
         },
         "test": {
