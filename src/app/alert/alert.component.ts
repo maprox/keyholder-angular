@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 
 import { AlertService } from './alert.service';
@@ -21,7 +21,8 @@ export class AlertComponent implements OnInit {
 
     constructor(
         private alertService: AlertService,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef,
     ) {
         // clear alert messages on route change
         router.events.subscribe(event => {
@@ -37,11 +38,13 @@ export class AlertComponent implements OnInit {
             if (!alert) {
                 // clear alerts when an empty alert is received
                 this.alerts = [];
+                this.cdr.detectChanges();
                 return;
             }
 
             // add alert to array
             this.alerts.push(alert);
+            this.cdr.detectChanges();
 
             // remove alert after 5 seconds
             if (alert.ttl) {
@@ -52,6 +55,7 @@ export class AlertComponent implements OnInit {
 
     removeAlert(alert: Alert) {
         this.alerts = this.alerts.filter(x => x !== alert);
+        this.cdr.detectChanges();
     }
 
     cssClass(alert: Alert) {

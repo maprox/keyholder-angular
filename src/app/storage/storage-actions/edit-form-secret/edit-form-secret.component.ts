@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { PasswordGeneratorService } from '../../../password-generator';
 import { Secret } from '../../model';
@@ -19,9 +19,10 @@ export class EditFormSecretComponent extends EditFormComponentDirective implemen
 
   constructor(
     protected passwordGenerator: PasswordGeneratorService,
-    protected editFormSecretService: EditFormSecretService
+    protected editFormSecretService: EditFormSecretService,
+    cdr: ChangeDetectorRef,
   ) {
-    super(editFormSecretService);
+    super(editFormSecretService, cdr);
   }
 
   generate() {

@@ -1,36 +1,38 @@
 <div class="card">
-    <div class="card-header card-title">
-        Password settings
+  <div class="card-header card-title">
+    Password settings
+  </div>
+  <div class="card-body">
+    <div class="form-group">
+      <label for="length">Password length</label>
+      <input id="length"
+        type="number"
+        name="length"
+        class="form-control"
+        max="100"
+        min="0"
+        [(ngModel)]="options.length"
+        (change)="save()">
     </div>
-    <div class="card-body">
-        <div class="form-group">
-            <label for="length">Password length</label>
-            <input id="length"
-                   type="number"
-                   name="length"
-                   class="form-control"
-                   max="100"
-                   min="0"
-                   [(ngModel)]="options.length"
-                   (change)="save()">
-        </div>
-        <div class="custom-control custom-checkbox" *ngFor="let field of fields">
-            <input type="checkbox"
-                   class="custom-control-input"
-                   data-toggle="toggle"
-                   (change)="toggle(field.name)"
-                   [checked]="options[field.name]"
-                   [id]="field.name">
-            <label class="custom-control-label"
-                   [for]="field.name">{{field.text}}</label>
-        </div>
-    </div>
+    @for (field of fields; track field) {
+      <div class="custom-control custom-checkbox">
+        <input type="checkbox"
+          class="custom-control-input"
+          data-toggle="toggle"
+          (change)="toggle(field.name)"
+          [checked]="options[field.name]"
+          [id]="field.name">
+        <label class="custom-control-label"
+        [for]="field.name">{{field.text}}</label>
+      </div>
+    }
+  </div>
 </div>
 <div class="card">
-    <div class="card-header card-title">
-        Backup
-    </div>
-    <div class="card-body">
-        <app-import-export></app-import-export>
-    </div>
+  <div class="card-header card-title">
+    Backup
+  </div>
+  <div class="card-body">
+    <app-import-export></app-import-export>
+  </div>
 </div>

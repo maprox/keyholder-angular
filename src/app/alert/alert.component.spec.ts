@@ -50,6 +50,10 @@ describe('AlertComponent', () => {
     }).compileComponents();
   }));
 
+  function alertEls(): DebugElement[] {
+    return de.queryAll(By.css('.alert'));
+  }
+
   beforeEach(() => {
     fixture = TestBed.createComponent(AlertComponent);
     fixture.detectChanges();
@@ -60,15 +64,15 @@ describe('AlertComponent', () => {
   });
 
   it('should be empty', () => {
-    expect(de.children.length).toEqual(0);
+    expect(alertEls().length).toEqual(0);
   });
 
   it('should show alerts', () => {
-    alertSubject.next(defaultAlert);
+    fixture.ngZone.run(() => alertSubject.next(defaultAlert));
     fixture.detectChanges();
-    expect(de.children.length).toEqual(1);
+    expect(alertEls().length).toEqual(1);
 
-    const alertEl: HTMLElement = de.children.pop().nativeElement;
+    const alertEl: HTMLElement = alertEls()[0].nativeElement;
     expect(alertEl.innerText).toEqual(defaultAlert.message);
 
     alertSubject.next(<Alert>{
@@ -84,26 +88,26 @@ describe('AlertComponent', () => {
       message: defaultAlert.message
     });
     fixture.detectChanges();
-    expect(de.children.length).toEqual(4);
+    expect(alertEls().length).toEqual(4);
 
-    expect(de.children[0].nativeElement.classList.contains('alert-success')).toBeTruthy();
-    expect(de.children[1].nativeElement.classList.contains('alert-danger')).toBeTruthy();
-    expect(de.children[2].nativeElement.classList.contains('alert-info')).toBeTruthy();
-    expect(de.children[3].nativeElement.classList.contains('alert-warning')).toBeTruthy();
+    expect(alertEls()[0].nativeElement.classList.contains('alert-success')).toBeTruthy();
+    expect(alertEls()[1].nativeElement.classList.contains('alert-danger')).toBeTruthy();
+    expect(alertEls()[2].nativeElement.classList.contains('alert-info')).toBeTruthy();
+    expect(alertEls()[3].nativeElement.classList.contains('alert-warning')).toBeTruthy();
 
     alertSubject.next();
     fixture.detectChanges();
-    expect(de.children.length).toEqual(0);
+    expect(alertEls().length).toEqual(0);
   });
 
   it('should remove alert on click', () => {
     alertSubject.next(defaultAlert);
     fixture.detectChanges();
-    expect(de.children.length).toEqual(1);
+    expect(alertEls().length).toEqual(1);
 
-    de.children[0].nativeElement.click();
+    alertEls()[0].nativeElement.click();
     fixture.detectChanges();
-    expect(de.children.length).toEqual(0);
+    expect(alertEls().length).toEqual(0);
   });
 
   it('should remove alert with ttl', fakeAsync(() => {
@@ -113,36 +117,36 @@ describe('AlertComponent', () => {
       ttl: 2000
     });
     fixture.detectChanges();
-    expect(de.children.length).toEqual(1);
+    expect(alertEls().length).toEqual(1);
 
     tick(1999);
     fixture.detectChanges();
-    expect(de.children.length).toEqual(1);
+    expect(alertEls().length).toEqual(1);
 
     tick(1);
     fixture.detectChanges();
-    expect(de.children.length).toEqual(0);
+    expect(alertEls().length).toEqual(0);
   }));
 
   it('should clear alerts on route change', () => {
     alertSubject.next(defaultAlert);
     alertSubject.next(defaultAlert);
     fixture.detectChanges();
-    expect(de.children.length).toEqual(2);
+    expect(alertEls().length).toEqual(2);
 
     routerEventsSubject.next(new NavigationStart(10, 'test'));
     fixture.detectChanges();
-    expect(de.children.length).toEqual(0);
+    expect(alertEls().length).toEqual(0);
   });
 
   it('should not clear alerts on route end', () => {
     alertSubject.next(defaultAlert);
     alertSubject.next(defaultAlert);
     fixture.detectChanges();
-    expect(de.children.length).toEqual(2);
+    expect(alertEls().length).toEqual(2);
 
     routerEventsSubject.next(new NavigationEnd(10, 'test', ''));
     fixture.detectChanges();
-    expect(de.children.length).toEqual(2);
+    expect(alertEls().length).toEqual(2);
   });
 });

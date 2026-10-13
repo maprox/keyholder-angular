@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 
 import { Folder } from '../../model';
 import { EditFormComponentDirective } from '../edit-form';
@@ -12,9 +12,10 @@ import { EditFormFolderService } from './edit-form-folder.service';
 })
 export class EditFormFolderComponent extends EditFormComponentDirective implements OnInit {
   constructor(
-    protected editFormFolderService: EditFormFolderService
+    protected editFormFolderService: EditFormFolderService,
+    cdr: ChangeDetectorRef,
   ) {
-    super(editFormFolderService);
+    super(editFormFolderService, cdr);
   }
 
   submit() {

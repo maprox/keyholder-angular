@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from '../auth';
 import { Folder, Item } from './model';
@@ -23,6 +23,7 @@ export class StorageComponent implements OnInit, OnDestroy {
     private router: Router,
     private storage: StorageService,
     private auth: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && this.auth.isLoggedIn()) {
@@ -34,6 +35,7 @@ export class StorageComponent implements OnInit, OnDestroy {
         } else {
           this.storage.load();
         }
+        this.cdr.detectChanges();
       }
     });
   }
@@ -44,6 +46,7 @@ export class StorageComponent implements OnInit, OnDestroy {
       if (this.currentPath) {
         this.setCurrent(this.getCurrentFolderByPath(this.currentPath));
       }
+      this.cdr.detectChanges();
     });
   }
 

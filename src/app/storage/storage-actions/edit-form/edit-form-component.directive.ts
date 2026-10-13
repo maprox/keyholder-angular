@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Directive,
   ElementRef,
   EventEmitter,
@@ -29,7 +30,8 @@ export abstract class EditFormComponentDirective implements OnInit {
   itemName: string;
 
   constructor(
-    protected editFormService: EditFormService
+    protected editFormService: EditFormService,
+    private cdr: ChangeDetectorRef,
   ) {}
 
   ngOnInit() {
@@ -39,6 +41,7 @@ export abstract class EditFormComponentDirective implements OnInit {
       } else {
         this.open(item);
       }
+      this.cdr.detectChanges();
     });
   }
 

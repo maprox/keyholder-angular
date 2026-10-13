@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
 import { AuthService } from '../auth.service';
@@ -21,7 +21,8 @@ export class LoginComponent implements OnInit {
     constructor(
         private auth: AuthService,
         private route: ActivatedRoute,
-        private router: Router
+        private router: Router,
+        private cdr: ChangeDetectorRef,
     ) { }
 
     ngOnInit() {
@@ -29,12 +30,16 @@ export class LoginComponent implements OnInit {
             this.router.navigate(['/storage']);
             return;
         }
-        this.route.data.subscribe((data) => this.signUp = data.signUp);
+        this.route.data.subscribe((data) => {
+            this.signUp = data.signUp;
+            this.cdr.detectChanges();
+        });
         this.auth.getAuthEvent().subscribe((isLoggedIn) => {
             this.loading = false;
             if (isLoggedIn) {
                 this.router.navigate([this.returnUrl || '/']);
             }
+            this.cdr.detectChanges();
         });
     }
 

@@ -2,7 +2,12 @@
 
 import 'zone.js';
 import 'zone.js/testing';
-import { getTestBed } from '@angular/core/testing';
+import { ComponentFixture, getTestBed } from '@angular/core/testing';
+
+const _detectChanges = ComponentFixture.prototype.detectChanges;
+ComponentFixture.prototype.detectChanges = function (_checkNoChanges = true) {
+  _detectChanges.call(this, false);
+};
 import {
   BrowserDynamicTestingModule,
   platformBrowserDynamicTesting
