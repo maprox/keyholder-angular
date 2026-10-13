@@ -58,9 +58,11 @@ Angular is built with **Node 22**, then static files are served by **nginx**
 ([nginx-default.conf](nginx-default.conf) — SPA `try_files` fallback; see
 [Angular Docs](https://angular.io/guide/deployment#production-servers)).
 
-On every push to `master`, [GitHub Actions](.github/workflows/docker.yml) builds
-and pushes `maprox/keyholder-angular:latest` and a short-SHA tag to
+On every push to `master`, GitHub Actions can build and push
+`maprox/keyholder-angular:latest` and a short-SHA tag to
 [Docker Hub](https://hub.docker.com/r/maprox/keyholder-angular/).
+Workflow template: [ci/docker.yml](ci/docker.yml) (copy to
+`.github/workflows/docker.yml` once the GitHub PAT has `workflow` scope).
 Required repo secrets: `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`.
 
 In Kubernetes use `image: maprox/keyholder-angular:latest` with
