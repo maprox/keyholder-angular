@@ -4,9 +4,10 @@ import { EditFormFolderService } from './edit-form-folder';
 import { EditFormSecretService } from './edit-form-secret';
 
 @Component({
-  selector: 'app-storage-actions',
-  templateUrl: './storage-actions.component.html',
-  styleUrls: ['./storage-actions.component.scss'],
+    selector: 'app-storage-actions',
+    templateUrl: './storage-actions.component.html',
+    styleUrls: ['./storage-actions.component.scss'],
+    standalone: false
 })
 export class StorageActionsComponent {
   @Input() current: Folder;

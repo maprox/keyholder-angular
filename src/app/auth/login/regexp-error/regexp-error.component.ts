@@ -3,7 +3,8 @@ import { Component, Input } from '@angular/core';
 @Component({
     selector: 'app-regexp-error',
     templateUrl: './regexp-error.component.html',
-    styleUrls: ['./regexp-error.component.scss']
+    styleUrls: ['./regexp-error.component.scss'],
+    standalone: false
 })
 export class RegexpErrorComponent {
     private _pattern: string;

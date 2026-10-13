@@ -11,7 +11,9 @@ import {
 import { Folder, Item } from '../../model';
 import { EditFormService } from './edit-form.service';
 
-@Directive({})
+@Directive({
+    standalone: false
+})
 export abstract class EditFormComponentDirective implements OnInit {
   @ViewChild('fieldName') fieldName: ElementRef;
 

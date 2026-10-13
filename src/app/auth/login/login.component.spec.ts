@@ -45,12 +45,16 @@ describe('LoginComponent', () => {
     }
   }
 
-  @Component({ template: '' }) class DummyComponent {}
+  @Component({
+    template: '',
+    standalone: false
+}) class DummyComponent {}
 
   @Component({
     selector: 'app-fork-me',
-    template: '<div>Fake fork me component</div>'
-  })
+    template: '<div>Fake fork me component</div>',
+    standalone: false
+})
   class FakeForkMeComponent {}
 
   beforeEach(waitForAsync(() => {

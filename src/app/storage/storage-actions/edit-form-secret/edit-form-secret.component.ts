@@ -6,9 +6,10 @@ import { EditFormComponentDirective } from '../edit-form';
 import { EditFormSecretService } from './edit-form-secret.service';
 
 @Component({
-  selector: 'app-edit-form-secret',
-  templateUrl: './edit-form-secret.component.html',
-  styleUrls: ['./edit-form-secret.component.scss']
+    selector: 'app-edit-form-secret',
+    templateUrl: './edit-form-secret.component.html',
+    styleUrls: ['./edit-form-secret.component.scss'],
+    standalone: false
 })
 export class EditFormSecretComponent extends EditFormComponentDirective implements OnInit {
   detailsShown = false;

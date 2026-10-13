@@ -4,9 +4,10 @@ import { StorageApiService, StorageService } from '../../storage';
 import { FileIoService } from '../file-io.service';
 
 @Component({
-  selector: 'app-import',
-  templateUrl: './import.component.html',
-  styleUrls: ['./import.component.scss'],
+    selector: 'app-import',
+    templateUrl: './import.component.html',
+    styleUrls: ['./import.component.scss'],
+    standalone: false
 })
 export class ImportComponent implements OnInit {
   constructor(

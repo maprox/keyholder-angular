@@ -14,11 +14,12 @@ import { StorageComponent } from './storage.component';
 import { StorageService } from './storage.service';
 
 @Component({
-  selector: 'app-storage-actions',
-  template: `
+    selector: 'app-storage-actions',
+    template: `
     <div>Fake storage action component</div>
     <div data-cy="current-folder">{{ current?.getName() }}</div>
-  `
+  `,
+    standalone: false
 })
 class FakeStorageActionsComponent {
   @Input() current: Folder = new Folder('e');
@@ -28,12 +29,13 @@ class FakeStorageActionsComponent {
 }
 
 @Component({
-  selector: 'app-storage-path',
-  template: `
+    selector: 'app-storage-path',
+    template: `
     <div>Fake storage path component</div>
     <div data-cy="root-folder">{{ root?.getName() }}</div>
     <div data-cy="current-folder">{{ current?.getName() }}</div>
-  `
+  `,
+    standalone: false
 })
 class FakeStoragePathComponent {
   @Input() root: Folder;
@@ -42,12 +44,13 @@ class FakeStoragePathComponent {
 }
 
 @Component({
-  selector: 'app-storage-list',
-  template: `
+    selector: 'app-storage-list',
+    template: `
     <div>Fake storage list component</div>
     <div data-cy="parent-folder">{{ parent?.getName() }}</div>
     <div data-cy="current-folder">{{ current?.getName() }}</div>
-  `
+  `,
+    standalone: false
 })
 class FakeStorageListComponent {
   @Input() parent: Folder;

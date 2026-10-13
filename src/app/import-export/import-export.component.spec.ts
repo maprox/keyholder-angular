@@ -4,14 +4,16 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { ImportExportComponent } from './import-export.component';
 
 @Component({
-  selector: 'app-import',
-  template: '<div>Fake import component</div>'
+    selector: 'app-import',
+    template: '<div>Fake import component</div>',
+    standalone: false
 })
 class FakeImportComponent {}
 
 @Component({
-  selector: 'app-export',
-  template: '<div>Fake export component</div>'
+    selector: 'app-export',
+    template: '<div>Fake export component</div>',
+    standalone: false
 })
 class FakeExportComponent {}
 

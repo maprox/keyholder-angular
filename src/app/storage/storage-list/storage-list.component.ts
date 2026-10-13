@@ -6,9 +6,10 @@ import { EditFormFolderService } from '../storage-actions/edit-form-folder';
 import { EditFormSecretService } from '../storage-actions/edit-form-secret';
 
 @Component({
-  selector: 'app-storage-list',
-  templateUrl: './storage-list.component.html',
-  styleUrls: ['./storage-list.component.scss']
+    selector: 'app-storage-list',
+    templateUrl: './storage-list.component.html',
+    styleUrls: ['./storage-list.component.scss'],
+    standalone: false
 })
 export class StorageListComponent {
   @Input() parent: Folder;

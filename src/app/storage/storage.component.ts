@@ -5,9 +5,10 @@ import { Folder, Item } from './model';
 import { StorageService } from './storage.service';
 
 @Component({
-  selector: 'app-storage',
-  templateUrl: './storage.component.html',
-  styleUrls: ['./storage.component.scss'],
+    selector: 'app-storage',
+    templateUrl: './storage.component.html',
+    styleUrls: ['./storage.component.scss'],
+    standalone: false
 })
 export class StorageComponent implements OnInit, OnDestroy {
   root: Folder;

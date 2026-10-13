@@ -7,7 +7,8 @@ import { Observable, SubscriptionLike as ISubscription, timer } from 'rxjs';
 const SCROLL_DISTANCE = 10;
 
 @Directive({
-    selector: '[appLongPress]'
+    selector: '[appLongPress]',
+    standalone: false
 })
 export class LongPressDirective implements OnInit, OnDestroy {
     @Input() public appLongPress;

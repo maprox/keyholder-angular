@@ -4,8 +4,9 @@ import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { NavigationComponent } from './navigation.component';
 
 @Component({
-  selector: 'app-search',
-  template: '<div>Fake search component</div>'
+    selector: 'app-search',
+    template: '<div>Fake search component</div>',
+    standalone: false
 })
 class FakeSearchComponent {}
 

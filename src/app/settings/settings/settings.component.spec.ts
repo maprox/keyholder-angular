@@ -12,7 +12,8 @@ import { SettingsComponent } from './settings.component';
 
 @Component({
     selector: 'app-import-export',
-    template: '<div>Fake import-export component</div>'
+    template: '<div>Fake import-export component</div>',
+    standalone: false
 })
 class FakeImportExportComponent {}
 

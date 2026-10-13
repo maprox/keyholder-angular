@@ -5,14 +5,16 @@ import { By } from '@angular/platform-browser';
 import { LongPressDirective } from './long-press.directive';
 
 @Component({
-  template: `<button appLongPress (onRelease)="release()"></button>`
+    template: `<button appLongPress (onRelease)="release()"></button>`,
+    standalone: false
 })
 class TestLongPressComponent {
   public release = jasmine.createSpy();
 }
 
 @Component({
-  template: `<button appLongPress="1000" (onRelease)="release()"></button>`
+    template: `<button appLongPress="1000" (onRelease)="release()"></button>`,
+    standalone: false
 })
 class TestLongPressSecondComponent {
   public release = jasmine.createSpy();

@@ -4,9 +4,10 @@ import { StorageApiService } from '../../storage';
 import { FileIoService } from '../file-io.service';
 
 @Component({
-  selector: 'app-export',
-  templateUrl: './export.component.html',
-  styleUrls: ['./export.component.scss']
+    selector: 'app-export',
+    templateUrl: './export.component.html',
+    styleUrls: ['./export.component.scss'],
+    standalone: false
 })
 export class ExportComponent implements OnInit {
   static getFilename() {

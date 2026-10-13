@@ -8,8 +8,9 @@ import { EditFormSecretService } from './edit-form-secret';
 import { StorageActionsComponent } from './storage-actions.component';
 
 @Component({
-  selector: 'app-edit-form-secret',
-  template: '<div>Fake edit form secret component</div>'
+    selector: 'app-edit-form-secret',
+    template: '<div>Fake edit form secret component</div>',
+    standalone: false
 })
 class FakeEditFormSecretComponent {
   @Input() current: Folder;
@@ -20,8 +21,9 @@ class FakeEditFormSecretComponent {
 }
 
 @Component({
-  selector: 'app-edit-form-folder',
-  template: '<div>Fake edit form folder component</div>'
+    selector: 'app-edit-form-folder',
+    template: '<div>Fake edit form folder component</div>',
+    standalone: false
 })
 class FakeEditFormFolderComponent {
   @Input() current: Folder;
