@@ -1,8 +1,5 @@
-# Explicitly set note 12, since on node:latest (14) it fails
-# with "EPERM: operation not permitted, copyfile" error,
-# because of an outdated docker version we use on our server,
-# see https://support.circleci.com/hc/en-us/articles/360050934711
-FROM node:12
+# Node 22 matches Angular 22 local/Docker toolchain (see README).
+FROM node:22
 
 MAINTAINER Alexander Y Lyapko box@sunsay.ru
 
