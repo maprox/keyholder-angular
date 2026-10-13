@@ -1,4 +1,4 @@
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import TestComponentWrapper from '../../utils/test-component-wrapper';
 import { Folder, Item } from '../model';
@@ -10,6 +10,7 @@ import { StorageActionsComponent } from './storage-actions.component';
 @Component({
     selector: 'app-edit-form-secret',
     template: '<div>Fake edit form secret component</div>',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class FakeEditFormSecretComponent {
@@ -23,6 +24,7 @@ class FakeEditFormSecretComponent {
 @Component({
     selector: 'app-edit-form-folder',
     template: '<div>Fake edit form folder component</div>',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class FakeEditFormFolderComponent {

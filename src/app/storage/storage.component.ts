@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from '../auth';
 import { Folder, Item } from './model';
@@ -8,6 +8,7 @@ import { StorageService } from './storage.service';
     selector: 'app-storage',
     templateUrl: './storage.component.html',
     styleUrls: ['./storage.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StorageComponent implements OnInit, OnDestroy {

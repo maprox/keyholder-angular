@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { AlertService } from '../../alert';
 import { StorageApiService, StorageService } from '../../storage';
 import { FileIoService } from '../file-io.service';
@@ -7,6 +7,7 @@ import { FileIoService } from '../file-io.service';
     selector: 'app-import',
     templateUrl: './import.component.html',
     styleUrls: ['./import.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class ImportComponent implements OnInit {

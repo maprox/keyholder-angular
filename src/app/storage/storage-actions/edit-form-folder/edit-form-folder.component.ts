@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { Folder } from '../../model';
 import { EditFormComponentDirective } from '../edit-form';
@@ -8,6 +8,7 @@ import { EditFormFolderService } from './edit-form-folder.service';
     selector: 'app-edit-form-folder',
     templateUrl: './edit-form-folder.component.html',
     styleUrls: ['./edit-form-folder.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditFormFolderComponent extends EditFormComponentDirective implements OnInit {

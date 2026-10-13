@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { Subject } from 'rxjs';
@@ -13,6 +13,7 @@ import { SettingsComponent } from './settings.component';
 @Component({
     selector: 'app-import-export',
     template: '<div>Fake import-export component</div>',
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class FakeImportExportComponent {}

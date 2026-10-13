@@ -1,4 +1,4 @@
-import { Component, DebugElement, EventEmitter, Input, Output } from '@angular/core';
+import { Component, DebugElement, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { TestBed, waitForAsync } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -19,6 +19,7 @@ import { StorageService } from './storage.service';
     <div>Fake storage action component</div>
     <div data-cy="current-folder">{{ current?.getName() }}</div>
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class FakeStorageActionsComponent {
@@ -35,6 +36,7 @@ class FakeStorageActionsComponent {
     <div data-cy="root-folder">{{ root?.getName() }}</div>
     <div data-cy="current-folder">{{ current?.getName() }}</div>
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class FakeStoragePathComponent {
@@ -50,6 +52,7 @@ class FakeStoragePathComponent {
     <div data-cy="parent-folder">{{ parent?.getName() }}</div>
     <div data-cy="current-folder">{{ current?.getName() }}</div>
   `,
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 class FakeStorageListComponent {

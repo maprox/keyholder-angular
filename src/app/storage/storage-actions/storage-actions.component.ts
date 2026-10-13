@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, ChangeDetectionStrategy } from '@angular/core';
 import { Folder, Item } from '../model';
 import { EditFormFolderService } from './edit-form-folder';
 import { EditFormSecretService } from './edit-form-secret';
@@ -7,6 +7,7 @@ import { EditFormSecretService } from './edit-form-secret';
     selector: 'app-storage-actions',
     templateUrl: './storage-actions.component.html',
     styleUrls: ['./storage-actions.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class StorageActionsComponent {

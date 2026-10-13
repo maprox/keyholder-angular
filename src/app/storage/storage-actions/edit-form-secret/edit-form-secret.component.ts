@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { PasswordGeneratorService } from '../../../password-generator';
 import { Secret } from '../../model';
@@ -9,6 +9,7 @@ import { EditFormSecretService } from './edit-form-secret.service';
     selector: 'app-edit-form-secret',
     templateUrl: './edit-form-secret.component.html',
     styleUrls: ['./edit-form-secret.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class EditFormSecretComponent extends EditFormComponentDirective implements OnInit {

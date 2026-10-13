@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationStart, Router } from '@angular/router';
 
 import { AlertService } from './alert.service';
@@ -14,6 +14,7 @@ alertStyles[AlertType.Warning] = 'alert-warning';
     selector: 'app-alert',
     templateUrl: 'alert.component.html',
     styleUrls: ['./alert.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
     standalone: false
 })
 export class AlertComponent implements OnInit {
