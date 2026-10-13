@@ -28,7 +28,7 @@ describe('LoginComponent', () => {
     password: DebugElement;
 
     constructor() {
-      const router = TestBed.get(Router);
+      const router = TestBed.inject(Router);
       this.navSpy = spyOn(router, 'navigate');
     }
 
