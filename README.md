@@ -1,7 +1,7 @@
 # Keyholder-Angular
 
-[![Build Status](https://travis-ci.org/maprox/keyholder-angular.svg?branch=master)](
-https://travis-ci.org/maprox/keyholder-angular) 
+[![Docker](https://github.com/maprox/keyholder-angular/actions/workflows/docker.yml/badge.svg)](
+https://github.com/maprox/keyholder-angular/actions/workflows/docker.yml)
 [![codecov](https://codecov.io/gh/maprox/keyholder-angular/branch/master/graph/badge.svg)](
 https://codecov.io/gh/maprox/keyholder-angular)
 
