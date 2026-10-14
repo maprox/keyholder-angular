@@ -7,7 +7,8 @@ COPY package*.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+# Staging build: demo:true — we do not guarantee data durability on this deploy.
+RUN npm run build-staging
 
 FROM nginx:1.27-alpine
 
