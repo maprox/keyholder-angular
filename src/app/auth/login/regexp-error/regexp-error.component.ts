@@ -1,9 +1,11 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ChangeDetectionStrategy } from '@angular/core';
 
 @Component({
     selector: 'app-regexp-error',
     templateUrl: './regexp-error.component.html',
-    styleUrls: ['./regexp-error.component.scss']
+    styleUrls: ['./regexp-error.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class RegexpErrorComponent {
     private _pattern: string;

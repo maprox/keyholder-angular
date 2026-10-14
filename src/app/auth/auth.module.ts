@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi, withXhr } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
@@ -11,23 +11,7 @@ import { ForkMeComponent } from '../fork-me';
 import { LoginComponent, RegexpErrorComponent } from './login';
 import { LogoutComponent } from './logout';
 
-@NgModule({
-    imports: [
-        AuthRoutingModule,
-        CommonModule,
-        FormsModule,
-        HttpClientModule
-    ],
-    providers: [
-        AuthService,
-        AuthGuard,
-        {
-            provide: HTTP_INTERCEPTORS,
-            useClass: AuthInterceptor,
-            multi: true,
-        }
-    ],
-    declarations: [
+@NgModule({ declarations: [
         ForkMeComponent,
         LoginComponent,
         LogoutComponent,
@@ -36,6 +20,16 @@ import { LogoutComponent } from './logout';
     exports: [
         LoginComponent,
         LogoutComponent
-    ]
-})
+    ], imports: [AuthRoutingModule,
+        CommonModule,
+        FormsModule], providers: [
+        AuthService,
+        AuthGuard,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: AuthInterceptor,
+            multi: true,
+        },
+        provideHttpClient(withXhr(), withInterceptorsFromDi())
+    ] })
 export class AuthModule { }

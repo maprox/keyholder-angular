@@ -1,13 +1,15 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { AuthService } from '../auth';
 import { Folder, Item } from './model';
 import { StorageService } from './storage.service';
 
 @Component({
-  selector: 'app-storage',
-  templateUrl: './storage.component.html',
-  styleUrls: ['./storage.component.scss'],
+    selector: 'app-storage',
+    templateUrl: './storage.component.html',
+    styleUrls: ['./storage.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StorageComponent implements OnInit, OnDestroy {
   root: Folder;
@@ -22,6 +24,7 @@ export class StorageComponent implements OnInit, OnDestroy {
     private router: Router,
     private storage: StorageService,
     private auth: AuthService,
+    private cdr: ChangeDetectorRef,
   ) {
     this.routerSubscription = this.router.events.subscribe(event => {
       if (event instanceof NavigationEnd && this.auth.isLoggedIn()) {
@@ -33,6 +36,7 @@ export class StorageComponent implements OnInit, OnDestroy {
         } else {
           this.storage.load();
         }
+        this.cdr.detectChanges();
       }
     });
   }
@@ -43,6 +47,7 @@ export class StorageComponent implements OnInit, OnDestroy {
       if (this.currentPath) {
         this.setCurrent(this.getCurrentFolderByPath(this.currentPath));
       }
+      this.cdr.detectChanges();
     });
   }
 

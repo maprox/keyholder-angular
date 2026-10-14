@@ -1,18 +1,22 @@
-import { Component, DebugElement } from '@angular/core';
+import { Component, DebugElement, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 
 import { LongPressDirective } from './long-press.directive';
 
 @Component({
-  template: `<button appLongPress (onRelease)="release()"></button>`
+    template: `<button appLongPress (onRelease)="release()"></button>`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 class TestLongPressComponent {
   public release = jasmine.createSpy();
 }
 
 @Component({
-  template: `<button appLongPress="1000" (onRelease)="release()"></button>`
+    template: `<button appLongPress="1000" (onRelease)="release()"></button>`,
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 class TestLongPressSecondComponent {
   public release = jasmine.createSpy();

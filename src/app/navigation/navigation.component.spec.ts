@@ -1,11 +1,13 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { NavigationComponent } from './navigation.component';
 
 @Component({
-  selector: 'app-search',
-  template: '<div>Fake search component</div>'
+    selector: 'app-search',
+    template: '<div>Fake search component</div>',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 class FakeSearchComponent {}
 

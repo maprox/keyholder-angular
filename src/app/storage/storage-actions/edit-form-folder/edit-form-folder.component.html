@@ -1,62 +1,67 @@
-<form
-  *ngIf="isActive"
-  name="add-folder"
-  (ngSubmit)="submit()"
->
-  <div class="card bg-light mt-4">
-    <div class="card-body">
-      <h3 data-cy="header">
-        {{ isEditMode() ? 'Edit' : 'Add' }} Folder
-      </h3>
-      <input
-        [(ngModel)]="itemName"
-        type="text"
-        class="form-control form-control-lg"
-        placeholder="Enter folder name"
-        name="fieldName"
-        pattern="[^/]*"
-        #fieldName
-        #name="ngModel"
-      >
-      <div
-        *ngIf="name.invalid && (name.dirty || name.touched)"
-        class="alert alert-danger"
-      >
-        <div *ngIf="name.errors['pattern']">
-          Some symbols are not allowed. Please remove them to proceed
-        </div>
+@if (isActive) {
+  <form
+    name="add-folder"
+    (ngSubmit)="submit()"
+    >
+    <div class="card bg-light mt-4">
+      <div class="card-body">
+        <h3 data-cy="header">
+          {{ isEditMode() ? 'Edit' : 'Add' }} Folder
+        </h3>
+        <input
+          [(ngModel)]="itemName"
+          type="text"
+          class="form-control form-control-lg"
+          placeholder="Enter folder name"
+          name="fieldName"
+          pattern="[^/]*"
+          #fieldName
+          #name="ngModel"
+          >
+        @if (name.invalid && (name.dirty || name.touched)) {
+          <div
+            class="alert alert-danger"
+            >
+            @if (name.errors['pattern']) {
+              <div>
+                Some symbols are not allowed. Please remove them to proceed
+              </div>
+            }
+          </div>
+        }
+      </div>
+      <div class="card-footer">
+        <button
+          type="submit"
+          class="btn btn-lg btn-success mr-2" [disabled]="!itemName || name.invalid"
+          data-cy="submit"
+          title="Submit"
+          >
+          <i class="fa fa-plus-circle"></i>
+          <span class="hidden-xxs ml-2">{{ isEditMode() ? 'Save' : 'Add' }}</span>
+        </button>
+        <button
+          type="button"
+          class="btn btn-lg btn-default"
+          data-cy="cancel"
+          title="Cancel"
+          (click)="close()"
+          >
+          <i class="fa fa-ban"></i>
+          <span class="hidden-xxs ml-2">Cancel</span>
+        </button>
+        @if (isEditMode()) {
+          <button
+            type="button"
+            class="btn btn-lg btn-danger pull-right"
+            data-cy="remove"
+            title="Remove"
+            (click)="remove(itemSource)"
+            >
+            <i class="fa fa-trash"></i>
+          </button>
+        }
       </div>
     </div>
-    <div class="card-footer">
-      <button
-        type="submit"
-        class="btn btn-lg btn-success mr-2" [disabled]="!itemName || name.invalid"
-        data-cy="submit"
-        title="Submit"
-      >
-        <i class="fa fa-plus-circle"></i>
-        <span class="hidden-xxs ml-2">{{ isEditMode() ? 'Save' : 'Add' }}</span>
-      </button>
-      <button
-        type="button"
-        class="btn btn-lg btn-default"
-        data-cy="cancel"
-        title="Cancel"
-        (click)="close()"
-      >
-        <i class="fa fa-ban"></i>
-        <span class="hidden-xxs ml-2">Cancel</span>
-      </button>
-      <button
-        *ngIf="isEditMode()"
-        type="button"
-        class="btn btn-lg btn-danger pull-right"
-        data-cy="remove"
-        title="Remove"
-        (click)="remove(itemSource)"
-      >
-        <i class="fa fa-trash"></i>
-      </button>
-    </div>
-  </div>
-</form>
+  </form>
+}

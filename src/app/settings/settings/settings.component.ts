@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { first } from 'rxjs/operators';
 
 import { PasswordGeneratorService } from '../../password-generator';
@@ -6,9 +6,11 @@ import { Options } from '../../password-generator/model';
 import { StorageApiService, StorageService } from '../../storage';
 
 @Component({
-  selector: 'app-settings',
-  templateUrl: './settings.component.html',
-  styleUrls: ['./settings.component.scss']
+    selector: 'app-settings',
+    templateUrl: './settings.component.html',
+    styleUrls: ['./settings.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class SettingsComponent implements OnInit {
   public options: Options;

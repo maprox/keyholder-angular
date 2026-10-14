@@ -35,10 +35,10 @@ describe('SearchPathComponent', () => {
 
   beforeEach(() => {
     page = new Page(TestBed.createComponent(StoragePathComponent));
-    page.detectChanges();
   });
 
   it('should be created', () => {
+    page.detectChanges();
     expect(page.componentInstance).toBeTruthy();
   });
 

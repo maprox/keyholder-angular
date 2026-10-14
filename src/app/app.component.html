@@ -1,7 +1,9 @@
 <app-demo-warning-bar></app-demo-warning-bar>
 <app-offline-bar></app-offline-bar>
-<app-navigation *ngIf="displayMenu"></app-navigation>
+@if (displayMenu) {
+  <app-navigation></app-navigation>
+}
 <div class=”container”>
-    <app-alert></app-alert>
-    <router-outlet></router-outlet>
+  <app-alert></app-alert>
+  <router-outlet></router-outlet>
 </div>

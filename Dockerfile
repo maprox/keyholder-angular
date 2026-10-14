@@ -1,33 +1,19 @@
-# Explicitly set note 12, since on node:latest (14) it fails
-# with "EPERM: operation not permitted, copyfile" error,
-# because of an outdated docker version we use on our server,
-# see https://support.circleci.com/hc/en-us/articles/360050934711
-FROM node:12
+# Build static Angular app, then serve with nginx (no build-at-start).
+FROM node:22-bookworm AS build
 
-MAINTAINER Alexander Y Lyapko box@sunsay.ru
+WORKDIR /app
 
-RUN apt-get update && \
-    apt-get -y install nginx
-
-# Create and change to the app directory.
-WORKDIR /app/
-
-# Copy application dependency manifests to the container image.
-# A wildcard is used to ensure both package.json AND package-lock.json are copied.
-# Copying this separately prevents re-running npm install on every code change.
-COPY package*.json /app/
-
-# Install dependencies
+COPY package*.json ./
 RUN npm ci
 
-# Copy local code to the container image.
-COPY . /app/
+COPY . .
+RUN npm run build
 
-# Configure nginx
-COPY nginx-default.conf /etc/nginx/sites-enabled/default
+FROM nginx:1.27-alpine
 
-ENTRYPOINT ["sh", "./start-script.sh"]
-
-CMD ["build"]
+COPY nginx-default.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist/keyholder-angular /usr/share/nginx/html
 
 EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

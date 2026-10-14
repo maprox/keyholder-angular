@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, ChangeDetectionStrategy } from '@angular/core';
 
 import { AlertService } from '../../alert';
 import { Folder, Item, Secret } from '../model';
@@ -6,9 +6,11 @@ import { EditFormFolderService } from '../storage-actions/edit-form-folder';
 import { EditFormSecretService } from '../storage-actions/edit-form-secret';
 
 @Component({
-  selector: 'app-storage-list',
-  templateUrl: './storage-list.component.html',
-  styleUrls: ['./storage-list.component.scss']
+    selector: 'app-storage-list',
+    templateUrl: './storage-list.component.html',
+    styleUrls: ['./storage-list.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StorageListComponent {
   @Input() parent: Folder;

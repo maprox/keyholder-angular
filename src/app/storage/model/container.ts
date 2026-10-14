@@ -1,4 +1,3 @@
-import { Option } from '@angular/cli/models/interface';
 import { Options } from '../../password-generator/model';
 import { SerializableClass } from '../../serializer';
 import { Folder } from './folder';

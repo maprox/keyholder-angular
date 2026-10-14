@@ -1,17 +1,21 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { ImportExportComponent } from './import-export.component';
 
 @Component({
-  selector: 'app-import',
-  template: '<div>Fake import component</div>'
+    selector: 'app-import',
+    template: '<div>Fake import component</div>',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 class FakeImportComponent {}
 
 @Component({
-  selector: 'app-export',
-  template: '<div>Fake export component</div>'
+    selector: 'app-export',
+    template: '<div>Fake export component</div>',
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 class FakeExportComponent {}
 

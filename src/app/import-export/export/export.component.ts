@@ -1,12 +1,14 @@
 import { formatDate } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { StorageApiService } from '../../storage';
 import { FileIoService } from '../file-io.service';
 
 @Component({
-  selector: 'app-export',
-  templateUrl: './export.component.html',
-  styleUrls: ['./export.component.scss']
+    selector: 'app-export',
+    templateUrl: './export.component.html',
+    styleUrls: ['./export.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class ExportComponent implements OnInit {
   static getFilename() {

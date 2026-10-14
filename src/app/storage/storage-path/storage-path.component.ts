@@ -1,11 +1,13 @@
-import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, Output, SimpleChanges, ChangeDetectionStrategy } from '@angular/core';
 
 import { Folder } from '../model';
 
 @Component({
-  selector: 'app-storage-path',
-  templateUrl: './storage-path.component.html',
-  styleUrls: ['./storage-path.component.scss']
+    selector: 'app-storage-path',
+    templateUrl: './storage-path.component.html',
+    styleUrls: ['./storage-path.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class StoragePathComponent implements OnChanges {
   @Input() root: Folder;

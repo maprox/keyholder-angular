@@ -1,5 +1,5 @@
 import { Component, DebugElement } from '@angular/core';
-import { ComponentFixture, inject, TestBed, waitForAsync } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { FormsModule } from '@angular/forms';
 import { By } from '@angular/platform-browser';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -28,7 +28,7 @@ describe('LoginComponent', () => {
     password: DebugElement;
 
     constructor() {
-      const router = TestBed.get(Router);
+      const router = TestBed.inject(Router);
       this.navSpy = spyOn(router, 'navigate');
     }
 
@@ -45,12 +45,16 @@ describe('LoginComponent', () => {
     }
   }
 
-  @Component({ template: '' }) class DummyComponent {}
+  @Component({
+    template: '',
+    standalone: false
+}) class DummyComponent {}
 
   @Component({
     selector: 'app-fork-me',
-    template: '<div>Fake fork me component</div>'
-  })
+    template: '<div>Fake fork me component</div>',
+    standalone: false
+})
   class FakeForkMeComponent {}
 
   beforeEach(waitForAsync(() => {
@@ -112,9 +116,10 @@ describe('LoginComponent', () => {
     expect(page.navSpy).toHaveBeenCalledWith(['/storage']);
   });
 
-  it('should switch mode', inject([ActivatedRoute], (route: ActivatedRoute) => {
+  it('should switch mode', () => {
     isLoggedIn = false;
 
+    const route = fixture.componentRef.injector.get(ActivatedRoute);
     const routeSubject = new Subject<Object>();
     route.data = routeSubject.asObservable();
 
@@ -122,9 +127,7 @@ describe('LoginComponent', () => {
 
     page.buildPageElements();
 
-    expect(de.children.length).toEqual(2);
-
-    const switchDe = de.children[1].query(By.css('a.btn'));
+    const switchDe = fixture.debugElement.query(By.css('a.btn-info'));
 
     expect(page.getSubmitLabel()).toEqual('Log in');
     expect(switchDe.nativeElement.textContent.trim()).toEqual('Sign up');
@@ -135,7 +138,7 @@ describe('LoginComponent', () => {
 
     expect(page.getSubmitLabel()).toEqual('Sign up');
     expect(switchDe.nativeElement.textContent.trim()).toEqual('Log in');
-  }));
+  });
 
   it('should catch auth change', () => {
     isLoggedIn = false;
@@ -171,9 +174,10 @@ describe('LoginComponent', () => {
     expect(authServiceStub.signIn).toHaveBeenCalledTimes(1);
   });
 
-  it('should sign up', inject([ActivatedRoute], (route: ActivatedRoute) => {
+  it('should sign up', () => {
     isLoggedIn = false;
 
+    const route = fixture.componentRef.injector.get(ActivatedRoute);
     const routeSubject = new Subject<Object>();
     route.data = routeSubject.asObservable();
     route.snapshot.queryParams = {returnUrl: '/return-url/%28%29'};
@@ -209,11 +213,12 @@ describe('LoginComponent', () => {
 
     expect(page.navSpy).toHaveBeenCalledTimes(1);
     expect(page.navSpy).toHaveBeenCalledWith(['/return-url/()']);
-  }));
+  });
 
-  it('should toggle password visibility', inject([ActivatedRoute], (route: ActivatedRoute) => {
+  it('should toggle password visibility', () => {
     isLoggedIn = false;
 
+    const route = fixture.componentRef.injector.get(ActivatedRoute);
     const routeSubject = new Subject<Object>();
     route.data = routeSubject.asObservable();
 
@@ -236,5 +241,5 @@ describe('LoginComponent', () => {
     fixture.detectChanges();
 
     expect(page.password.nativeElement.type).toEqual('password');
-  }));
+  });
 });

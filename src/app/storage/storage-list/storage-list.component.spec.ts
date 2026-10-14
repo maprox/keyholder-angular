@@ -88,15 +88,14 @@ describe('StorageListComponent', () => {
 
   beforeEach(() => {
     page = new Page(TestBed.createComponent(StorageListComponent));
-    page.detectChanges();
   });
 
   function setCurrentFolder() {
     root = getSophisticatedRoot();
     parent = root.getFolderByName('alpha');
     current = parent.getFolderByName('alpha-sub-folder1');
-    page.componentInstance.parent = parent;
-    page.componentInstance.current = current;
+    page.fixture.componentRef.setInput('parent', parent);
+    page.fixture.componentRef.setInput('current', current);
     page.detectChanges();
   }
 
@@ -104,8 +103,9 @@ describe('StorageListComponent', () => {
     expect(page.componentInstance).toBeTruthy();
   });
 
-  it('should display current folder items', fakeAsync(() => {
+  it('should display current folder items', () => {
     // initially it is empty, since there is no "current" folder specified
+    page.detectChanges();
     expect(page.list.nativeElement.innerText).toEqual('This folder is empty');
     expect(page.parent).toBeFalsy();
     expect(page.items.length).toEqual(0);
@@ -114,7 +114,7 @@ describe('StorageListComponent', () => {
 
     expect(page.parent).toBeTruthy();
     expect(page.items.length).toEqual(3);
-  }));
+  });
 
   it('should copy secret to clipboard', fakeAsync(() => {
     expect(alertServiceMock.success).toHaveBeenCalledTimes(0);

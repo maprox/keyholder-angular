@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectionStrategy } from '@angular/core';
 import { HttpService } from '../http';
 
 @Component({
-  selector: 'app-offline-bar',
-  templateUrl: './offline-bar.component.html',
-  styleUrls: ['./offline-bar.component.scss']
+    selector: 'app-offline-bar',
+    templateUrl: './offline-bar.component.html',
+    styleUrls: ['./offline-bar.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class OfflineBarComponent {
   isOffline = false;

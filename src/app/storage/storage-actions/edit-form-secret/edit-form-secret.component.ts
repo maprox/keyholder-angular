@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 
 import { PasswordGeneratorService } from '../../../password-generator';
 import { Secret } from '../../model';
@@ -6,9 +6,11 @@ import { EditFormComponentDirective } from '../edit-form';
 import { EditFormSecretService } from './edit-form-secret.service';
 
 @Component({
-  selector: 'app-edit-form-secret',
-  templateUrl: './edit-form-secret.component.html',
-  styleUrls: ['./edit-form-secret.component.scss']
+    selector: 'app-edit-form-secret',
+    templateUrl: './edit-form-secret.component.html',
+    styleUrls: ['./edit-form-secret.component.scss'],
+    changeDetection: ChangeDetectionStrategy.Eager,
+    standalone: false
 })
 export class EditFormSecretComponent extends EditFormComponentDirective implements OnInit {
   detailsShown = false;
@@ -18,9 +20,10 @@ export class EditFormSecretComponent extends EditFormComponentDirective implemen
 
   constructor(
     protected passwordGenerator: PasswordGeneratorService,
-    protected editFormSecretService: EditFormSecretService
+    protected editFormSecretService: EditFormSecretService,
+    cdr: ChangeDetectorRef,
   ) {
-    super(editFormSecretService);
+    super(editFormSecretService, cdr);
   }
 
   generate() {
