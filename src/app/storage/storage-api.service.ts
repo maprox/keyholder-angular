@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { AuthService } from '../auth';
+import { AlertService } from '../alert';
 
-import { EncryptingService } from '../encrypting';
+import { ContainerCodecService } from '../encrypting';
 import { HttpService } from '../http';
 import { PasswordGeneratorService } from '../password-generator';
 import { Options } from '../password-generator/model';
@@ -18,8 +19,9 @@ export class StorageApiService {
   constructor(
     private auth: AuthService,
     private http: HttpService,
-    private encrypting: EncryptingService,
+    private codec: ContainerCodecService,
     private passwordGenerator: PasswordGeneratorService,
+    private alert: AlertService,
   ) {
     auth.getAuthEvent().subscribe((isLoggedIn) => {
       if (!isLoggedIn) {
@@ -31,8 +33,15 @@ export class StorageApiService {
   load(): Observable<any> {
     if (!this.container) {
       this.http.get('/storage', {responseType: 'text'}).subscribe(
-        (data) => this.loadData(decodeURIComponent(data)),
-        () => this.loadData(localStorage.getItem(this.storageKey))
+        (data) => this.loadTransportData(data),
+        () => {
+          const data = localStorage.getItem(this.storageKey);
+          if (data === null) {
+            this.failLoad();
+            return;
+          }
+          this.loadTransportData(data);
+        }
       );
     } else {
       setTimeout(() => this.subject.next(this.container));
@@ -43,36 +52,57 @@ export class StorageApiService {
   loadContainer(data: string): Container {
     let container: Container = null;
     try {
-      const input = this.encrypting.decrypt(data);
+      const input = this.codec.decode(data);
       if (input) {
-        container = JSON.parse(input, SerializerService.getReviver({
+        const parsed = JSON.parse(input, SerializerService.getReviver({
           'Container': Container,
           'Folder': Folder,
           'Options': Options,
           'Secret': Secret,
         }));
+        if (parsed instanceof Container
+          && parsed.getStorage() instanceof Folder
+          && parsed.getOptions() instanceof Options) {
+          container = parsed;
+        }
       }
-    } catch (e) {
-      // todo do something here?
+    } catch {
+      return null;
     }
     return container;
   }
 
-  private loadData(data: string) {
+  private loadTransportData(data: string) {
     try {
-      this.container = this.loadContainer(data);
-      if (!this.container) {
-        // initial container (right after signup)
-        this.container = new Container(
-          new Folder('root'),
-          this.passwordGenerator.getOptions()
-        );
-      }
-      this.passwordGenerator.setOptions(this.container.getOptions());
-      this.subject.next(this.container);
-    } catch (e) {
-      // todo do something here?
+      const decoded = data === null || data === undefined ? data : decodeURIComponent(data);
+      this.loadData(decoded);
+    } catch {
+      this.failLoad();
     }
+  }
+
+  private failLoad() {
+    this.alert.error('Unable to load storage: invalid or unsupported container.');
+  }
+
+  private loadData(data: string) {
+    let container: Container;
+    if (data === null || data === undefined) {
+      container = new Container(
+        new Folder('root'),
+        this.passwordGenerator.getOptions()
+      );
+    } else {
+      container = this.loadContainer(data);
+      if (!container) {
+        this.failLoad();
+        return;
+      }
+    }
+
+    this.container = container;
+    this.passwordGenerator.setOptions(container.getOptions());
+    this.subject.next(container);
   }
 
   save(root: Folder, options?: Options): Observable<any> {
@@ -100,6 +130,6 @@ export class StorageApiService {
   }
 
   getEncryptedContainer(): string {
-    return encodeURIComponent(this.encrypting.encrypt(this.container.serialize()));
+    return encodeURIComponent(this.codec.encode(this.container.serialize()));
   }
 }

@@ -72,7 +72,7 @@ describe('ExportComponent', () => {
     expect(widget.mocks[FileIoService.name].saveAs).toHaveBeenCalledTimes(1);
     expect(widget.mocks[FileIoService.name].saveAs.calls.argsFor(0)).toEqual([
       new Blob(['fake container'], { type: 'text/plain' }),
-      'storage-backup-2015-02-23T10-30-50.kh',
+      'storage-backup-2015-02-23T10-30-50.kh2',
     ]);
   });
 });
