@@ -1,21 +1,16 @@
-import { fakeAsync, inject, TestBed, tick } from '@angular/core/testing';
 import { Subject } from 'rxjs';
 import { first } from 'rxjs/operators';
-import { AuthService } from '../auth';
-
-import { EncryptingService } from '../encrypting';
-import { PasswordGeneratorService } from '../password-generator';
 import { Options } from '../password-generator/model';
 import { Container, Folder, Secret } from './model';
-import { HttpService } from '../http';
 import { StorageApiService } from './storage-api.service';
 
 describe('StorageApiService', () => {
   let service: StorageApiService;
   let authService;
   let httpService;
-  let encryptingService;
+  let containerCodecService;
   let passwordGeneratorService;
+  let alertService;
   let options;
   let httpClientSubject;
   let getAuthEventSubject;
@@ -34,9 +29,12 @@ describe('StorageApiService', () => {
     authService = {
       getAuthEvent: jasmine.createSpy().and.returnValue(getAuthEventSubject),
     };
-    encryptingService = {
-      encrypt: jasmine.createSpy(),
-      decrypt: jasmine.createSpy()
+    containerCodecService = {
+      encode: jasmine.createSpy(),
+      decode: jasmine.createSpy()
+    };
+    alertService = {
+      error: jasmine.createSpy()
     };
     options = new Options();
     passwordGeneratorService = {
@@ -44,176 +42,254 @@ describe('StorageApiService', () => {
       setOptions: jasmine.createSpy()
     };
 
-    TestBed.configureTestingModule({
-      providers: [
-        StorageApiService,
-        {
-          provide: AuthService,
-          useValue: authService,
-        },
-        {
-          provide: HttpService,
-          useValue: httpService
-        },
-        {
-          provide: EncryptingService,
-          useValue: encryptingService
-        },
-        {
-          provide: PasswordGeneratorService,
-          useValue: passwordGeneratorService
-        }
-      ]
-    });
+    service = new StorageApiService(
+      authService,
+      httpService,
+      containerCodecService,
+      passwordGeneratorService,
+      alertService
+    );
   });
-
-  beforeEach(inject([StorageApiService], (storageApiService: StorageApiService) => {
-    service = storageApiService;
-  }));
 
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should save (new) storage to localStorage', () => {
+  it('should save new storage with one URI-encoded layer', () => {
     const root = getRoot();
-    const encryptedContainer = 'EnCr YPt=eeed!';
+    const encryptedContainer = '{"format":"keyholder","v":2}';
     const container = new Container(root, options);
-    encryptingService.encrypt.and.returnValue(encryptedContainer);
+    containerCodecService.encode.and.returnValue(encryptedContainer);
 
     service.save(root);
 
     expect(passwordGeneratorService.getOptions).toHaveBeenCalled();
-
-    expect(encryptingService.encrypt).toHaveBeenCalledWith(JSON.stringify(container));
+    expect(containerCodecService.encode).toHaveBeenCalledWith(JSON.stringify(container));
     expect(httpService.put).toHaveBeenCalledWith('/storage', {
       data: encodeURIComponent(encryptedContainer)
     });
-
     expect(localStorage.getItem('storage')).toEqual(null);
 
     httpClientSubject.next();
-
     expect(localStorage.getItem('storage')).toEqual(encodeURIComponent(encryptedContainer));
+
     localStorage.clear();
-    expect(localStorage.getItem('storage')).toEqual(null);
-
     httpClientSubject.error();
-
     expect(localStorage.getItem('storage')).toEqual(encodeURIComponent(encryptedContainer));
   });
 
   it('should save loaded storage', () => {
     const root = new Folder('root');
     const container = new Container(root, options);
-    const encryptedContainer = 'EnCr YPt=eeed!';
-    const newOptions = new Options(22);
+    const encryptedContainer = '{"format":"keyholder","v":2}';
 
     service.load();
-
     httpClientSubject.next(encryptedContainer);
-
-    passwordGeneratorService.setOptions.and.returnValue(newOptions);
-
-    encryptingService.encrypt.and.returnValue(encryptedContainer);
+    containerCodecService.encode.and.returnValue(encryptedContainer);
 
     service.save(root);
 
-    expect(encryptingService.encrypt).toHaveBeenCalledWith(JSON.stringify(container));
-
+    expect(containerCodecService.encode).toHaveBeenCalledWith(JSON.stringify(container));
     expect(httpService.put).toHaveBeenCalledWith('/storage', {
       data: encodeURIComponent(encryptedContainer)
     });
   });
 
-  it('should load data from server when failed to decrypt', <any>fakeAsync((): void => {
-    const root = new Folder('root');
-    const container = new Container(root, options);
+  it('should migrate raw legacy storage to v2 on the next save', () => {
+    const rawLegacy = 'U2FsdGVkX1legacy';
+    const v2Container = '{"format":"keyholder","v":2,"data":"encrypted"}';
+    const container = new Container(getRoot(), options);
+    containerCodecService.decode.and.returnValue(JSON.stringify(container));
+    containerCodecService.encode.and.returnValue(v2Container);
+
+    service.load();
+    httpClientSubject.next(rawLegacy);
+    service.save(container.getStorage());
+
+    expect(containerCodecService.decode).toHaveBeenCalledWith(rawLegacy);
+    expect(httpService.put).toHaveBeenCalledWith('/storage', {
+      data: encodeURIComponent(v2Container)
+    });
+  });
+
+  it('should reject invalid server data without creating an empty container', () => {
     const onSuccess = jasmine.createSpy();
-    const encryptedRoot = 'EnCr YPt=eeed!';
-    const encodedEncryptedRoot = encodeURIComponent(encryptedRoot);
+    const encryptedRoot = 'invalid-container';
 
     service.load().pipe(first()).subscribe(onSuccess);
+    httpClientSubject.next(encryptedRoot);
 
-    expect(httpService.get).toHaveBeenCalledTimes(1);
-    expect(httpService.get).toHaveBeenCalledWith('/storage', {responseType: 'text'});
-    expect(onSuccess).toHaveBeenCalledTimes(0);
+    expect(containerCodecService.decode).toHaveBeenCalledWith(encryptedRoot);
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(alertService.error).toHaveBeenCalledTimes(1);
+    expect(passwordGeneratorService.setOptions).not.toHaveBeenCalled();
+    expect(localStorage.getItem('storage')).toBeNull();
+  });
 
-    httpClientSubject.next(encodedEncryptedRoot);
-    expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedRoot);
-    expect(onSuccess).toHaveBeenCalledTimes(1);
-    expect(onSuccess).toHaveBeenCalledWith(container);
+  it('should reject an empty server response as invalid existing data', () => {
+    const onSuccess = jasmine.createSpy();
 
-    httpService.get = jasmine.createSpy();
-    const onSuccess2 = jasmine.createSpy();
-    service.load().pipe(first()).subscribe(onSuccess2);
-    tick();
-    expect(httpService.get).toHaveBeenCalledTimes(0);
-    expect(onSuccess2).toHaveBeenCalledTimes(1);
-    expect(onSuccess2).toHaveBeenCalledWith(container);
-  }));
+    service.load().subscribe(onSuccess);
+    httpClientSubject.next('');
 
-  it('should load data from server when successfully decrypted', () => {
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(alertService.error).toHaveBeenCalledTimes(1);
+    expect(passwordGeneratorService.setOptions).not.toHaveBeenCalled();
+  });
+
+  it('should load successfully decrypted server data', () => {
     const onSuccess = jasmine.createSpy();
     const encryptedContainer = 'EnCr YPt=eeed!';
     const container = new Container(getRoot(), options);
-    const data = JSON.stringify(container);
 
+    containerCodecService.decode.and.returnValue(JSON.stringify(container));
     service.load().subscribe(onSuccess);
-
-    encryptingService.decrypt.and.returnValue(data);
     httpClientSubject.next(encryptedContainer);
-    expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedContainer);
+
+    expect(containerCodecService.decode).toHaveBeenCalledWith(encryptedContainer);
     expect(onSuccess).toHaveBeenCalledTimes(1);
     expect(onSuccess).toHaveBeenCalledWith(container);
   });
 
-  it('should load data from localStorage', () => {
+  it('should URI-decode localStorage data exactly once before decoding', () => {
     const onSuccess = jasmine.createSpy();
-    const encryptedRoot = 'EnCr YPt=eeed!';
+    const encryptedRoot = '{"format":"keyholder","v":2,"data":"encrypted"}';
     const container = new Container(getRoot(), options);
-    const data = JSON.stringify(container);
 
+    localStorage.setItem('storage', encodeURIComponent(encryptedRoot));
+    containerCodecService.decode.and.returnValue(JSON.stringify(container));
     service.load().subscribe(onSuccess);
-
-    localStorage.setItem('storage', encryptedRoot);
-    encryptingService.decrypt.and.returnValue(data);
     httpClientSubject.error();
-    expect(encryptingService.decrypt).toHaveBeenCalledWith(encryptedRoot);
+
+    expect(containerCodecService.decode).toHaveBeenCalledWith(encryptedRoot);
     expect(onSuccess).toHaveBeenCalledTimes(1);
     expect(onSuccess).toHaveBeenCalledWith(container);
   });
 
-  it('should try to reload storage from server when logged out', <any>fakeAsync((): void => {
+  it('should not initialize a container when the server is unavailable and there is no local copy', () => {
     const onSuccess = jasmine.createSpy();
-    const encryptedContainer = 'EnCr YPt=eeed!';
+
+    service.load().subscribe(onSuccess);
+    httpClientSubject.error();
+
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(containerCodecService.decode).not.toHaveBeenCalled();
+    expect(alertService.error).toHaveBeenCalledTimes(1);
+    expect(passwordGeneratorService.setOptions).not.toHaveBeenCalled();
+  });
+
+  [null, undefined].forEach((absentValue) => {
+    it(`should initialize a container after a successful ${absentValue} server response`, () => {
+      const onSuccess = jasmine.createSpy();
+
+      service.load().subscribe(onSuccess);
+      httpClientSubject.next(absentValue);
+
+      expect(onSuccess).toHaveBeenCalledTimes(1);
+      expect(onSuccess).toHaveBeenCalledWith(new Container(new Folder('root'), options));
+      expect(containerCodecService.decode).not.toHaveBeenCalled();
+      expect(alertService.error).not.toHaveBeenCalled();
+    });
+  });
+
+  it('should reject invalid localStorage data without replacing it', () => {
+    const onSuccess = jasmine.createSpy();
+    localStorage.setItem('storage', 'invalid-local-data');
+    containerCodecService.decode.and.throwError('invalid');
+
+    service.load().subscribe(onSuccess);
+    httpClientSubject.error();
+
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(alertService.error).toHaveBeenCalledTimes(1);
+    expect(localStorage.getItem('storage')).toBe('invalid-local-data');
+    expect(passwordGeneratorService.setOptions).not.toHaveBeenCalled();
+  });
+
+  it('should report malformed URI encoding from the server', () => {
+    const onSuccess = jasmine.createSpy();
+
+    service.load().subscribe(onSuccess);
+    httpClientSubject.next('%ZZ');
+
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(alertService.error).toHaveBeenCalledTimes(1);
+    expect(containerCodecService.decode).not.toHaveBeenCalled();
+  });
+
+  it('should report malformed URI encoding from localStorage', () => {
+    const onSuccess = jasmine.createSpy();
+    localStorage.setItem('storage', '%ZZ');
+
+    service.load().subscribe(onSuccess);
+    httpClientSubject.error();
+
+    expect(onSuccess).not.toHaveBeenCalled();
+    expect(alertService.error).toHaveBeenCalledTimes(1);
+    expect(containerCodecService.decode).not.toHaveBeenCalled();
+  });
+
+  it('should reject decrypted values that are not complete containers', () => {
+    const invalidPlaintexts = [
+      '{}',
+      '"text"',
+      '42',
+      '[]',
+      '{"_type":"Container"}',
+      '{"_type":"Container","storage":{},"options":{}}',
+    ];
+
+    invalidPlaintexts.forEach((plaintext) => {
+      containerCodecService.decode.and.returnValue(plaintext);
+      expect(service.loadContainer('encrypted')).toBeNull();
+    });
+  });
+
+  it('should not expose or overwrite storage after logout followed by invalid data', () => {
+    const initialContainer = new Container(getRoot(), options);
+    containerCodecService.decode.and.returnValue(JSON.stringify(initialContainer));
+    service.load();
+    httpClientSubject.next('valid-v2');
+
+    getAuthEventSubject.next(false);
+    containerCodecService.decode.and.throwError('invalid');
+    const invalidSubject = new Subject<Object>();
+    httpService.get = jasmine.createSpy().and.returnValue(invalidSubject);
+    const afterLogout = jasmine.createSpy();
+    service.load().subscribe(afterLogout);
+    invalidSubject.next('invalid-v2');
+
+    expect(afterLogout).not.toHaveBeenCalled();
+    expect(localStorage.getItem('storage')).toBeNull();
+    expect(alertService.error).toHaveBeenCalledTimes(1);
+  });
+
+  it('should try to reload storage from server when logged out', (done: DoneFn) => {
+    const onSuccess = jasmine.createSpy();
     const container = new Container(getRoot(), options);
 
     service.load().pipe(first()).subscribe(onSuccess);
-    expect(httpService.get).toHaveBeenCalledTimes(1);
-    encryptingService.decrypt.and.returnValue(JSON.stringify(container));
-    httpClientSubject.next(encryptedContainer);
+    containerCodecService.decode.and.returnValue(JSON.stringify(container));
+    httpClientSubject.next('encrypted');
     expect(onSuccess).toHaveBeenCalledTimes(1);
 
-    httpService.get = jasmine.createSpy().and.returnValue({ subscribe: () => {} });
+    httpService.get = jasmine.createSpy().and.returnValue({subscribe: () => {}});
     const onSuccess2 = jasmine.createSpy();
-
     service.load().pipe(first()).subscribe(onSuccess2);
-    tick();
-    expect(httpService.get).toHaveBeenCalledTimes(0);
-    expect(onSuccess2).toHaveBeenCalledTimes(1);
+    setTimeout(() => {
+      expect(httpService.get).toHaveBeenCalledTimes(0);
+      expect(onSuccess2).toHaveBeenCalledTimes(1);
 
-    // NOT logged out
-    getAuthEventSubject.next(true);
-    service.load();
-    tick();
-    expect(httpService.get).toHaveBeenCalledTimes(0);
+      getAuthEventSubject.next(true);
+      service.load();
+      expect(httpService.get).toHaveBeenCalledTimes(0);
 
-    // logged out
-    getAuthEventSubject.next(false);
-    service.load();
-    expect(httpService.get).toHaveBeenCalledTimes(1);
-  }));
+      getAuthEventSubject.next(false);
+      service.load();
+      expect(httpService.get).toHaveBeenCalledTimes(1);
+      done();
+    });
+  });
 
   function getRoot(): Folder {
     const root = new Folder();

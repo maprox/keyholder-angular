@@ -74,6 +74,10 @@ describe('ImportComponent', () => {
     expect(widget.getComponent()).toBeTruthy();
   });
 
+  it('should accept legacy and v2 backup extensions', () => {
+    expect(widget.fileInput.nativeElement.getAttribute('accept')).toBe('.kh,.kh2');
+  });
+
   it('should import', () => {
     widget.fileInput.triggerEventHandler('change', {
       target: {
@@ -100,6 +104,26 @@ describe('ImportComponent', () => {
     saveSubject.next();
     expect(widget.mocks[AlertService.name].success).toHaveBeenCalledWith(
       'Successfully imported!');
+  });
+
+  it('should import v2 content from a file renamed to .kh', () => {
+    const contents = '{"format":"keyholder","v":2,"data":"encrypted"}';
+    const container = {
+      getStorage: () => 'test storage',
+      getOptions: () => new Options(),
+    };
+    widget.mocks[StorageApiService.name].loadContainer.and.returnValue(container);
+
+    widget.fileInput.triggerEventHandler('change', {
+      target: {
+        files: [{name: 'renamed.kh'}],
+      },
+    });
+    readFileSubject.next(contents);
+
+    expect(widget.mocks[StorageApiService.name].loadContainer).toHaveBeenCalledWith(contents);
+    expect(widget.mocks[StorageApiService.name].save).toHaveBeenCalledWith(
+      'test storage', container.getOptions());
   });
 
   it('should handle failed import (no files selected)', () => {

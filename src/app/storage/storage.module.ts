@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { ClipboardModule } from 'ngx-clipboard';
 import { LongPressModule } from '../long-press';
 
+import { ContainerCodecService } from '../encrypting';
 import { StorageActionsModule } from './storage-actions';
 import { StorageApiService } from './storage-api.service';
 import { StorageListComponent } from './storage-list';
@@ -23,6 +24,7 @@ import { SearchComponent } from './search';
         StorageRoutingModule
     ],
     providers: [
+        ContainerCodecService,
         StorageService,
         StorageApiService
     ],

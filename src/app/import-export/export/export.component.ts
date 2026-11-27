@@ -13,7 +13,7 @@ import { FileIoService } from '../file-io.service';
 export class ExportComponent implements OnInit {
   static getFilename() {
     const timestamp = formatDate(new Date(), 'yyyy-MM-ddTHH-mm-ss', 'en');
-    return `storage-backup-${timestamp}.kh`;
+    return `storage-backup-${timestamp}.kh2`;
   }
 
   constructor(
